@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "group-money-management": {
+      "hosting": {
+        "grp_mn_mngt": [
+          "group-money-management"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "group-money-management"
+  }
+}

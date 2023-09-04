@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "grp_mn_mngt",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

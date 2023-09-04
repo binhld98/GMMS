@@ -91,6 +91,13 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2,
+            "browserTarget": "grp_mn_mngt:build:production"
+          }
         }
       }
     }
