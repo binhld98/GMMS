@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/@core/auth/auth.service';
+import { AuthSharingService } from '../auth-sharing.service';
 
 @Component({
   selector: 'app-login',
@@ -9,9 +11,21 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 export class LoginComponent implements OnInit {
   validateForm!: UntypedFormGroup;
 
+  constructor(
+    private fb: UntypedFormBuilder,
+    private authService: AuthService,
+    private authSharingService: AuthSharingService
+  ) { }
+
   submitForm(): void {
     if (this.validateForm.valid) {
-      console.log('submit', this.validateForm.value);
+      const formValue = this.validateForm.value;
+      this.authSharingService.isLoading.next(true);
+      this.authService
+        .login(formValue.email, formValue.password)
+        .finally(() => {
+          this.authSharingService.isLoading.next(false);
+        });
     } else {
       Object.values(this.validateForm.controls).forEach(control => {
         if (control.invalid) {
@@ -21,8 +35,6 @@ export class LoginComponent implements OnInit {
       });
     }
   }
-
-  constructor(private fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
