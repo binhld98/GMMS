@@ -2,20 +2,24 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PagesComponent } from './pages.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { PagesGuardService } from './pages-guard.service';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'welcome' },
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'welcome',
+  },
   {
     path: '',
     component: PagesComponent,
-    children: [
-      { path: 'welcome', component: WelcomeComponent }
-    ]
-  }
+    canActivate: [PagesGuardService],
+    children: [{ path: 'welcome', component: WelcomeComponent }],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class PagesRoutingModule { }
+export class PagesRoutingModule {}

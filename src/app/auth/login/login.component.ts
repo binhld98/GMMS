@@ -3,6 +3,7 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { AuthService } from 'src/app/@core/auth/auth.service';
 import { AuthSharingService } from '../auth-sharing.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private authSharingService: AuthSharingService,
     private messageService: NzMessageService,
+    private router: Router,
   ) { }
 
   submitForm(): void {
@@ -25,6 +27,9 @@ export class LoginComponent implements OnInit {
       this.authSharingService.isLoading.next(true);
       this.authService
         .login(formValue.email, formValue.password)
+        .then(() => {
+          this.router.navigate(['/']);
+        })
         .catch(error => {
           this.messageService.create('error', error.message);
         })
