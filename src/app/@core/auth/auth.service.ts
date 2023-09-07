@@ -16,7 +16,6 @@ export class AuthService {
   }
 
   private throwSignInError(errorCode: string) {
-    console.log(errorCode);
     let message = 'Có lỗi xảy ra, vui lòng thử lại sau';
     switch (errorCode) {
       case 'auth/user-not-found':
