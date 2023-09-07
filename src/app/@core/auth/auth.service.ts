@@ -8,14 +8,37 @@ export class AuthService {
 
     login(email: string, password: string) {
         return signInWithEmailAndPassword(this.auth, email, password)
-            .then((userCredential) => {
-                // Signed in 
+            .then(userCredential => {
                 console.log(userCredential);
                 const user = userCredential.user;
             })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-            });
+            .catch(error => this.throwSignInError(error.code));
+    }
+
+    private throwSignInError(errorCode: string) {
+        console.log(errorCode);
+        let message = 'Có lỗi xảy ra, vui lòng thử lại sau';
+        switch (errorCode) {
+            case 'auth/user-not-found':
+                message = 'Sai tài khoản';
+                break;
+
+            case 'auth/wrong-password':
+                message = 'Sai mật khẩu';
+                break;
+            
+            case 'auth/user-disabled':
+                message = 'Tài khoản bị khóa';
+                break;
+            
+            case 'auth/too-many-requests':
+                message = 'Thao tác quá nhiều';
+                break;
+        
+            default:
+                break;
+        }
+
+        throw new Error(message);
     }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/@core/auth/auth.service';
 import { AuthSharingService } from '../auth-sharing.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private authService: AuthService,
-    private authSharingService: AuthSharingService
+    private authSharingService: AuthSharingService,
+    private messageService: NzMessageService,
   ) { }
 
   submitForm(): void {
@@ -23,6 +25,9 @@ export class LoginComponent implements OnInit {
       this.authSharingService.isLoading.next(true);
       this.authService
         .login(formValue.email, formValue.password)
+        .catch(error => {
+          this.messageService.create('error', error.message);
+        })
         .finally(() => {
           this.authSharingService.isLoading.next(false);
         });
@@ -38,7 +43,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      email: [null, [Validators.required]],
+      email: [null, [Validators.email, Validators.required]],
       password: [null, [Validators.required]],
     });
   }

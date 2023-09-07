@@ -3,9 +3,13 @@
 </div>
 <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
   <nz-form-item>
-    <nz-form-control nzErrorTip="Vui lòng nhập email!">
+    <nz-form-control [nzErrorTip]="emailErrorTpl">
       <nz-input-group nzPrefixIcon="user">
         <input type="email" nz-input formControlName="email" placeholder="Email" />
+        <ng-template #emailErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('email')">Vui lòng nhập đúng email!</ng-container>
+          <ng-container *ngIf="control.hasError('required')">Vui lòng nhập tài khoản!</ng-container>
+        </ng-template>
       </nz-input-group>
     </nz-form-control>
   </nz-form-item>
