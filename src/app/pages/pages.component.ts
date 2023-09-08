@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../@core/auth/auth.service';
 import { Router } from '@angular/router';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Auth } from '@angular/fire/auth';
+import { Auth, signOut } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-page',
@@ -14,7 +13,6 @@ export class PagesComponent implements OnInit {
   userName: string | null | undefined = '';
 
   constructor(
-    private authService: AuthService,
     private messageService: NzMessageService,
     private router: Router,
     private auth: Auth
@@ -30,11 +28,12 @@ export class PagesComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService
-      .logout()
-      .then(() => this.router.navigate(['/auth/login']))
+    signOut(this.auth)
+      .then(() => {
+        this.router.navigate(['/auth/login'])
+      })
       .catch((error) => {
-        this.messageService.create('error', error.message);
+        this.messageService.create('error', 'Có lỗi xảy ra, vui lòng thử lại sau');
       });
   }
 }
