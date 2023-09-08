@@ -12,9 +12,10 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { GroupComponent } from './group/group.component';
 
 @NgModule({
-  declarations: [PagesComponent, WelcomeComponent],
+  declarations: [PagesComponent, WelcomeComponent, GroupComponent],
   imports: [
     CommonModule,
 

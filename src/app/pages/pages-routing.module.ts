@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { PagesComponent } from './pages.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { PagesGuardService } from './pages-guard.service';
+import { GroupComponent } from './group/group.component';
 
 const routes: Routes = [
   {
@@ -14,7 +15,10 @@ const routes: Routes = [
     path: '',
     component: PagesComponent,
     canActivate: [PagesGuardService],
-    children: [{ path: 'welcome', component: WelcomeComponent }],
+    children: [
+      { path: 'welcome', component: WelcomeComponent },
+      { path: 'group', component: GroupComponent },
+    ],
   },
 ];
 
