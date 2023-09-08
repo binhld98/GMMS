@@ -1,3 +1,7 @@
+/*
+ *  LEFT PANEL
+ */
+
 :host ::ng-deep .left-panel nz-list-item {
   border: 1px solid #f0f0f0;
   margin-bottom: 8px;
@@ -14,9 +18,37 @@
 :host ::ng-deep .left-panel .ant-card-head {
   padding-left: 16px;
   padding-right: 16px;
+  border-bottom: none;
+}
+
+:host ::ng-deep .left-panel .ant-card-head-wrapper {
+  border-bottom: 1px solid #f0f0f0;
 }
 
 :host ::ng-deep .left-panel .ant-card-body {
   padding: 16px;
   padding-right: 8px;
+}
+
+.left-panel nz-list-item:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/*
+ *  RIGHT PANEL
+ */
+
+:host ::ng-deep .right-panel nz-card {
+  height: 100%;
+}
+
+:host ::ng-deep .right-panel .ant-card-head {
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: none;
+}
+
+:host ::ng-deep .right-panel .ant-card-head-wrapper {
+  border-bottom: 1px solid #f0f0f0;
 }

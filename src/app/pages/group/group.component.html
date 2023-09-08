@@ -1,6 +1,6 @@
-<nz-row nzGutter="xs">
+<nz-row nzGutter="xs" [nzGutter]="[16, 16]">
   <nz-col nzSpan="8" class="left-panel">
-    <nz-card nzTitle="Nhóm">
+    <nz-card nzTitle="Nhóm" [nzExtra]="leftExtraTemplate">
       <nz-list>
         <nz-list-item>
           <nz-list-item-meta
@@ -85,6 +85,13 @@
         </nz-list-item>
       </nz-list>
     </nz-card>
+    <ng-template #leftExtraTemplate>
+      <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+        <span nz-icon nzType="plus"></span>
+      </button>
+    </ng-template>
   </nz-col>
-  <nz-col nzSpan="16"> </nz-col>
+  <nz-col nzSpan="16" class="right-panel">
+    <nz-card nzTitle="Lorem Ipsum"> </nz-card>
+  </nz-col>
 </nz-row>
