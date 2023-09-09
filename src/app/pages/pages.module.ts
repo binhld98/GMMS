@@ -16,6 +16,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
@@ -36,6 +37,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
     NzMenuModule,
     NzMessageModule,
     NzPageHeaderModule,
+    NzSpinModule,
   ],
 })
 export class PagesModule {}

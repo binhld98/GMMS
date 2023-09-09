@@ -35,6 +35,13 @@
   cursor: pointer;
 }
 
+:host ::ng-deep .left-panel .ant-spin-nested-loading > div > .ant-spin {
+  max-height: 100%;
+}
+
+:host ::ng-deep .left-panel .ant-list-split .ant-list-item:last-child {
+  border-bottom: 1px solid #f0f0f0;;
+}
 /*
  *  RIGHT PANEL
  */
