@@ -16,6 +16,8 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   leftSpining = true;
 
+  isVisibleUpsert = false;
+
   constructor(
     private auth: Auth,
     private userBusiness: UserBusiness,
@@ -35,5 +37,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.grpSub.unsubscribe();
   }
 
-  onAddGroup() {}
+  onAddGroup() {
+    this.isVisibleUpsert = true;
+  }
 }
