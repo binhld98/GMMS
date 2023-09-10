@@ -1,0 +1,13 @@
+nz-card {
+  height: 100%;
+}
+
+:host ::ng-deep .ant-card-head {
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: none;
+}
+
+:host ::ng-deep .ant-card-head-wrapper {
+  border-bottom: 1px solid #f0f0f0;
+}

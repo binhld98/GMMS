@@ -1,0 +1,29 @@
+<nz-spin [nzSpinning]="isLoading">
+  <nz-card nzTitle="Nhóm" [nzExtra]="leftExtraTemplate">
+    <nz-list>
+      <nz-list-item *ngFor="let group of groups" (click)="onClickGroup(group.id)">
+        <nz-list-item-meta
+          nzAvatar="{{ group.avatarUrl }}"
+          nzTitle="{{ group.groupName }}"
+          nzDescription="{{ group.adminName }} is administrator"
+        >
+        </nz-list-item-meta>
+      </nz-list-item>
+    </nz-list>
+  </nz-card>
+  <ng-template #leftExtraTemplate>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="circle"
+      nzSize="small"
+      (click)="onAddGroup()"
+    >
+      <span nz-icon nzType="plus"></span>
+    </button>
+  </ng-template>
+  <app-upsert-group
+    [(isVisible)]="isVisibleUpsert"
+    (groupSaved)="onGroupSaved()"
+  ></app-upsert-group>
+</nz-spin>

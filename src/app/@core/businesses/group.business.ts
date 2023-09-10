@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 
 import { UserRepository } from '../repository/user.repository';
 import { GroupRepository } from '../repository/group.repository';
-import { GroupDto } from '../dtos/group.dto';
+import { GroupMasterDto } from '../dtos/group.dto';
 import { GROUP_STATUS, Group } from '../models/group';
 import { GROUP_USER_STATUS, GroupUser } from '../models/group-user';
 import { Timestamp } from 'firebase/firestore';
@@ -18,8 +18,8 @@ export class GroupBusiness {
     private groupRepository: GroupRepository
   ) {}
 
-  getJoinedGroupsByUserId(userId: string): Observable<GroupDto[]> {
-    const subject = new Subject<GroupDto[]>();
+  getJoinedGroupsByUserId(userId: string): Observable<GroupMasterDto[]> {
+    const subject = new Subject<GroupMasterDto[]>();
 
     this._getJoinedGroupsByUserId(userId).then((x) => {
       subject.next(x);
@@ -28,7 +28,7 @@ export class GroupBusiness {
     return subject;
   }
 
-  private async _getJoinedGroupsByUserId(userId: string): Promise<GroupDto[]> {
+  private async _getJoinedGroupsByUserId(userId: string): Promise<GroupMasterDto[]> {
     // #1 --> user
     const usr = await this.userRepository.getAsync(userId);
     if (!usr) {
@@ -62,10 +62,10 @@ export class GroupBusiness {
 
         return {
           id: x.id,
-          name: x.groupName,
+          groupName: x.groupName,
           avatarUrl: x.avatarUrl,
-          admin: !!admin ? admin.userName : '',
-        } as GroupDto;
+          adminName: !!admin ? admin.userName : '',
+        } as GroupMasterDto;
       });
   }
 

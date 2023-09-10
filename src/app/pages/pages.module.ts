@@ -6,8 +6,10 @@ import { IconsProviderModule } from './icons-provider.module';
 import { PagesComponent } from './pages.component';
 import { PagesRoutingModule } from './pages-routing.module';
 
+import { WelcomeComponent } from './welcome/welcome.component';
 import { GroupComponent } from './group/group.component';
 import { UpsertGroupComponent } from './group/modal/upsert-group/upsert-group.component';
+import { GroupDetailComponent } from './group/group-detail/group-detail.component';
 
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -23,7 +25,8 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { WelcomeComponent } from './welcome/welcome.component';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { GroupMasterComponent } from './group/group-master/group-master.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +34,8 @@ import { WelcomeComponent } from './welcome/welcome.component';
     WelcomeComponent,
     GroupComponent,
     UpsertGroupComponent,
+    GroupDetailComponent,
+    GroupMasterComponent,
   ],
   imports: [
     CommonModule,
@@ -54,6 +59,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
     NzMessageModule,
     NzPageHeaderModule,
     NzSpinModule,
+    NzTypographyModule,
   ],
 })
 export class PagesModule {}

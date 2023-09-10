@@ -61,6 +61,7 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
           if (!!x) {
             this.messageService.create('success', 'Tạo nhóm mới thành công');
             this.groupSaved.emit(true);
+            this.validateForm.reset();
           } else {
             this.messageService.create('error', 'Không thể tạo được nhóm mới');
           }
