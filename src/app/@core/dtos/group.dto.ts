@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { GROUP_USER_ROLE, GROUP_USER_STATUS } from "../models/group-user";
 
 export type GroupMasterDto = {
   id: string;
@@ -12,13 +13,15 @@ export type GroupDetailDto = {
   groupName: string;
   description: string;
   adminId: string,
+  adminName: string,
   avatarUrl: string;
-  users: UserGroupDto[]
+  users: GroupUserDto[]
 }
 
-export type UserGroupDto = {
+export type GroupUserDto = {
   userId: string,
   userName: string,
-  roleName: string,
-  joinedDate: Timestamp
+  role: GROUP_USER_ROLE,
+  joinedStatus: GROUP_USER_STATUS,
+  joinedAt: Timestamp
 }

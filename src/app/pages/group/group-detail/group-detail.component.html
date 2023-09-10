@@ -1,7 +1,7 @@
-<nz-card *ngIf="group == null">
-  <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
-</nz-card>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-card *ngIf="group == null">
+    <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
+  </nz-card>
 
-<nz-card *ngIf="!!group" nzTitle="{{ group.groupName }}">
-
-</nz-card>
+  <nz-card *ngIf="!!group" nzTitle="{{ group.groupName }}"> </nz-card>
+</nz-spin>

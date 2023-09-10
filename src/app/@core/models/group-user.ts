@@ -6,9 +6,15 @@ export type GroupUser = {
   invitorId: string | null,
   invitedAt: Timestamp | null,
   joinedAt: Timestamp | null,
-  status: GROUP_USER_STATUS
+  status: GROUP_USER_STATUS,
+  role: GROUP_USER_ROLE
 }
 
 export enum GROUP_USER_STATUS {
   JOINED = 1,
+}
+
+export enum GROUP_USER_ROLE {
+  ADMIN = 1,
+  MEMBER = 2,
 }

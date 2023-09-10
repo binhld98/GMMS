@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 
 @Component({
-  selector: 'app-upsert-group',
+  selector: 'gmm-upsert-group-modal',
   templateUrl: './upsert-group.component.html',
   styleUrls: ['./upsert-group.component.css'],
 })

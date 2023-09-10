@@ -4,9 +4,17 @@ import { Observable, Subject } from 'rxjs';
 
 import { UserRepository } from '../repository/user.repository';
 import { GroupRepository } from '../repository/group.repository';
-import { GroupMasterDto } from '../dtos/group.dto';
+import {
+  GroupDetailDto,
+  GroupMasterDto,
+  GroupUserDto,
+} from '../dtos/group.dto';
 import { GROUP_STATUS, Group } from '../models/group';
-import { GROUP_USER_STATUS, GroupUser } from '../models/group-user';
+import {
+  GROUP_USER_ROLE,
+  GROUP_USER_STATUS,
+  GroupUser,
+} from '../models/group-user';
 import { Timestamp } from 'firebase/firestore';
 
 @Injectable({ providedIn: 'root' })
@@ -28,7 +36,9 @@ export class GroupBusiness {
     return subject;
   }
 
-  private async _getJoinedGroupsByUserId(userId: string): Promise<GroupMasterDto[]> {
+  private async _getJoinedGroupsByUserId(
+    userId: string
+  ): Promise<GroupMasterDto[]> {
     // #1 --> user
     const usr = await this.userRepository.getAsync(userId);
     if (!usr) {
@@ -95,6 +105,7 @@ export class GroupBusiness {
       invitedAt: null,
       joinedAt: Timestamp.now(),
       status: GROUP_USER_STATUS.JOINED,
+      role: GROUP_USER_ROLE.ADMIN,
     } as GroupUser;
 
     const group = {
@@ -131,5 +142,50 @@ export class GroupBusiness {
     }
 
     return null;
+  }
+
+  getGroupDetail(groupId: string): Observable<GroupDetailDto | null> {
+    const subject = new Subject<GroupDetailDto | null>();
+
+    this._getGroupDetail(groupId).then((x) => {
+      subject.next(x);
+    });
+
+    return subject;
+  }
+
+  private async _getGroupDetail(
+    groupId: string
+  ): Promise<GroupDetailDto | null> {
+    const group = await this.groupRepository.getAsync(groupId);
+    if (group == null) {
+      return null;
+    }
+
+    const memberIds = group.users.map((x) => x.userId);
+    const members = await this.userRepository.getManyAsync(memberIds);
+    const admin = members.find((x) => x.id == group.adminId);
+
+    const grpUsrDto = members.map((x) => {
+      const grpUsr = group.users.find((y) => y.userId == x.id);
+
+      return {
+        userId: x.id,
+        userName: x.userName,
+        role: grpUsr?.role,
+        joinedStatus: grpUsr?.status,
+        joinedAt: grpUsr?.joinedAt,
+      } as GroupUserDto;
+    });
+
+    return {
+      id: group.id,
+      groupName: group.groupName,
+      description: group.groupDescription,
+      adminId: group.adminId,
+      adminName: admin?.userName,
+      avatarUrl: group.avatarUrl,
+      users: grpUsrDto,
+    } as GroupDetailDto;
   }
 }
