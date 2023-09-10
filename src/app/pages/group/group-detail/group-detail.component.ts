@@ -41,4 +41,8 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
         });
     }
   }
+
+  onInviteMember() {
+    
+  }
 }

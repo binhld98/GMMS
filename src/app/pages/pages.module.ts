@@ -26,6 +26,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
@@ -59,6 +60,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzMessageModule,
     NzPageHeaderModule,
     NzSpinModule,
+    NzTableModule,
     NzTypographyModule,
   ],
 })

@@ -3,5 +3,59 @@
     <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
   </nz-card>
 
-  <nz-card *ngIf="!!group" nzTitle="{{ group.groupName }}"> </nz-card>
+  <nz-card
+    *ngIf="!!group"
+    nzTitle="{{ group.groupName }}"
+    [nzExtra]="extraTemplate"
+  >
+    <nz-table
+      #borderedTable
+      nzBordered
+      [nzData]="group.users"
+      nzSize="small"
+      nzShowPagination="false"
+    >
+      <thead>
+        <tr>
+          <th nzAlign="left" nzWidth="25%">Tên</th>
+          <th nzAlign="center" nzWidth="15%">Trạng thái</th>
+          <th nzAlign="center" nzWidth="25%">Ngày tham gia</th>
+          <th nzAlign="center" nzWidth="15%">Vai trò</th>
+          <th nzAlign="center" nzWidth="20%">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td nzAlign="left">{{ data.userName }}</td>
+          <td nzAlign="center">{{ data.joinedStatus }}</td>
+          <td nzAlign="center">
+            {{ data.joinedAt.seconds * 1000 | date : "dd/MM/yyyy hh:mm" }}
+          </td>
+          <td nzAlign="center">{{ data.role }}</td>
+          <td nzAlign="center">
+            <button
+              nz-button
+              nzType="primary"
+              nzShape="circle"
+              nzSize="small"
+              nzDanger
+            >
+              <span nz-icon nzType="minus" nzTheme="outline"></span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+  <ng-template #extraTemplate>
+    <button
+      nz-button
+      nzType="primary"
+      nzShape="circle"
+      nzSize="small"
+      (click)="onInviteMember()"
+    >
+      <span nz-icon nzType="plus"></span>
+    </button>
+  </ng-template>
 </nz-spin>

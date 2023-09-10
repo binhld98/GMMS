@@ -1,5 +1,5 @@
 <nz-spin [nzSpinning]="isLoading">
-  <nz-card nzTitle="Nhóm" [nzExtra]="leftExtraTemplate">
+  <nz-card nzTitle="Nhóm" [nzExtra]="extraTemplate">
     <nz-list>
       <nz-list-item *ngFor="let group of groups" (click)="onClickGroup(group.id)">
         <nz-list-item-meta
@@ -11,7 +11,7 @@
       </nz-list-item>
     </nz-list>
   </nz-card>
-  <ng-template #leftExtraTemplate>
+  <ng-template #extraTemplate>
     <button
       nz-button
       nzType="primary"
