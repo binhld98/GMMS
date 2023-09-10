@@ -1,5 +1,7 @@
+import { Timestamp } from "firebase/firestore"
+
 export type UpdateInfo = {
   modifierId: string,
-  modifiedAt: Date,
+  modifiedAt: Timestamp,
   description: string
 }

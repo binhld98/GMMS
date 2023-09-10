@@ -7,6 +7,7 @@ import { GroupRepository } from '../repository/group.repository';
 import { GroupDto } from '../dtos/group.dto';
 import { GROUP_STATUS, Group } from '../models/group';
 import { GROUP_USER_STATUS, GroupUser } from '../models/group-user';
+import { Timestamp } from 'firebase/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class GroupBusiness {
@@ -53,9 +54,9 @@ export class GroupBusiness {
 
     // PROCESS RESULTS
     return grps
-      // .sort((a, b) => {
-        
-      // })
+      .sort((a, b) => {
+        return a.createdAt.seconds - b.createdAt.seconds;
+      })
       .map((x) => {
         const admin = admins.find((y) => y.id == x.adminId);
 
@@ -92,14 +93,14 @@ export class GroupBusiness {
       userId: userId,
       invitorId: null,
       invitedAt: null,
-      joinedAt: new Date(),
+      joinedAt: Timestamp.now(),
       status: GROUP_USER_STATUS.JOINED,
     } as GroupUser;
 
     const group = {
       id: null,
       creatorId: userId,
-      createdAt: new Date(),
+      createdAt: Timestamp.now(),
       modifiedInfos: [],
       isActive: true,
       groupName: groupName,

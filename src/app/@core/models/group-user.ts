@@ -1,9 +1,11 @@
+import { Timestamp } from "firebase/firestore"
+
 export type GroupUser = {
   groupId: string | null,
   userId: string,
   invitorId: string | null,
-  invitedAt: Date | null,
-  joinedAt: Date | null,
+  invitedAt: Timestamp | null,
+  joinedAt: Timestamp | null,
   status: GROUP_USER_STATUS
 }
 
