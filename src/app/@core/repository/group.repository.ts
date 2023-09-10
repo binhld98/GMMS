@@ -1,14 +1,29 @@
 import { Injectable } from '@angular/core';
 
-import { Firestore, collection, doc, getDoc, getDocs, query, where } from '@angular/fire/firestore';
+import {
+  CollectionReference,
+  Firestore,
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from '@angular/fire/firestore';
 import { BaseRepository } from './base.repository';
 import { Group } from '../models/group';
+import { DocumentData } from 'rxfire/firestore/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class GroupRepository implements BaseRepository<Group> {
   public static readonly COLLECTION_NAME = 'groups';
+  private readonly grpColRef: CollectionReference<DocumentData>;
 
-  constructor(private fs: Firestore) {}
+  constructor(private fs: Firestore) {
+    this.grpColRef = collection(this.fs, GroupRepository.COLLECTION_NAME);
+  }
 
   async getAsync(id: string): Promise<Group | null> {
     const grpRef = doc(this.fs, GroupRepository.COLLECTION_NAME, id);
@@ -21,14 +36,35 @@ export class GroupRepository implements BaseRepository<Group> {
   }
 
   async getManyAsync(ids: string[]): Promise<Group[]> {
-    const grpColRef = collection(this.fs, GroupRepository.COLLECTION_NAME);
-    const grpQry = query(grpColRef, where('id', 'in', ids));
+    const grpQry = query(this.grpColRef, where('id', 'in', ids));
     const grpsDocSnap = await getDocs(grpQry);
 
     if (grpsDocSnap.empty) {
       return [];
     }
 
-    return grpsDocSnap.docs.map(x => x.data() as Group);
+    return grpsDocSnap.docs.map((x) => x.data() as Group);
+  }
+
+  async addAsync(group: Group): Promise<Group | null> {
+    const grpRef = await addDoc(this.grpColRef, group);
+
+    if (grpRef.id) {
+      group.id = grpRef.id
+      return group;
+    }
+
+    return null;
+  }
+
+  async updateAsync(group: Group): Promise<boolean> {
+    if (!group.id) {
+      throw new Error('Entity must have id');
+    }
+    
+    const grpRef = doc(this.fs, GroupRepository.COLLECTION_NAME, group.id!);
+    await setDoc(grpRef, group);
+    
+    return true;
   }
 }

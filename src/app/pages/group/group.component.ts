@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
 
-import { UserBusiness } from 'src/app/@core/businesses/user.business';
+import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
@@ -18,19 +18,10 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   isVisibleUpsert = false;
 
-  constructor(
-    private auth: Auth,
-    private userBusiness: UserBusiness,
-  ) {}
+  constructor(private auth: Auth, private groupBusiness: GroupBusiness) {}
 
   ngOnInit(): void {
-    const userId = this.auth.currentUser!.uid;
-    this.grpSub = this.userBusiness
-      .getJoinedGroupsByUserId(userId)
-      .subscribe((grps) => {
-        this.groups = grps;
-        this.leftSpining = false;
-      });
+    this.onGroupSaved();
   }
 
   ngOnDestroy(): void {
@@ -39,5 +30,16 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   onAddGroup() {
     this.isVisibleUpsert = true;
+  }
+
+  onGroupSaved() {
+    this.grpSub.unsubscribe();
+    this.leftSpining = true;
+    this.grpSub = this.groupBusiness
+      .getJoinedGroupsByUserId(this.auth.currentUser!.uid)
+      .subscribe((grps) => {
+        this.groups = grps;
+        this.leftSpining = false;
+      });
   }
 }

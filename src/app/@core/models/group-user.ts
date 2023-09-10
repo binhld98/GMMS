@@ -1,12 +1,12 @@
 export type GroupUser = {
-  groupId: string,
+  groupId: string | null,
   userId: string,
-  invitorId: string,
-  invitedAt: Date,
-  joinedAt: Date,
+  invitorId: string | null,
+  invitedAt: Date | null,
+  joinedAt: Date | null,
   status: GROUP_USER_STATUS
 }
 
 export enum GROUP_USER_STATUS {
-  
+  JOINED = 1,
 }
