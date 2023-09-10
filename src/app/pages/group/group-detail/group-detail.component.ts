@@ -20,6 +20,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   group: GroupDetailDto | null = null;
   grpDtlSub = new Subscription();
   isLoading = false;
+  isVisibleInvite = false;
 
   constructor(private groupBuiness: GroupBusiness) {}
 
@@ -43,6 +44,6 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onInviteMember() {
-    
+    this.isVisibleInvite = true;
   }
 }

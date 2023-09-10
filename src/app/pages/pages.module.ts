@@ -28,6 +28,7 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { InviteMemberComponent } from './group/invite-member/invite-member.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     UpsertGroupComponent,
     GroupDetailComponent,
     GroupMasterComponent,
+    InviteMemberComponent,
   ],
   imports: [
     CommonModule,
