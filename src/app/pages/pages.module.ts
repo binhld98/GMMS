@@ -10,6 +10,8 @@ import { GroupComponent } from './group/group.component';
 import { GroupDetailComponent } from './group/group-detail/group-detail.component';
 import { GroupMasterComponent } from './group/group-master/group-master.component';
 import { UpsertGroupComponent } from './group/upsert-group/upsert-group.component';
+import { InviteMemberComponent } from './group/invite-member/invite-member.component';
+
 import { WelcomeComponent } from './welcome/welcome.component';
 
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -25,10 +27,11 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { InviteMemberComponent } from './group/invite-member/invite-member.component';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @NgModule({
   declarations: [
@@ -61,9 +64,11 @@ import { InviteMemberComponent } from './group/invite-member/invite-member.compo
     NzModalModule,
     NzMessageModule,
     NzPageHeaderModule,
+    NzSelectModule,
     NzSpinModule,
     NzTableModule,
     NzTypographyModule,
+    NzEmptyModule,
   ],
 })
 export class PagesModule {}

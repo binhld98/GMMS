@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'gmm-invite-member',
@@ -11,6 +15,7 @@ export class InviteMemberComponent implements OnInit {
   @Output() isVisibleChange = new EventEmitter<boolean>();
   isInviting = false;
   validateForm!: UntypedFormGroup;
+  isLoading = false;
 
   constructor(private fb: UntypedFormBuilder) {}
 
@@ -21,10 +26,12 @@ export class InviteMemberComponent implements OnInit {
   }
 
   handleOk() {
-    this.handleCancel();
+    console.log(this.validateForm.value);
   }
 
   handleCancel() {
     this.isVisibleChange.emit(false);
   }
+
+  onSearch(keyword: string) {}
 }

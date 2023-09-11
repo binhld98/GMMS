@@ -1,8 +1,8 @@
 <nz-row nzGutter="xs" [nzGutter]="[16, 16]">
-  <nz-col nzSpan="8" class="left-panel">
+  <div nz-col nzSpan="8" class="left-panel">
     <gmm-group-master (targetGroupIdChange)="viewGroupDetail($event)"></gmm-group-master>
-  </nz-col>
-  <nz-col nzSpan="16" class="right-panel">
+  </div>
+  <div nz-col nzSpan="16" class="right-panel">
     <gmm-group-detail [groupId]="groupDetailId"></gmm-group-detail>
-  </nz-col>
+  </div>
 </nz-row>

@@ -6,14 +6,105 @@
   (nzOnCancel)="handleCancel()"
   nzMaskClosable="false"
 >
-  <ng-template #modalTitle>Tạo nhóm mới</ng-template>
+  <ng-template #modalTitle>Mời thêm thành viên</ng-template>
 
   <ng-template #modalContent>
     <form nz-form [formGroup]="validateForm">
       <nz-form-item>
-        <nz-form-label [nzSpan]="6" nzLabelAlign="left">Thành viên mới</nz-form-label>
+        <nz-form-label [nzSpan]="6" nzLabelAlign="left">
+          Thành viên mới
+        </nz-form-label>
         <nz-form-control [nzSpan]="18" nzErrorTip="Vui lòng chọn thành viên!">
-          <input nz-input formControlName="members" />
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn thành viên"
+            nzAllowClear
+            nzShowSearch
+            nzServerSearch
+            (nzOnSearch)="onSearch($event)"
+            nz-input
+            formControlName="members"
+          >
+            <nz-option [nzValue]="1" [nzLabel]="'Alice'" nzCustomContent>
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">Alice</p>
+                  <i>alice@gmail.com</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option [nzValue]="2" [nzLabel]="'Alice'" nzCustomContent>
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">Alice</p>
+                  <i>alice@gmail.com</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option [nzValue]="3" [nzLabel]="'Alice'" nzCustomContent>
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">Alice</p>
+                  <i>alice@gmail.com</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option [nzValue]="4" [nzLabel]="'Alice'" nzCustomContent>
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">Alice</p>
+                  <i>alice@gmail.com</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option [nzValue]="5" [nzLabel]="'Alice'" nzCustomContent>
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">Alice</p>
+                  <i>alice@gmail.com</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+              <span nz-icon nzType="loading" class="loading-icon"></span>
+              Loading...
+            </nz-option>
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
     </form>
