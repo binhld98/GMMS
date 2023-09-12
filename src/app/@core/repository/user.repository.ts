@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
+  CollectionReference,
   Firestore,
   arrayUnion,
   collection,
   doc,
   getDoc,
   getDocs,
+  or,
+  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -15,12 +18,16 @@ import {
 import { User } from '../models/user';
 import { BaseRepository } from './base.repository';
 import { GroupUser } from '../models/group-user';
+import { DocumentData } from 'rxfire/firestore/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class UserRepository implements BaseRepository<User> {
   public static readonly COLLECTION_NAME = 'users';
+  private readonly usrColRef: CollectionReference<DocumentData>;
 
-  constructor(private fs: Firestore) {}
+  constructor(private fs: Firestore) {
+    this.usrColRef = collection(this.fs, UserRepository.COLLECTION_NAME);
+  }
 
   async getAsync(uid: string): Promise<User | null> {
     const usrRef = doc(this.fs, UserRepository.COLLECTION_NAME, uid);
@@ -33,8 +40,7 @@ export class UserRepository implements BaseRepository<User> {
   }
 
   async getManyAsync(ids: string[]): Promise<User[]> {
-    const usrColRef = collection(this.fs, UserRepository.COLLECTION_NAME);
-    const usrQry = query(usrColRef, where('id', 'in', ids));
+    const usrQry = query(this.usrColRef, where('id', 'in', ids));
     const usrDocSnap = await getDocs(usrQry);
     if (usrDocSnap.empty) {
       return [];
@@ -58,7 +64,7 @@ export class UserRepository implements BaseRepository<User> {
     return true;
   }
 
-  async unionGroupAsync(grpUsr: GroupUser) : Promise<boolean> {
+  async unionGroupAsync(grpUsr: GroupUser): Promise<boolean> {
     if (!grpUsr.groupId || !grpUsr.userId) {
       throw new Error('Entity must have id');
     }
@@ -70,5 +76,26 @@ export class UserRepository implements BaseRepository<User> {
     });
 
     return true;
+  }
+
+  async findByNameOrEmailAsync(nameOrEmail: string): Promise<User[] | []> {
+    if (!nameOrEmail) {
+      return [];
+    }
+
+    const usrQry = query(
+      this.usrColRef,
+      or(
+        where('userName', '==', nameOrEmail),
+        where('email', '==', nameOrEmail)
+      ),
+      orderBy('userName')
+    );
+    const usrDocSnap = await getDocs(usrQry);
+    if (usrDocSnap.empty) {
+      return [];
+    }
+
+    return usrDocSnap.docs.map((x) => x.data() as User);
   }
 }

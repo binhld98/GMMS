@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
-
 import { Observable, Subject } from 'rxjs';
+import { Timestamp } from 'firebase/firestore';
 
 import { UserRepository } from '../repository/user.repository';
 import { GroupRepository } from '../repository/group.repository';
-import {
-  GroupDetailDto,
-  GroupMasterDto,
-  GroupUserDto,
-} from '../dtos/group.dto';
 import { GROUP_STATUS, Group } from '../models/group';
 import {
   GROUP_USER_ROLE,
   GROUP_USER_STATUS,
   GroupUser,
 } from '../models/group-user';
-import { Timestamp } from 'firebase/firestore';
+
+import {
+  GroupDetailDto,
+  GroupMasterDto,
+  GroupUserDto,
+} from '../dtos/group.dto';
+import { UserDto } from '../dtos/user.dto';
 
 @Injectable({ providedIn: 'root' })
 export class GroupBusiness {
@@ -187,5 +188,28 @@ export class GroupBusiness {
       avatarUrl: group.avatarUrl,
       users: grpUsrDto,
     } as GroupDetailDto;
+  }
+
+  findUsersByNameOrEmail(nameOrEmail: string): Observable<UserDto[] | []> {
+    const subject = new Subject<UserDto[] | []>();
+
+    this._findUsersByNameOrEmail(nameOrEmail).then((x) => subject.next(x));
+
+    return subject;
+  }
+
+  private async _findUsersByNameOrEmail(
+    nameOrEmail: string
+  ): Promise<UserDto[] | []> {
+    const users = await this.userRepository.findByNameOrEmailAsync(nameOrEmail);
+
+    return users.map((x) => {
+      return {
+        id: x.id,
+        userName: x.userName,
+        email: x.email,
+        avatarUrl: x.avatarUrl,
+      } as UserDto;
+    });
   }
 }

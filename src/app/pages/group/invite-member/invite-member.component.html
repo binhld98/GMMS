@@ -25,78 +25,18 @@
             nz-input
             formControlName="members"
           >
-            <nz-option [nzValue]="1" [nzLabel]="'Alice'" nzCustomContent>
+            <nz-option *ngFor="let x of optUsrs" [nzValue]="x.id" [nzLabel]="x.userName" nzCustomContent>
               <div nz-row>
                 <div nz-col nzSpan="4">
                   <nz-avatar
                     nzSize="large"
                     nzShape="circle"
-                    nzSrc="/assets/logo.svg"
+                    nzSrc="{{ x.avatarUrl }}"
                   ></nz-avatar>
                 </div>
                 <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">Alice</p>
-                  <i>alice@gmail.com</i>
-                </div>
-              </div>
-            </nz-option>
-            <nz-option [nzValue]="2" [nzLabel]="'Alice'" nzCustomContent>
-              <div nz-row>
-                <div nz-col nzSpan="4">
-                  <nz-avatar
-                    nzSize="large"
-                    nzShape="circle"
-                    nzSrc="/assets/logo.svg"
-                  ></nz-avatar>
-                </div>
-                <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">Alice</p>
-                  <i>alice@gmail.com</i>
-                </div>
-              </div>
-            </nz-option>
-            <nz-option [nzValue]="3" [nzLabel]="'Alice'" nzCustomContent>
-              <div nz-row>
-                <div nz-col nzSpan="4">
-                  <nz-avatar
-                    nzSize="large"
-                    nzShape="circle"
-                    nzSrc="/assets/logo.svg"
-                  ></nz-avatar>
-                </div>
-                <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">Alice</p>
-                  <i>alice@gmail.com</i>
-                </div>
-              </div>
-            </nz-option>
-            <nz-option [nzValue]="4" [nzLabel]="'Alice'" nzCustomContent>
-              <div nz-row>
-                <div nz-col nzSpan="4">
-                  <nz-avatar
-                    nzSize="large"
-                    nzShape="circle"
-                    nzSrc="/assets/logo.svg"
-                  ></nz-avatar>
-                </div>
-                <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">Alice</p>
-                  <i>alice@gmail.com</i>
-                </div>
-              </div>
-            </nz-option>
-            <nz-option [nzValue]="5" [nzLabel]="'Alice'" nzCustomContent>
-              <div nz-row>
-                <div nz-col nzSpan="4">
-                  <nz-avatar
-                    nzSize="large"
-                    nzShape="circle"
-                    nzSrc="/assets/logo.svg"
-                  ></nz-avatar>
-                </div>
-                <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">Alice</p>
-                  <i>alice@gmail.com</i>
+                  <p style="margin-bottom: 0px">{{ x.userName }}</p>
+                  <i>{{ x.email }}</i>
                 </div>
               </div>
             </nz-option>
