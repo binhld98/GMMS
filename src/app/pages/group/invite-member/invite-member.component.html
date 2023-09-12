@@ -24,8 +24,14 @@
             (nzOnSearch)="onSearch($event)"
             nz-input
             formControlName="members"
+            [nzOptionHeightPx]="54"
           >
-            <nz-option *ngFor="let x of optUsrs" [nzValue]="x.id" [nzLabel]="x.userName" nzCustomContent>
+            <nz-option
+              *ngFor="let x of optUsrs"
+              [nzValue]="x.id"
+              [nzLabel]="x.userName"
+              nzCustomContent
+            >
               <div nz-row>
                 <div nz-col nzSpan="4">
                   <nz-avatar
@@ -41,7 +47,12 @@
               </div>
             </nz-option>
             <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
-              <span nz-icon nzType="loading" class="loading-icon"></span>
+              <span
+                nz-icon
+                nzType="loading"
+                class="loading-icon"
+                style="margin-top: 14px"
+              ></span>
               Loading...
             </nz-option>
           </nz-select>
