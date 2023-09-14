@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import {
   UntypedFormBuilder,
@@ -6,7 +13,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Subscription } from 'rxjs';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 
@@ -23,7 +29,6 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
 
   validateForm!: UntypedFormGroup;
   isSaving = false;
-  createGroupSubscription = new Subscription();
 
   constructor(
     private auth: Auth,
@@ -39,9 +44,7 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.createGroupSubscription.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   handleOk() {
     if (!this.validateForm.valid) {
@@ -55,10 +58,10 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
       this.isSaving = true;
       const formValue = this.validateForm.value;
       const userId = this.auth.currentUser!.uid;
-      this.createGroupSubscription = this.groupBusiness
+      this.groupBusiness
         .createNewGroup(formValue.groupName, formValue.groupDescription, userId)
-        .subscribe((x) => {
-          if (!!x) {
+        .then((groupId) => {
+          if (!!groupId) {
             this.messageService.create('success', 'Tạo nhóm mới thành công');
             this.groupSaved.emit(true);
             this.validateForm.reset();

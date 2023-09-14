@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { Timestamp } from 'firebase/firestore';
 
 import { UserRepository } from '../repository/user.repository';
@@ -27,19 +26,7 @@ export class GroupBusiness {
     private groupRepository: GroupRepository
   ) {}
 
-  getJoinedGroupsByUserId(userId: string): Observable<GroupMasterDto[]> {
-    const subject = new Subject<GroupMasterDto[]>();
-
-    this._getJoinedGroupsByUserId(userId).then((x) => {
-      subject.next(x);
-    });
-
-    return subject;
-  }
-
-  private async _getJoinedGroupsByUserId(
-    userId: string
-  ): Promise<GroupMasterDto[]> {
+  async getJoinedGroupsByUserId(userId: string): Promise<GroupMasterDto[]> {
     // #1 --> user
     const usr = await this.userRepository.getAsync(userId);
     if (!usr) {
@@ -80,21 +67,7 @@ export class GroupBusiness {
       });
   }
 
-  createNewGroup(
-    groupName: string,
-    groupDescription: string,
-    userId: string
-  ): Observable<string | null> {
-    const subject = new Subject<string | null>();
-
-    this._createNewGroup(groupName, groupDescription, userId).then((x) => {
-      subject.next(x);
-    });
-
-    return subject;
-  }
-
-  private async _createNewGroup(
+  async createNewGroup(
     groupName: string,
     groupDescription: string,
     userId: string
@@ -145,19 +118,7 @@ export class GroupBusiness {
     return null;
   }
 
-  getGroupDetail(groupId: string): Observable<GroupDetailDto | null> {
-    const subject = new Subject<GroupDetailDto | null>();
-
-    this._getGroupDetail(groupId).then((x) => {
-      subject.next(x);
-    });
-
-    return subject;
-  }
-
-  private async _getGroupDetail(
-    groupId: string
-  ): Promise<GroupDetailDto | null> {
+  async getGroupDetail(groupId: string): Promise<GroupDetailDto | null> {
     const group = await this.groupRepository.getAsync(groupId);
     if (group == null) {
       return null;
@@ -190,17 +151,7 @@ export class GroupBusiness {
     } as GroupDetailDto;
   }
 
-  findUsersByNameOrEmail(nameOrEmail: string): Observable<UserDto[] | []> {
-    const subject = new Subject<UserDto[] | []>();
-
-    this._findUsersByNameOrEmail(nameOrEmail).then((x) => subject.next(x));
-
-    return subject;
-  }
-
-  private async _findUsersByNameOrEmail(
-    nameOrEmail: string
-  ): Promise<UserDto[] | []> {
+  async findUsersByNameOrEmail(nameOrEmail: string): Promise<UserDto[] | []> {
     const users = await this.userRepository.findByNameOrEmailAsync(nameOrEmail);
 
     return users.map((x) => {

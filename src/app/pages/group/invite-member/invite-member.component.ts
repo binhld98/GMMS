@@ -12,8 +12,6 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
-
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { UserDto } from 'src/app/@core/dtos/user.dto';
 
@@ -29,7 +27,6 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
   validateForm!: UntypedFormGroup;
   isLoading = false;
   optUsrs: UserDto[] | [] = [];
-  optUsrsSub = new Subscription();
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -42,9 +39,7 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.optUsrsSub.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   handleOk() {
     console.log(this.validateForm.value);
@@ -60,12 +55,9 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    this.optUsrsSub.unsubscribe();
-    this.optUsrsSub = this.groupBusiness
-      .findUsersByNameOrEmail(keyword)
-      .subscribe((x) => {
-        this.optUsrs = x;
-        this.isLoading = false;
-      });
+    this.groupBusiness.findUsersByNameOrEmail(keyword).then((users) => {
+      this.optUsrs = users;
+      this.isLoading = false;
+    });
   }
 }

@@ -6,7 +6,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupDetailDto } from 'src/app/@core/dtos/group.dto';
 
@@ -18,7 +18,6 @@ import { GroupDetailDto } from 'src/app/@core/dtos/group.dto';
 export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   @Input() groupId: string | null = null;
   group: GroupDetailDto | null = null;
-  grpDtlSub = new Subscription();
   isLoading = false;
   isVisibleInvite = false;
 
@@ -26,20 +25,16 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this.grpDtlSub.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
     const groupId: string | null = changes['groupId'].currentValue;
     if (groupId != null) {
       this.isLoading = true;
-      this.grpDtlSub = this.groupBuiness
-        .getGroupDetail(groupId)
-        .subscribe((x) => {
-          this.group = x;
-          this.isLoading = false;
-        });
+      this.groupBuiness.getGroupDetail(groupId).then((x) => {
+        this.group = x;
+        this.isLoading = false;
+      });
     }
   }
 

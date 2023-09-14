@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { Subscription } from 'rxjs';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
@@ -11,7 +10,6 @@ import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
   styleUrls: ['./group-master.component.css'],
 })
 export class GroupMasterComponent {
-  grpSub = new Subscription();
   groups: GroupMasterDto[] = [];
   isLoading = true;
   isVisibleUpsert = false;
@@ -23,21 +21,18 @@ export class GroupMasterComponent {
     this.onGroupSaved();
   }
 
-  ngOnDestroy(): void {
-    this.grpSub.unsubscribe();
-  }
+  ngOnDestroy(): void {}
 
   onAddGroup() {
     this.isVisibleUpsert = true;
   }
 
   onGroupSaved() {
-    this.grpSub.unsubscribe();
     this.isLoading = true;
-    this.grpSub = this.groupBusiness
+    this.groupBusiness
       .getJoinedGroupsByUserId(this.auth.currentUser!.uid)
-      .subscribe((grps) => {
-        this.groups = grps;
+      .then((groups) => {
+        this.groups = groups;
         this.isLoading = false;
       });
   }
