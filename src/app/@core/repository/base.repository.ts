@@ -1,24 +1,24 @@
-import { Entity } from "../models/entity";
+import { Entity } from '../models/entity';
 
 export interface BaseRepository<T extends Entity> {
   /**
-   * @param id 
+   * @param id
    */
-  getAsync(id: string): Promise<T | null>
-  
+  getAsync(id: string): Promise<T | null>;
+
   /**
-   * @param ids 
+   * @param ids
    */
-  getManyAsync(ids: string[]): Promise<T[]>
+  getManyAsync(ids: string[]): Promise<T[]>;
 
   /**
    * @param entity
    * @returns id of newly created entity
    */
-  addAsync(entity: T): Promise<T | null>
+  addAsync(entity: T): Promise<T | null>;
 
   /**
-   * @param entity 
+   * @param entity
    */
-  updateAsync(entity: T): Promise<boolean>
+  updateAsync(entity: T): Promise<boolean>;
 }

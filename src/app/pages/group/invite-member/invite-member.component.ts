@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { UserDto } from 'src/app/@core/dtos/user.dto';
+import { InviteUserDto } from 'src/app/@core/dtos/user.dto';
 
 @Component({
   selector: 'gmm-invite-member',
@@ -26,7 +26,8 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
   isInviting = false;
   validateForm!: UntypedFormGroup;
   isLoading = false;
-  optUsrs: UserDto[] | [] = [];
+  optUsrs: InviteUserDto[] | [] = [];
+  @Input() disabledMemberIds: string[] | [] = [];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -37,6 +38,7 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
     this.validateForm = this.fb.group({
       members: [null, [Validators.required]],
     });
+    this.disabledMemberIds.find((id) => id == '');
   }
 
   ngOnDestroy(): void {}
@@ -59,5 +61,13 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
       this.optUsrs = users;
       this.isLoading = false;
     });
+  }
+
+  canSelect(u: InviteUserDto): boolean {
+    if (this.disabledMemberIds.indexOf(<never>u.id) != -1) {
+      return false;
+    }
+
+    return true;
   }
 }

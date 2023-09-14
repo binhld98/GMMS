@@ -20,6 +20,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   group: GroupDetailDto | null = null;
   isLoading = false;
   isVisibleInvite = false;
+  memberIds: string[] | [] = [];
 
   constructor(private groupBuiness: GroupBusiness) {}
 
@@ -31,8 +32,11 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
     const groupId: string | null = changes['groupId'].currentValue;
     if (groupId != null) {
       this.isLoading = true;
-      this.groupBuiness.getGroupDetail(groupId).then((x) => {
-        this.group = x;
+      this.groupBuiness.getGroupDetail(groupId).then((g) => {
+        this.group = g;
+        this.memberIds = !!this.group
+          ? this.group.users.map((u) => u.userId)
+          : [];
         this.isLoading = false;
       });
     }

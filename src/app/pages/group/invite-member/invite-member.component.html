@@ -27,22 +27,23 @@
             [nzOptionHeightPx]="54"
           >
             <nz-option
-              *ngFor="let x of optUsrs"
-              [nzValue]="x.id"
-              [nzLabel]="x.userName"
+              *ngFor="let u of optUsrs"
+              [nzValue]="u.id"
+              [nzLabel]="u.userName"
               nzCustomContent
+              [nzDisabled]="!canSelect(u)"
             >
               <div nz-row>
                 <div nz-col nzSpan="4">
                   <nz-avatar
                     nzSize="large"
                     nzShape="circle"
-                    nzSrc="{{ x.avatarUrl }}"
+                    nzSrc="{{ u.avatarUrl }}"
                   ></nz-avatar>
                 </div>
                 <div nz-col nzSpan="20">
-                  <p style="margin-bottom: 0px">{{ x.userName }}</p>
-                  <i>{{ x.email }}</i>
+                  <p style="margin-bottom: 0px">{{ u.userName }}</p>
+                  <i>{{ u.email }}</i>
                 </div>
               </div>
             </nz-option>

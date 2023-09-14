@@ -50,7 +50,7 @@ export class GroupRepository implements BaseRepository<Group> {
     const grpRef = await addDoc(this.grpColRef, group);
 
     if (grpRef.id) {
-      group.id = grpRef.id
+      group.id = grpRef.id;
       return group;
     }
 
@@ -61,10 +61,10 @@ export class GroupRepository implements BaseRepository<Group> {
     if (!group.id) {
       throw new Error('Entity must have id');
     }
-    
+
     const grpRef = doc(this.fs, GroupRepository.COLLECTION_NAME, group.id!);
     await setDoc(grpRef, group);
-    
+
     return true;
   }
 }

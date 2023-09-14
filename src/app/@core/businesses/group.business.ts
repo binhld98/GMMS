@@ -15,7 +15,7 @@ import {
   GroupMasterDto,
   GroupUserDto,
 } from '../dtos/group.dto';
-import { UserDto } from '../dtos/user.dto';
+import { InviteUserDto } from '../dtos/user.dto';
 
 @Injectable({ providedIn: 'root' })
 export class GroupBusiness {
@@ -151,7 +151,9 @@ export class GroupBusiness {
     } as GroupDetailDto;
   }
 
-  async findUsersByNameOrEmail(nameOrEmail: string): Promise<UserDto[] | []> {
+  async findUsersByNameOrEmail(
+    nameOrEmail: string
+  ): Promise<InviteUserDto[] | []> {
     const users = await this.userRepository.findByNameOrEmailAsync(nameOrEmail);
 
     return users.map((x) => {
@@ -160,7 +162,7 @@ export class GroupBusiness {
         userName: x.userName,
         email: x.email,
         avatarUrl: x.avatarUrl,
-      } as UserDto;
+      } as InviteUserDto;
     });
   }
 }

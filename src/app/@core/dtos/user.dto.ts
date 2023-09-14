@@ -1,6 +1,6 @@
-export type UserDto = {
-  id: string,
-  userName: string,
-  email: string,
-  avatarUrl: string,
-}
+export type InviteUserDto = {
+  id: string;
+  userName: string;
+  email: string;
+  avatarUrl: string;
+};

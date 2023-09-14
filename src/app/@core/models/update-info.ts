@@ -1,7 +1,7 @@
-import { Timestamp } from "firebase/firestore"
+import { Timestamp } from 'firebase/firestore';
 
 export type UpdateInfo = {
-  modifierId: string,
-  modifiedAt: Timestamp,
-  description: string
-}
+  modifierId: string;
+  modifiedAt: Timestamp;
+  description: string;
+};
