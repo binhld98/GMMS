@@ -18,23 +18,22 @@
       <thead>
         <tr>
           <th nzAlign="left" nzWidth="25%">Tên</th>
-          <th nzAlign="center" nzWidth="15%">Trạng thái</th>
-          <th nzAlign="center" nzWidth="25%">Ngày tham gia</th>
-          <th nzAlign="center" nzWidth="15%">Vai trò</th>
-          <th nzAlign="center" nzWidth="20%">Thao tác</th>
+          <th nzAlign="center" nzWidth="20%">Trạng thái</th>
+          <th nzAlign="center" nzWidth="20%">Ngày tham gia</th>
+          <th nzAlign="center" nzWidth="20%">Vai trò</th>
+          <th nzAlign="center" nzWidth="15%">Thao tác</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of borderedTable.data">
           <td nzAlign="left">{{ data.userName }}</td>
-          <td nzAlign="center">{{ data.joinedStatus }}</td>
+          <td nzAlign="center">{{ data.joinedStatus | gmm_group_status }}</td>
           <td nzAlign="center">
             {{
-              (!!data.joinedAt ? data.joinedAt.seconds * 1000 : null)
-                | date : "dd/MM/yyyy hh:mm"
+              data.joinedAt?.seconds | gmm_s_to_ms | date : "dd/MM/yyyy hh:mm"
             }}
           </td>
-          <td nzAlign="center">{{ data.role }}</td>
+          <td nzAlign="center">{{ data.role | gmm_group_role }}</td>
           <td nzAlign="center">
             <button
               nz-button

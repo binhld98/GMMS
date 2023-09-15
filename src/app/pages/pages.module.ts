@@ -2,10 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+/*
+ * MODULES
+ */
 import { IconsProviderModule } from './icons-provider.module';
 import { PagesComponent } from './pages.component';
 import { PagesRoutingModule } from './pages-routing.module';
 
+/*
+ * COMPONENTS
+ */
 import { GroupComponent } from './group/group.component';
 import { GroupDetailComponent } from './group/group-detail/group-detail.component';
 import { GroupMasterComponent } from './group/group-master/group-master.component';
@@ -14,6 +20,18 @@ import { InviteMemberComponent } from './group/invite-member/invite-member.compo
 
 import { WelcomeComponent } from './welcome/welcome.component';
 
+/*
+ * PIPES
+ */
+import {
+  GroupStatusPipe,
+  GroupRolePipe,
+  SecondToMilisecond,
+} from './common.pipe';
+
+/*
+ * NZ ZORO
+ */
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
@@ -42,6 +60,10 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
     GroupDetailComponent,
     GroupMasterComponent,
     InviteMemberComponent,
+
+    GroupStatusPipe,
+    GroupRolePipe,
+    SecondToMilisecond,
   ],
   imports: [
     CommonModule,
