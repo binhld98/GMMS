@@ -35,8 +35,8 @@ export class GroupBusiness {
 
     // #2 --> joined groups
     const grpUids = usr.groups
-      .filter((x) => !!x.groupId)
-      .map((x) => x.groupId!);
+      .filter((g) => !!g.groupId)
+      .map((g) => g.groupId!);
 
     if (grpUids.length == 0) {
       return [];
@@ -47,23 +47,23 @@ export class GroupBusiness {
     }
 
     // #3 --> administrators
-    const admIds = grps.map((x) => x.adminId);
+    const admIds = grps.map((g) => g.adminId);
     const admins = await this.userRepository.getManyAsync(admIds);
 
     // PROCESS RESULTS
     return grps
-      .sort((a, b) => {
-        return a.createdAt.seconds - b.createdAt.seconds;
-      })
-      .map((x) => {
-        const admin = admins.find((y) => y.id == x.adminId);
+      .map((g) => {
+        const admin = admins.find((y) => y.id == g.adminId);
 
         return {
-          id: x.id,
-          groupName: x.groupName,
-          avatarUrl: x.avatarUrl,
+          id: g.id,
+          groupName: g.groupName,
+          avatarUrl: g.avatarUrl,
           adminName: !!admin ? admin.userName : '',
         } as GroupMasterDto;
+      })
+      .sort((a, b) => {
+        return a.groupName.localeCompare(b.groupName);
       });
   }
 
@@ -124,21 +124,25 @@ export class GroupBusiness {
       return null;
     }
 
-    const memberIds = group.users.map((x) => x.userId);
+    const memberIds = group.users.map((u) => u.userId);
     const members = await this.userRepository.getManyAsync(memberIds);
-    const admin = members.find((x) => x.id == group.adminId);
+    const admin = members.find((m) => m.id == group.adminId);
 
-    const grpUsrDto = members.map((x) => {
-      const grpUsr = group.users.find((y) => y.userId == x.id);
+    const grpUsrDto = members
+      .map((m) => {
+        const grpUsr = group.users.find((y) => y.userId == m.id);
 
-      return {
-        userId: x.id,
-        userName: x.userName,
-        role: grpUsr?.role,
-        joinedStatus: grpUsr?.status,
-        joinedAt: grpUsr?.joinedAt,
-      } as GroupUserDto;
-    });
+        return {
+          userId: m.id,
+          userName: m.userName,
+          role: grpUsr?.role,
+          joinedStatus: grpUsr?.status,
+          joinedAt: grpUsr?.joinedAt,
+        } as GroupUserDto;
+      })
+      .sort((a, b) => {
+        return a.userName.localeCompare(b.userName);
+      });
 
     return {
       id: group.id,
@@ -156,14 +160,18 @@ export class GroupBusiness {
   ): Promise<InviteUserDto[] | []> {
     const users = await this.userRepository.findByNameOrEmailAsync(nameOrEmail);
 
-    return users.map((x) => {
-      return {
-        id: x.id,
-        userName: x.userName,
-        email: x.email,
-        avatarUrl: x.avatarUrl,
-      } as InviteUserDto;
-    });
+    return users
+      .map((u) => {
+        return {
+          id: u.id,
+          userName: u.userName,
+          email: u.email,
+          avatarUrl: u.avatarUrl,
+        } as InviteUserDto;
+      })
+      .sort((a, b) => {
+        return a.userName.localeCompare(b.userName);
+      });
   }
 
   async inviteMembers(

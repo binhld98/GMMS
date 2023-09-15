@@ -8,7 +8,6 @@ import {
   getDoc,
   getDocs,
   or,
-  orderBy,
   query,
   setDoc,
   updateDoc,
@@ -47,7 +46,7 @@ export class UserRepository implements BaseRepository<User> {
       return [];
     }
 
-    return usrDocSnap.docs.map((x) => x.data() as User);
+    return usrDocSnap.docs.map((d) => d.data() as User);
   }
 
   async addAsync(user: User): Promise<User | null> {
@@ -89,15 +88,14 @@ export class UserRepository implements BaseRepository<User> {
       or(
         where('userName', '==', nameOrEmail),
         where('email', '==', nameOrEmail)
-      ),
-      orderBy('userName')
+      )
     );
     const usrDocSnap = await getDocs(usrQry);
     if (usrDocSnap.empty) {
       return [];
     }
 
-    return usrDocSnap.docs.map((x) => x.data() as User);
+    return usrDocSnap.docs.map((d) => d.data() as User);
   }
 
   async bulkUnionGroupsAsync(groupUsers: GroupUser[]): Promise<void> {

@@ -47,7 +47,7 @@ export class GroupRepository implements BaseRepository<Group> {
       return [];
     }
 
-    return grpsDocSnap.docs.map((x) => x.data() as Group);
+    return grpsDocSnap.docs.map((d) => d.data() as Group);
   }
 
   async addAsync(group: Group): Promise<Group | null> {
