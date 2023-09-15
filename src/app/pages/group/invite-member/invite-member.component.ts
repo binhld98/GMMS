@@ -6,11 +6,14 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { InviteUserDto } from 'src/app/@core/dtos/user.dto';
@@ -28,15 +31,19 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
   isLoading = false;
   optUsrs: InviteUserDto[] | [] = [];
   @Input() disabledMemberIds: string[] | [] = [];
+  @Input() currentGroupId: string = '';
+  @Output() invitedSuccess = new EventEmitter<void>();
 
   constructor(
     private fb: UntypedFormBuilder,
-    private groupBusiness: GroupBusiness
+    private groupBusiness: GroupBusiness,
+    private auth: Auth,
+    private messageService: NzMessageService
   ) {}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
-      members: [null, [Validators.required]],
+      members: [[], [Validators.required]],
     });
     this.disabledMemberIds.find((id) => id == '');
   }
@@ -44,10 +51,42 @@ export class InviteMemberComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   handleOk() {
-    console.log(this.validateForm.value);
+    if (!this.validateForm.valid) {
+      Object.values(this.validateForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    } else {
+      this.isInviting = true;
+      this.groupBusiness
+        .inviteMembers(
+          this.auth.currentUser!.uid,
+          this.currentGroupId,
+          this.validateForm.value.members
+        )
+        .then((isSuccess) => {
+          if (isSuccess) {
+            this.messageService.create(
+              'success',
+              'Mời tham gia nhóm thành công'
+            );
+          } else {
+            this.messageService.create('error', 'Mời tham gia nhóm thất bại');
+          }
+          this.invitedSuccess.next();
+        })
+        .finally(() => {
+          this.isInviting = false;
+          this.handleCancel();
+        });
+    }
   }
 
   handleCancel() {
+    this.optUsrs = [];
+    this.validateForm.reset();
     this.isVisibleChange.emit(false);
   }
 

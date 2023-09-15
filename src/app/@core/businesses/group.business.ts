@@ -165,4 +165,32 @@ export class GroupBusiness {
       } as InviteUserDto;
     });
   }
+
+  async inviteMembers(
+    invitorId: string,
+    groupId: string,
+    userIds: string[]
+  ): Promise<boolean> {
+    const groupUsers = userIds.map((id) => {
+      return {
+        groupId: groupId,
+        userId: id,
+        invitorId: invitorId,
+        invitedAt: Timestamp.now(),
+        joinedAt: null,
+        status: GROUP_USER_STATUS.WAIT_CONFIRM,
+        role: GROUP_USER_ROLE.MEMBER,
+      } as GroupUser;
+    });
+
+    try {
+      await Promise.all([
+        this.userRepository.bulkUnionGroupsAsync(groupUsers),
+        this.groupRepository.bulkUnionUsersAsync(groupUsers),
+      ]);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

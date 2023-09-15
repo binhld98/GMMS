@@ -23,5 +23,5 @@ export type GroupUserDto = {
   userName: string;
   role: GROUP_USER_ROLE;
   joinedStatus: GROUP_USER_STATUS;
-  joinedAt: Timestamp;
+  joinedAt: Timestamp | null;
 };

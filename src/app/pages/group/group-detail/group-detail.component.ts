@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
+  SimpleChange,
   SimpleChanges,
 } from '@angular/core';
 
@@ -44,5 +45,13 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
 
   onInviteMember() {
     this.isVisibleInvite = true;
+  }
+
+  onInvitedSuccess() {
+    // reload pannel
+    const changes = {
+      groupId: new SimpleChange(this.groupId, this.groupId, false),
+    } as SimpleChanges;
+    this.ngOnChanges(changes);
   }
 }

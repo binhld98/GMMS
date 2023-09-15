@@ -4,6 +4,7 @@ import {
   CollectionReference,
   Firestore,
   addDoc,
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -11,10 +12,13 @@ import {
   query,
   setDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
+import { DocumentData } from 'rxfire/firestore/interfaces';
+
 import { BaseRepository } from './base.repository';
 import { Group } from '../models/group';
-import { DocumentData } from 'rxfire/firestore/interfaces';
+import { GroupUser } from '../models/group-user';
 
 @Injectable({ providedIn: 'root' })
 export class GroupRepository implements BaseRepository<Group> {
@@ -66,5 +70,21 @@ export class GroupRepository implements BaseRepository<Group> {
     await setDoc(grpRef, group);
 
     return true;
+  }
+
+  async bulkUnionUsersAsync(groupUsers: GroupUser[]): Promise<void> {
+    const b = writeBatch(this.fs);
+
+    groupUsers.forEach((gu) => {
+      if (!gu.groupId) {
+        return;
+      }
+      const docRef = doc(this.fs, GroupRepository.COLLECTION_NAME, gu.groupId);
+      b.update(docRef, {
+        users: arrayUnion(gu),
+      });
+    });
+
+    return b.commit();
   }
 }

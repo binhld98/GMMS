@@ -13,6 +13,7 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
 
 import { User } from '../models/user';
@@ -97,5 +98,18 @@ export class UserRepository implements BaseRepository<User> {
     }
 
     return usrDocSnap.docs.map((x) => x.data() as User);
+  }
+
+  async bulkUnionGroupsAsync(groupUsers: GroupUser[]): Promise<void> {
+    const b = writeBatch(this.fs);
+
+    groupUsers.forEach((gu) => {
+      const docRef = doc(this.fs, UserRepository.COLLECTION_NAME, gu.userId);
+      b.update(docRef, {
+        groups: arrayUnion(gu),
+      });
+    });
+
+    return b.commit();
   }
 }
