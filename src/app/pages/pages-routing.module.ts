@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { PagesComponent } from './pages.component';
-import { WelcomeComponent } from './welcome/welcome.component';
 import { PagesGuardService } from './pages-guard.service';
+import { WelcomeComponent } from './welcome/welcome.component';
 import { GroupComponent } from './group/group.component';
+import { PaymentComponent } from './payment/payment.component';
 
 const routes: Routes = [
   {
@@ -18,6 +20,7 @@ const routes: Routes = [
     children: [
       { path: 'welcome', component: WelcomeComponent },
       { path: 'group', component: GroupComponent },
+      { path: 'payment', component: PaymentComponent },
     ],
   },
 ];

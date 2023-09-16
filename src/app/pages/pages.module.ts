@@ -19,6 +19,9 @@ import { GroupDetailAdminComponent } from './group/group-detail/group-detail-adm
 import { GroupDetailMemberComponent } from './group/group-detail/group-detail-member/group-detail-member.component';
 import { InviteMemberComponent } from './group/invite-member/invite-member.component';
 
+import { PaymentComponent } from './payment/payment.component';
+import { UpsertPaymentComponent } from './payment/upsert-payment/upsert-payment.component';
+
 import { WelcomeComponent } from './welcome/welcome.component';
 
 /*
@@ -69,6 +72,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     GroupStatusPipe,
     GroupRolePipe,
     SecondToMilisecond,
+    PaymentComponent,
+    UpsertPaymentComponent,
   ],
   imports: [
     CommonModule,
