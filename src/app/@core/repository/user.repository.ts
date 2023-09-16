@@ -110,4 +110,12 @@ export class UserRepository implements BaseRepository<User> {
 
     return b.commit();
   }
+
+  async setGroups(userId: string, groupUsers: GroupUser[]) {
+    const docRef = doc(this.fs, UserRepository.COLLECTION_NAME, userId);
+
+    return updateDoc(docRef, {
+      groups: groupUsers,
+    });
+  }
 }

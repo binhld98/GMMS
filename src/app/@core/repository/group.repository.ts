@@ -11,6 +11,7 @@ import {
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
   writeBatch,
 } from '@angular/fire/firestore';
@@ -86,5 +87,13 @@ export class GroupRepository implements BaseRepository<Group> {
     });
 
     return b.commit();
+  }
+
+  async setUsers(groupId: string, groupUsers: GroupUser[]) {
+    const docRef = doc(this.fs, GroupRepository.COLLECTION_NAME, groupId);
+
+    return updateDoc(docRef, {
+      users: groupUsers,
+    });
   }
 }

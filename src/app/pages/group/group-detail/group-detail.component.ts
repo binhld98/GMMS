@@ -95,8 +95,8 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        this.groupBuiness
-          .deactivateUser(this.group!.id, gu.userId)
+        return this.groupBuiness
+          .deactivateMember(this.group!.id, gu.userId)
           .then(() => {
             this.messageService.create('success', 'Vô hiệu hóa thành công');
             gu.joinedStatus = GROUP_USER_STATUS.DEACTIVATED; // no need this.reloadPanel();
@@ -116,8 +116,8 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        this.groupBuiness
-          .activateUser(this.group!.id, gu.userId)
+        return this.groupBuiness
+          .activateMember(this.group!.id, gu.userId)
           .then(() => {
             this.messageService.create('success', 'Hủy vô hiệu hóa thành công');
             gu.joinedStatus = GROUP_USER_STATUS.JOINED; // no need this.reloadPanel();

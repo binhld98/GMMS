@@ -202,7 +202,64 @@ export class GroupBusiness {
     }
   }
 
-  async deactivateUser(groupId: string, userId: string): Promise<void> {}
+  private async updateMemberStatus(
+    groupId: string,
+    userId: string,
+    status: GROUP_USER_STATUS
+  ): Promise<void> {
+    // #1 - group
+    const group = await this.groupRepository.getAsync(groupId);
+    if (!group) {
+      throw new Error('group does not exist');
+    }
 
-  async activateUser(groupId: string, userId: string): Promise<void> {}
+    const groupUser1 = group.users.find((u) => {
+      return u.groupId == groupId && u.userId == userId;
+    });
+    if (!groupUser1) {
+      throw new Error('group-user does not exist');
+    }
+
+    // #2 - user
+    const user = await this.userRepository.getAsync(userId);
+    if (!user) {
+      throw new Error('user does not exist');
+    }
+
+    const groupUser2 = user.groups.find((g) => {
+      return g.groupId == groupId && g.userId == userId;
+    });
+    if (!groupUser2) {
+      throw new Error('group-user does not exist');
+    }
+
+    // #3 - updating
+    groupUser1.status = status;
+    groupUser2.status = status;
+    if (
+      status == GROUP_USER_STATUS.JOINED &&
+      groupUser1.joinedAt == null &&
+      groupUser2.joinedAt == null
+    ) {
+      groupUser1.joinedAt = Timestamp.now();
+      groupUser2.joinedAt = Timestamp.now();
+    }
+
+    await Promise.all([
+      this.groupRepository.setUsers(groupId, group.users),
+      this.userRepository.setGroups(userId, user.groups),
+    ]);
+  }
+
+  async deactivateMember(groupId: string, userId: string): Promise<void> {
+    return this.updateMemberStatus(
+      groupId,
+      userId,
+      GROUP_USER_STATUS.DEACTIVATED
+    );
+  }
+
+  async activateMember(groupId: string, userId: string): Promise<void> {
+    return this.updateMemberStatus(groupId, userId, GROUP_USER_STATUS.JOINED);
+  }
 }

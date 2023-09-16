@@ -33,9 +33,11 @@ import {
  * NZ ZORO
  */
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -48,8 +50,8 @@ import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 @NgModule({
   declarations: [
@@ -74,23 +76,25 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
     IconsProviderModule,
     NzAvatarModule,
+    NzBadgeModule,
     NzButtonModule,
     NzCardModule,
     NzDropDownModule,
+    NzEmptyModule,
     NzFormModule,
     NzGridModule,
     NzInputModule,
     NzLayoutModule,
     NzListModule,
     NzMenuModule,
-    NzModalModule,
     NzMessageModule,
+    NzModalModule,
     NzPageHeaderModule,
     NzSelectModule,
     NzSpinModule,
     NzTableModule,
+    NzTagModule,
     NzTypographyModule,
-    NzEmptyModule,
   ],
 })
 export class PagesModule {}

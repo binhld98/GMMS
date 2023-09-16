@@ -27,13 +27,21 @@
       <tbody>
         <tr *ngFor="let data of borderedTable.data">
           <td nzAlign="left">{{ data.userName }}</td>
-          <td nzAlign="center">{{ data.joinedStatus | gmm_group_status }}</td>
+          <td nzAlign="center">
+            <div *ngIf="data.joinedStatus | gmm_group_status as joinedStatus">
+              <nz-tag [nzColor]="joinedStatus.color">
+                {{ joinedStatus.text }}
+              </nz-tag>
+            </div>
+          </td>
           <td nzAlign="center">
             {{
               data.joinedAt?.seconds | gmm_s_to_ms | date : "dd/MM/yyyy hh:mm"
             }}
           </td>
-          <td nzAlign="center">{{ data.role | gmm_group_role }}</td>
+          <td nzAlign="center">
+            {{ data.role | gmm_group_role }}
+          </td>
           <td nzAlign="center">
             <button
               *ngIf="isShowDeactivateMemberButton(data)"
@@ -44,7 +52,7 @@
               nzDanger
               (click)="onDeactivatemMember(data)"
             >
-              <span nz-icon nzType="minus" nzTheme="outline"></span>
+              <span nz-icon nzType="lock" nzTheme="outline"></span>
             </button>
             <button
               *ngIf="isShowActivateMemberButton(data)"
@@ -54,7 +62,7 @@
               nzSize="small"
               (click)="onActivatemMember(data)"
             >
-              <span nz-icon nzType="minus" nzTheme="outline"></span>
+              <span nz-icon nzType="unlock" nzTheme="outline"></span>
             </button>
           </td>
         </tr>

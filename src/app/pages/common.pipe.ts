@@ -3,26 +3,32 @@ import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../@core/models/group-user';
 
 @Pipe({ name: 'gmm_group_status' })
 export class GroupStatusPipe implements PipeTransform {
-  transform(value: number): string {
-    let text = '';
+  transform(value: number): { text: string; color: string } {
+    let result = {
+      text: '',
+      color: '',
+    };
     switch (value) {
       case GROUP_USER_STATUS.JOINED:
-        text = 'Đã tham gia';
+        result.text = 'Đã tham gia';
+        result.color = 'success';
         break;
 
       case GROUP_USER_STATUS.WAIT_CONFIRM:
-        text = 'Chờ xác nhận';
+        result.text = 'Chờ xác nhận';
+        result.color = 'warning';
         break;
 
       case GROUP_USER_STATUS.DEACTIVATED:
-        text = 'Đã vô hiệu hóa';
+        result.text = 'Đã vô hiệu hóa';
+        result.color = 'error';
         break;
 
       default:
         break;
     }
 
-    return text;
+    return result;
   }
 }
 
