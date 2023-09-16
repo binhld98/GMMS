@@ -1,8 +1,17 @@
 <nz-row nzGutter="xs" [nzGutter]="[16, 16]">
   <div nz-col nzSpan="8" class="left-panel">
-    <gmm-group-master (targetGroupIdChange)="viewGroupDetail($event)"></gmm-group-master>
+    <gmm-group-master
+      (targetGroupChange)="viewGroupDetail($event)"
+    ></gmm-group-master>
   </div>
   <div nz-col nzSpan="16" class="right-panel">
-    <gmm-group-detail [groupId]="groupDetailId"></gmm-group-detail>
+    <gmm-group-detail-admin
+      [groupId]="groupDetailId"
+      *ngIf="currentUserId == groupDetailAdminId"
+    ></gmm-group-detail-admin>
+    <gmm-group-detail-member
+      [groupId]="groupDetailId"
+      *ngIf="currentUserId != groupDetailAdminId"
+    ></gmm-group-detail-member>
   </div>
 </nz-row>

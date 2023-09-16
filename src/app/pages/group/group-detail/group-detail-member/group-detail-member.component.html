@@ -1,0 +1,36 @@
+<nz-spin [nzSpinning]="isLoading">
+  <nz-card *ngIf="group == null">
+    <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
+  </nz-card>
+
+  <nz-card *ngIf="!!group" nzTitle="{{ group.groupName }}">
+    <nz-table
+      #borderedTable
+      nzBordered
+      [nzData]="group.users"
+      nzSize="small"
+      nzShowPagination="false"
+    >
+      <thead>
+        <tr>
+          <th nzAlign="left" nzWidth="40%">Tên</th>
+          <th nzAlign="center" nzWidth="30%">Ngày tham gia</th>
+          <th nzAlign="center" nzWidth="30%">Vai trò</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of borderedTable.data">
+          <td nzAlign="left">{{ data.userName }}</td>
+          <td nzAlign="center">
+            {{
+              data.joinedAt?.seconds | gmm_s_to_ms | date : "dd/MM/yyyy hh:mm"
+            }}
+          </td>
+          <td nzAlign="center">
+            {{ data.role | gmm_group_role }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</nz-spin>

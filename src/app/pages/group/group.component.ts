@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-
+import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-group',
@@ -9,16 +9,20 @@ import { Auth } from '@angular/fire/auth';
 })
 export class GroupComponent implements OnInit, OnDestroy {
   groupDetailId: string | null = null;
+  groupDetailAdminId: string | null = null;
+  readonly currentUserId: string | null = null;
 
-  constructor(private auth: Auth) {}
-
-  ngOnInit(): void {
+  constructor(private auth: Auth) {
+    this.currentUserId = auth.currentUser!.uid;
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnInit(): void {}
 
-  viewGroupDetail(groupId: any) {
-    this.groupDetailId = groupId;
+  ngOnDestroy(): void {}
+
+  viewGroupDetail(group: GroupMasterDto) {
+    this.groupDetailId = group.id;
+    this.groupDetailAdminId = group.adminId;
+    console.log(group);
   }
 }

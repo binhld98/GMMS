@@ -4,6 +4,7 @@ import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../models/group-user';
 export type GroupMasterDto = {
   id: string;
   groupName: string;
+  adminId: string;
   adminName: string;
   avatarUrl: string;
 };

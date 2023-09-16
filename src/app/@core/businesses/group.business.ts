@@ -59,6 +59,7 @@ export class GroupBusiness {
           id: g.id,
           groupName: g.groupName,
           avatarUrl: g.avatarUrl,
+          adminId: !!admin ? admin.id : '',
           adminName: !!admin ? admin.userName : '',
         } as GroupMasterDto;
       })

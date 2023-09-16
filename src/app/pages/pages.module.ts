@@ -13,9 +13,10 @@ import { PagesRoutingModule } from './pages-routing.module';
  * COMPONENTS
  */
 import { GroupComponent } from './group/group.component';
-import { GroupDetailComponent } from './group/group-detail/group-detail.component';
 import { GroupMasterComponent } from './group/group-master/group-master.component';
 import { UpsertGroupComponent } from './group/upsert-group/upsert-group.component';
+import { GroupDetailAdminComponent } from './group/group-detail/group-detail-admin/group-detail-admin.component';
+import { GroupDetailMemberComponent } from './group/group-detail/group-detail-member/group-detail-member.component';
 import { InviteMemberComponent } from './group/invite-member/invite-member.component';
 
 import { WelcomeComponent } from './welcome/welcome.component';
@@ -57,10 +58,12 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
   declarations: [
     PagesComponent,
     WelcomeComponent,
+
     GroupComponent,
-    UpsertGroupComponent,
-    GroupDetailComponent,
     GroupMasterComponent,
+    UpsertGroupComponent,
+    GroupDetailAdminComponent,
+    GroupDetailMemberComponent,
     InviteMemberComponent,
 
     GroupStatusPipe,

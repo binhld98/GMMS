@@ -15,11 +15,11 @@ import { GroupDetailDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
 @Component({
-  selector: 'gmm-group-detail',
-  templateUrl: './group-detail.component.html',
-  styleUrls: ['./group-detail.component.css'],
+  selector: 'gmm-group-detail-admin',
+  templateUrl: './group-detail-admin.component.html',
+  styleUrls: ['./group-detail-admin.component.css'],
 })
-export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
+export class GroupDetailAdminComponent implements OnInit, OnDestroy, OnChanges {
   @Input() groupId: string | null = null;
   group: GroupDetailDto | null = null;
   isLoading = false;

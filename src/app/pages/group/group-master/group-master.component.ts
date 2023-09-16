@@ -13,7 +13,7 @@ export class GroupMasterComponent {
   groups: GroupMasterDto[] = [];
   isLoading = true;
   isVisibleUpsert = false;
-  @Output() targetGroupIdChange = new EventEmitter<string>();
+  @Output() targetGroupChange = new EventEmitter<GroupMasterDto>();
 
   constructor(private auth: Auth, private groupBusiness: GroupBusiness) {}
 
@@ -37,7 +37,7 @@ export class GroupMasterComponent {
       });
   }
 
-  onClickGroup(groupId: string) {
-    this.targetGroupIdChange.emit(groupId);
+  onClickGroup(group: GroupMasterDto) {
+    this.targetGroupChange.emit(group);
   }
 }
