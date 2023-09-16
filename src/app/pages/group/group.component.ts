@@ -23,6 +23,5 @@ export class GroupComponent implements OnInit, OnDestroy {
   viewGroupDetail(group: GroupMasterDto) {
     this.groupDetailId = group.id;
     this.groupDetailAdminId = group.adminId;
-    console.log(group);
   }
 }
