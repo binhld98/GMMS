@@ -9,6 +9,7 @@ import {
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupDetailDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
+import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
 @Component({
   selector: 'gmm-group-detail-member',
@@ -22,7 +23,6 @@ export class GroupDetailMemberComponent
   group: GroupDetailDto | null = null;
   isLoading = false;
   isVisibleInvite = false;
-  memberIds: string[] | [] = [];
 
   constructor(private groupBuiness: GroupBusiness) {}
 
@@ -36,9 +36,11 @@ export class GroupDetailMemberComponent
       this.isLoading = true;
       this.groupBuiness.getGroupDetail(groupId).then((g) => {
         this.group = g;
-        this.memberIds = !!this.group
-          ? this.group.users.map((u) => u.userId)
-          : [];
+        if (!!this.group) {
+          this.group.users = this.group.users.filter((u) => {
+            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
+          });
+        }
         this.isLoading = false;
       });
     }
