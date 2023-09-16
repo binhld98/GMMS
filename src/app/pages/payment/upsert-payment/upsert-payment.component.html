@@ -1,15 +1,16 @@
 <nz-modal
   [(nzVisible)]="isVisible"
   nzPlacement="top"
-  [nzWidth]="920"
+  [nzWidth]="992"
   nzTitle="Tạo phiếu chi"
   [nzContent]="modalContent"
   [nzFooter]="modalFooter"
   (nzOnCancel)="handleCancel()"
   nzMaskClosable="false"
+  nzCentered
 >
   <ng-template #modalContent>
-    <div nz-row>
+    <div nz-row class="mb-16px">
       <div class="inline">
         <div class="inline-group">
           <label>Nhóm: </label>
@@ -53,7 +54,34 @@
         </div>
       </div>
     </div>
-    <div nz-row></div>
+    <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
+      <div nz-col [nzSpan]="16">
+        <nz-card
+          nzTitle="Bên A"
+          [nzExtra]="extraTemplate"
+          [nzBodyStyle]="{ height: '49vh' }"
+        >
+        </nz-card>
+        <ng-template #extraTemplate>
+          <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+            <span nz-icon nzType="plus"></span>
+          </button>
+        </ng-template>
+      </div>
+      <div nz-col [nzSpan]="8">
+        <nz-card
+          nzTitle="Bên B"
+          [nzExtra]="extraTemplate"
+          [nzBodyStyle]="{ height: '49vh' }"
+        >
+        </nz-card>
+        <ng-template #extraTemplate>
+          <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+            <span nz-icon nzType="plus"></span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template #modalFooter>
