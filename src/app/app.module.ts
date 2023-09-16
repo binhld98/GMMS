@@ -8,15 +8,14 @@ import { environment } from '../environments/environment';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
-import { NZ_I18N } from 'ng-zorro-antd/i18n';
-import { en_US } from 'ng-zorro-antd/i18n';
+import { NZ_I18N, vi_VN } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
-import en from '@angular/common/locales/en';
+import vi from '@angular/common/locales/vi';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-registerLocaleData(en);
+registerLocaleData(vi);
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,7 +30,7 @@ registerLocaleData(en);
     HttpClientModule,
     BrowserAnimationsModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }],
+  providers: [{ provide: NZ_I18N, useValue: vi_VN }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

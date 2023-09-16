@@ -1,0 +1,21 @@
+nz-select {
+  width: 150px;
+}
+
+.mr-8px {
+  margin-right: 8px;
+}
+
+.inline {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.inline-group > * {
+  margin-right: 8px;
+}
+
+.inline-group > *:last-child {
+  margin-right: 0px;
+}

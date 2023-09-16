@@ -40,6 +40,8 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -52,9 +54,11 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
@@ -87,6 +91,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzBadgeModule,
     NzButtonModule,
     NzCardModule,
+    NzDatePickerModule,
+    NzDrawerModule,
     NzDropDownModule,
     NzEmptyModule,
     NzFormModule,
@@ -99,9 +105,11 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzModalModule,
     NzPageHeaderModule,
     NzSelectModule,
+    NzSpaceModule,
     NzSpinModule,
     NzTableModule,
     NzTagModule,
+    NzTimePickerModule,
     NzTypographyModule,
   ],
 })

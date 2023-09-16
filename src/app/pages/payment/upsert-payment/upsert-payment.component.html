@@ -1,16 +1,64 @@
 <nz-modal
   [(nzVisible)]="isVisible"
-  [nzTitle]="modalTitle"
+  nzPlacement="top"
+  [nzWidth]="920"
+  nzTitle="Tạo phiếu chi"
   [nzContent]="modalContent"
   [nzFooter]="modalFooter"
   (nzOnCancel)="handleCancel()"
   nzMaskClosable="false"
 >
-  <ng-template #modalTitle>Tạo nhóm mới</ng-template>
-
   <ng-template #modalContent>
+    <div nz-row>
+      <div class="inline">
+        <div class="inline-group">
+          <label>Nhóm: </label>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn nhóm"
+            [(ngModel)]="searchParams.groupId"
+          >
+            <nz-option nzLabel="AAA" nzValue="1"></nz-option>
+            <nz-option nzLabel="BBB" nzValue="2"></nz-option>
+          </nz-select>
+        </div>
+        <div class="inline-group">
+          <label>Loại: </label>
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn loại"
+            [(ngModel)]="searchParams.type"
+          >
+            <nz-option nzLabel="Cá nhân" [nzValue]="1"></nz-option>
+            <nz-option nzLabel="Nhóm" [nzValue]="2"></nz-option>
+          </nz-select>
+        </div>
+        <div class="inline-group">
+          <label>Ngày: </label>
+          <nz-date-picker
+            [(ngModel)]="searchParams.date"
+            nzPlaceHolder="Chọn ngày"
+          ></nz-date-picker>
+        </div>
+        <div class="inline-group">
+          <label>Giờ: </label>
+          <nz-time-picker
+            [(ngModel)]="searchParams.time"
+            nzFormat="HH:mm"
+            [nzMinuteStep]="15"
+            nzPlaceHolder="Chọn giờ"
+          ></nz-time-picker>
+        </div>
+      </div>
+    </div>
+    <div nz-row></div>
   </ng-template>
 
   <ng-template #modalFooter>
+    <button nz-button nzType="primary" nzDanger>Đặt lại</button>
+    <button nz-button nzType="primary">Lưu nháp</button>
+    <button nz-button nzType="primary" (click)="onSave()">Lưu</button>
   </ng-template>
 </nz-modal>
