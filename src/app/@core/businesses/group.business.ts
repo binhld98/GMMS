@@ -203,4 +203,6 @@ export class GroupBusiness {
   }
 
   async deactivateUser(groupId: string, userId: string): Promise<void> {}
+
+  async activateUser(groupId: string, userId: string): Promise<void> {}
 }

@@ -15,7 +15,7 @@ export class GroupStatusPipe implements PipeTransform {
         break;
 
       case GROUP_USER_STATUS.DEACTIVATED:
-        text = 'Vô hiệu hóa';
+        text = 'Đã vô hiệu hóa';
         break;
 
       default:

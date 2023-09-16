@@ -36,12 +36,23 @@
           <td nzAlign="center">{{ data.role | gmm_group_role }}</td>
           <td nzAlign="center">
             <button
+              *ngIf="isShowDeactivateMemberButton(data)"
               nz-button
               nzType="primary"
               nzShape="circle"
               nzSize="small"
               nzDanger
               (click)="onDeactivatemMember(data)"
+            >
+              <span nz-icon nzType="minus" nzTheme="outline"></span>
+            </button>
+            <button
+              *ngIf="isShowActivateMemberButton(data)"
+              nz-button
+              nzType="primary"
+              nzShape="circle"
+              nzSize="small"
+              (click)="onActivatemMember(data)"
             >
               <span nz-icon nzType="minus" nzTheme="outline"></span>
             </button>

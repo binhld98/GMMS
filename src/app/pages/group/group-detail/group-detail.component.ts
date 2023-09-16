@@ -32,6 +32,28 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
     private messageService: NzMessageService
   ) {}
 
+  isShowDeactivateMemberButton(gu: GroupUserDto): boolean {
+    if (
+      gu.joinedStatus == GROUP_USER_STATUS.JOINED &&
+      this.group?.adminId != gu.userId
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isShowActivateMemberButton(gu: GroupUserDto) {
+    if (
+      gu.joinedStatus == GROUP_USER_STATUS.DEACTIVATED &&
+      this.group?.adminId != gu.userId
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   ngOnInit(): void {}
 
   ngOnDestroy(): void {}
@@ -81,6 +103,27 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
           })
           .catch((error) => {
             this.messageService.create('error', 'Vô hiệu hóa thất bại');
+          });
+      },
+    });
+  }
+
+  onActivatemMember(gu: GroupUserDto) {
+    this.modalService.confirm({
+      nzTitle: `Hủy vô hiệu hóa thành viên <i>${gu.userName}</i>?`,
+      nzContent:
+        'Thành viên có thể xuất hiện trong các phiếu chi mới kể từ khi được hủy vô hiệu hóa.',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        this.groupBuiness
+          .activateUser(this.group!.id, gu.userId)
+          .then(() => {
+            this.messageService.create('success', 'Hủy vô hiệu hóa thành công');
+            gu.joinedStatus = GROUP_USER_STATUS.JOINED; // no need this.reloadPanel();
+          })
+          .catch((error) => {
+            this.messageService.create('error', 'Hủy vô hiệu hóa thất bại');
           });
       },
     });
