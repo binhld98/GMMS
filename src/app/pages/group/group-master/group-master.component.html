@@ -1,7 +1,11 @@
 <nz-spin [nzSpinning]="isLoading">
   <nz-card nzTitle="Nhóm" [nzExtra]="extraTemplate">
     <nz-list>
-      <nz-list-item *ngFor="let group of groups" (click)="onClickGroup(group)">
+      <nz-list-item
+        *ngFor="let group of groups; index as idx"
+        (click)="onClickGroup(group)"
+        [ngClass]="{ active: idx == activeIndex }"
+      >
         <nz-list-item-meta
           nzAvatar="{{ group.avatarUrl }}"
           nzTitle="{{ group.groupName }}"

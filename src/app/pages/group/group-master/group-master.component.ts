@@ -14,6 +14,7 @@ export class GroupMasterComponent {
   isLoading = true;
   isVisibleUpsert = false;
   @Output() targetGroupChange = new EventEmitter<GroupMasterDto>();
+  activeIndex: number = -1;
 
   constructor(private auth: Auth, private groupBusiness: GroupBusiness) {}
 
@@ -39,5 +40,6 @@ export class GroupMasterComponent {
 
   onClickGroup(group: GroupMasterDto) {
     this.targetGroupChange.emit(group);
+    this.activeIndex = this.groups.indexOf(group);
   }
 }
