@@ -201,4 +201,6 @@ export class GroupBusiness {
       return false;
     }
   }
+
+  async deactivateUser(groupId: string, userId: string): Promise<void> {}
 }

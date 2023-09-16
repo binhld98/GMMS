@@ -14,6 +14,10 @@ export class GroupStatusPipe implements PipeTransform {
         text = 'Chờ xác nhận';
         break;
 
+      case GROUP_USER_STATUS.DEACTIVATED:
+        text = 'Vô hiệu hóa';
+        break;
+
       default:
         break;
     }

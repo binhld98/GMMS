@@ -13,6 +13,7 @@ export type GroupUser = {
 export enum GROUP_USER_STATUS {
   JOINED = 1,
   WAIT_CONFIRM = 2,
+  DEACTIVATED = 3,
 }
 
 export enum GROUP_USER_ROLE {

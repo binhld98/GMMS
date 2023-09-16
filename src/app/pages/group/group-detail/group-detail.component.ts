@@ -7,9 +7,12 @@ import {
   SimpleChange,
   SimpleChanges,
 } from '@angular/core';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { GroupDetailDto } from 'src/app/@core/dtos/group.dto';
+import { GroupDetailDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
+import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
 @Component({
   selector: 'gmm-group-detail',
@@ -23,7 +26,11 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   isVisibleInvite = false;
   memberIds: string[] | [] = [];
 
-  constructor(private groupBuiness: GroupBusiness) {}
+  constructor(
+    private groupBuiness: GroupBusiness,
+    private modalService: NzModalService,
+    private messageService: NzMessageService
+  ) {}
 
   ngOnInit(): void {}
 
@@ -48,10 +55,34 @@ export class GroupDetailComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onInvitedSuccess() {
-    // reload pannel
+    this.reloadPanel();
+  }
+
+  private reloadPanel() {
     const changes = {
       groupId: new SimpleChange(this.groupId, this.groupId, false),
     } as SimpleChanges;
     this.ngOnChanges(changes);
+  }
+
+  onDeactivatemMember(gu: GroupUserDto) {
+    this.modalService.confirm({
+      nzTitle: `Vô hiệu hóa thành viên <i>${gu.userName}</i>?`,
+      nzContent:
+        'Thành viên bị vô hiệu hóa sẽ không thể xuất hiện trong các phiếu chi mới tính từ thời điểm bị vô hiệu hóa. Tuy nhiên với các hóa đơn mà có phiếu chi phát sinh trước thời điểm bị vô hiệu hóa, thành viên này vẫn có nghĩa vụ phải thanh toán đầy đủ.',
+      nzOkText: 'Đồng ý',
+      nzCancelText: 'Hủy',
+      nzOnOk: () => {
+        this.groupBuiness
+          .deactivateUser(this.group!.id, gu.userId)
+          .then(() => {
+            this.messageService.create('success', 'Vô hiệu hóa thành công');
+            gu.joinedStatus = GROUP_USER_STATUS.DEACTIVATED; // no need this.reloadPanel();
+          })
+          .catch((error) => {
+            this.messageService.create('error', 'Vô hiệu hóa thất bại');
+          });
+      },
+    });
   }
 }
