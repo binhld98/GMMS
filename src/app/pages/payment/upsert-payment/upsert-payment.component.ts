@@ -31,12 +31,12 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  get aSideControl() {
-    return (<FormArray>this.form.get('aSide')).controls;
+  get aSideFA() {
+    return <FormArray>this.form.get('aSide');
   }
 
   onAddToASide() {
-    this.aSideControl.push(
+    this.aSideFA.push(
       this.fb.group({
         userId: [null, [Validators.required]],
         amount: [null, [Validators.required]],
@@ -45,21 +45,25 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     );
   }
 
-  removeFromASide() {}
+  removeFromASide(index: number) {
+    this.aSideFA.removeAt(index);
+  }
 
-  get bSideControl() {
-    return (<FormArray>this.form.get('bSide')).controls;
+  get bSideFA() {
+    return <FormArray>this.form.get('bSide');
   }
 
   onAddToBSide() {
-    this.bSideControl.push(
+    this.bSideFA.push(
       this.fb.group({
         userId: [null, [Validators.required]],
       })
     );
   }
 
-  removeFromBSide() {}
+  removeFromBSide(index: number) {
+    this.bSideFA.removeAt(index);
+  }
 
   ngOnDestroy(): void {}
 
@@ -68,6 +72,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    console.log(this.form.value);
+    console.log(this.form);
   }
 }

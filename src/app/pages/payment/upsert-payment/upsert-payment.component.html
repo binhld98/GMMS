@@ -64,6 +64,63 @@
             [nzExtra]="aSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh' }"
           >
+            <ng-container formArrayName="aSide">
+              <div
+                nz-row
+                class="inline"
+                *ngFor="let control of aSideFA.controls; let i = index"
+              >
+                <ng-container [formGroupName]="i">
+                  <nz-form-item class="inline-group">
+                    <nz-form-label>{{ i + 1 }}</nz-form-label>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-control>
+                      <nz-select
+                        nzShowSearch
+                        nzAllowClear
+                        nzPlaceHolder="Thành viên"
+                        formControlName="userId"
+                      >
+                        <nz-option nzLabel="user1" nzValue="1"></nz-option>
+                        <nz-option nzLabel="user2" nzValue="2"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-control>
+                      <input
+                        nz-input
+                        placeholder="Số tiền (k VNĐ)"
+                        formControlName="amount"
+                      />
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-control>
+                      <textarea
+                        rows="3"
+                        nz-input
+                        placeholder="Lý do"
+                        formControlName="description"
+                      ></textarea>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      nzShape="circle"
+                      nzSize="small"
+                      nzDanger
+                      (click)="removeFromASide(i)"
+                    >
+                      <span nz-icon nzType="minus" nzTheme="outline"></span>
+                    </button>
+                  </nz-form-item>
+                </ng-container>
+              </div>
+            </ng-container>
           </nz-card>
           <ng-template #aSide_extraTemplate>
             <button
@@ -83,6 +140,44 @@
             [nzExtra]="bSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh' }"
           >
+            <ng-container formArrayName="bSide">
+              <div
+                nz-row
+                class="inline"
+                *ngFor="let control of bSideFA.controls; let i = index"
+              >
+                <ng-container [formGroupName]="i">
+                  <nz-form-item class="inline-group">
+                    <nz-form-label>{{ i + 1 }}</nz-form-label>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <nz-form-control>
+                      <nz-select
+                        nzShowSearch
+                        nzAllowClear
+                        nzPlaceHolder="Thành viên"
+                        formControlName="userId"
+                      >
+                        <nz-option nzLabel="user1" nzValue="1"></nz-option>
+                        <nz-option nzLabel="user2" nzValue="2"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                  <nz-form-item>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      nzShape="circle"
+                      nzSize="small"
+                      nzDanger
+                      (click)="removeFromBSide(i)"
+                    >
+                      <span nz-icon nzType="minus" nzTheme="outline"></span>
+                    </button>
+                  </nz-form-item>
+                </ng-container>
+              </div>
+            </ng-container>
           </nz-card>
           <ng-template #bSide_extraTemplate>
             <button
