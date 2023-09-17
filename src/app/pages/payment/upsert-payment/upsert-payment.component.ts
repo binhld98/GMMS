@@ -6,7 +6,13 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -27,6 +33,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   groups: GroupMasterDto[] | [] = [];
   isLoadingMembers = false;
   members: GroupUserDto[] | [] = [];
+  isAutoLoadBSide = false;
 
   constructor(
     private fb: FormBuilder,
@@ -46,18 +53,34 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     });
   }
 
+  private touchSelectGroup(): boolean {
+    const groupId = this.form.value.groupId;
+    if (!groupId) {
+      this.members = [];
+      this.messageService.warning('Hãy chọn nhóm trước');
+      const control = <FormControl>this.form.get('groupId');
+      control.markAsDirty();
+      control.updateValueAndValidity({ onlySelf: true });
+      return false;
+    }
+
+    return true;
+  }
+
   get aSideFA() {
     return <FormArray>this.form.get('aSide');
   }
 
   onAddToASide() {
-    this.aSideFA.push(
-      this.fb.group({
-        userId: [null, [Validators.required]],
-        amount: [null, [Validators.required]],
-        description: [null, [Validators.required]],
-      })
-    );
+    if (this.touchSelectGroup()) {
+      this.aSideFA.push(
+        this.fb.group({
+          userId: [null, [Validators.required]],
+          amount: [null, [Validators.required]],
+          description: [null, [Validators.required]],
+        })
+      );
+    }
   }
 
   removeFromASide(index: number) {
@@ -69,11 +92,13 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   onAddToBSide() {
-    this.bSideFA.push(
-      this.fb.group({
-        userId: [null, [Validators.required]],
-      })
-    );
+    if (this.touchSelectGroup()) {
+      this.bSideFA.push(
+        this.fb.group({
+          userId: [null, [Validators.required]],
+        })
+      );
+    }
   }
 
   removeFromBSide(index: number) {
@@ -109,21 +134,65 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       });
   }
 
+  onChangeSelectGroup(groupId: string) {
+    this.aSideFA.clear();
+    this.bSideFA.clear();
+    this.members = [];
+
+    if (!!groupId && this.form.value.type == 2) {
+      this.autoLoadBSide();
+    }
+  }
+
+  onChangeSelectType(type: number) {
+    if (!!this.form.value.groupId && type == 2) {
+      this.autoLoadBSide();
+    }
+  }
+
+  autoLoadBSide() {
+    if (this.members.length > 0) {
+      this.bSideFA.clear();
+      this.members.forEach((m) => {
+        this.bSideFA.push(
+          this.fb.group({
+            userId: [m.userId, [Validators.required]],
+          })
+        );
+      });
+      return;
+    }
+
+    this.isAutoLoadBSide = true;
+    this.groupBusiness
+      .getGroupDetail(this.form.value.groupId)
+      .then((g) => {
+        this.members = !!g ? g.users : [];
+        this.bSideFA.clear();
+        this.members.forEach((m) => {
+          this.bSideFA.push(
+            this.fb.group({
+              userId: [m.userId, [Validators.required]],
+            })
+          );
+        });
+      })
+      .catch((error) => {
+        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+      })
+      .finally(() => {
+        this.isAutoLoadBSide = false;
+      });
+  }
+
   onOpenSelectMember(isOpen: boolean) {
     if (!isOpen || this.members.length > 0) {
       return;
     }
 
-    const groupId = this.form.value.groupId;
-    if (!groupId) {
-      this.members = [];
-      this.messageService.warning('Hãy chọn nhóm trước');
-      return;
-    }
-
     this.isLoadingMembers = true;
     this.groupBusiness
-      .getGroupDetail(groupId)
+      .getGroupDetail(this.form.value.groupId)
       .then((g) => {
         this.members = !!g ? g.users : [];
       })

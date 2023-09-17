@@ -21,6 +21,7 @@
               nzPlaceHolder="Chọn nhóm"
               formControlName="groupId"
               (nzOpenChange)="onOpenSelectGroup($event)"
+              (ngModelChange)="onChangeSelectGroup($event)"
             >
               <ng-container *ngFor="let g of groups">
                 <nz-option
@@ -37,15 +38,16 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Hình thức</nz-form-label>
-          <nz-form-control nzErrorTip="Hãy chọn hình thức!">
+          <nz-form-label>Loại hình</nz-form-label>
+          <nz-form-control nzErrorTip="Hãy chọn loại hình!">
             <nz-select
               nzAllowClear
-              nzPlaceHolder="Chọn hình thức"
+              nzPlaceHolder="Chọn loại hình"
               formControlName="type"
+              (ngModelChange)="onChangeSelectType($event)"
             >
-              <nz-option nzLabel="Cá nhân" [nzValue]="1"></nz-option>
-              <nz-option nzLabel="Nhóm" [nzValue]="2"></nz-option>
+              <nz-option nzLabel="Đơn lẻ" [nzValue]="1"></nz-option>
+              <nz-option nzLabel="Cả nhóm" [nzValue]="2"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -171,62 +173,64 @@
             [nzExtra]="bSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
           >
-            <ng-container formArrayName="bSide">
-              <div
-                nz-row
-                class="inline"
-                *ngFor="let control of bSideFA.controls; let i = index"
-              >
-                <ng-container [formGroupName]="i">
-                  <nz-form-item class="inline-group">
-                    <nz-form-label>{{ i + 1 }}</nz-form-label>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-control nzErrorTip="Hãy chọn thành viên!">
-                      <nz-select
-                        nzShowSearch
-                        nzAllowClear
-                        nzPlaceHolder="Thành viên"
-                        formControlName="userId"
-                        (nzOpenChange)="onOpenSelectMember($event)"
-                      >
-                        <ng-container *ngFor="let m of members">
-                          <nz-option
-                            *ngIf="!isLoadingMembers"
-                            [nzValue]="m.userId"
-                            [nzLabel]="m.userName"
-                          ></nz-option>
-                        </ng-container>
-                        <nz-option
-                          *ngIf="isLoadingMembers"
-                          nzDisabled
-                          nzCustomContent
+            <nz-spin [nzSpinning]="isAutoLoadBSide">
+              <ng-container formArrayName="bSide">
+                <div
+                  nz-row
+                  class="inline"
+                  *ngFor="let control of bSideFA.controls; let i = index"
+                >
+                  <ng-container [formGroupName]="i">
+                    <nz-form-item class="inline-group">
+                      <nz-form-label>{{ i + 1 }}</nz-form-label>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Hãy chọn thành viên!">
+                        <nz-select
+                          nzShowSearch
+                          nzAllowClear
+                          nzPlaceHolder="Thành viên"
+                          formControlName="userId"
+                          (nzOpenChange)="onOpenSelectMember($event)"
                         >
-                          <span
-                            nz-icon
-                            nzType="loading"
-                            class="loading-icon"
-                          ></span>
-                          Loading...
-                        </nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <button
-                      nz-button
-                      nzType="primary"
-                      nzShape="circle"
-                      nzSize="small"
-                      nzDanger
-                      (click)="removeFromBSide(i)"
-                    >
-                      <span nz-icon nzType="minus" nzTheme="outline"></span>
-                    </button>
-                  </nz-form-item>
-                </ng-container>
-              </div>
-            </ng-container>
+                          <ng-container *ngFor="let m of members">
+                            <nz-option
+                              *ngIf="!isLoadingMembers"
+                              [nzValue]="m.userId"
+                              [nzLabel]="m.userName"
+                            ></nz-option>
+                          </ng-container>
+                          <nz-option
+                            *ngIf="isLoadingMembers"
+                            nzDisabled
+                            nzCustomContent
+                          >
+                            <span
+                              nz-icon
+                              nzType="loading"
+                              class="loading-icon"
+                            ></span>
+                            Loading...
+                          </nz-option>
+                        </nz-select>
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzShape="circle"
+                        nzSize="small"
+                        nzDanger
+                        (click)="removeFromBSide(i)"
+                      >
+                        <span nz-icon nzType="minus" nzTheme="outline"></span>
+                      </button>
+                    </nz-form-item>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </nz-spin>
           </nz-card>
           <ng-template #bSide_extraTemplate>
             <button
