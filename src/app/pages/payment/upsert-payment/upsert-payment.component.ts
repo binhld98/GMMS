@@ -12,7 +12,7 @@ import { Auth } from '@angular/fire/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
+import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -25,6 +25,8 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isLoadingGroups = false;
   groups: GroupMasterDto[] | [] = [];
+  isLoadingMembers = false;
+  members: GroupUserDto[] | [] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -100,13 +102,36 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
         this.groups = g;
       })
       .catch((error) => {
-        this.messageService.create(
-          'error',
-          'Có lỗi xảy ra, vui lòng thử lại sau'
-        );
+        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
       })
       .finally(() => {
         this.isLoadingGroups = false;
+      });
+  }
+
+  onOpenSelectMember(isOpen: boolean) {
+    if (!isOpen || this.members.length > 0) {
+      return;
+    }
+
+    const groupId = this.form.value.groupId;
+    if (!groupId) {
+      this.members = [];
+      this.messageService.warning('Hãy chọn nhóm trước');
+      return;
+    }
+
+    this.isLoadingMembers = true;
+    this.groupBusiness
+      .getGroupDetail(groupId)
+      .then((g) => {
+        this.members = !!g ? g.users : [];
+      })
+      .catch((error) => {
+        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+      })
+      .finally(() => {
+        this.isLoadingMembers = false;
       });
   }
 }

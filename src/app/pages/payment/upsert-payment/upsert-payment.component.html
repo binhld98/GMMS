@@ -91,7 +91,27 @@
                         nzAllowClear
                         nzPlaceHolder="Thành viên"
                         formControlName="userId"
+                        (nzOpenChange)="onOpenSelectMember($event)"
                       >
+                        <ng-container *ngFor="let m of members">
+                          <nz-option
+                            *ngIf="!isLoadingMembers"
+                            [nzValue]="m.userId"
+                            [nzLabel]="m.userName"
+                          ></nz-option>
+                        </ng-container>
+                        <nz-option
+                          *ngIf="isLoadingMembers"
+                          nzDisabled
+                          nzCustomContent
+                        >
+                          <span
+                            nz-icon
+                            nzType="loading"
+                            class="loading-icon"
+                          ></span>
+                          Loading...
+                        </nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
@@ -165,9 +185,27 @@
                         nzAllowClear
                         nzPlaceHolder="Thành viên"
                         formControlName="userId"
+                        (nzOpenChange)="onOpenSelectMember($event)"
                       >
-                        <nz-option nzLabel="user1" nzValue="1"></nz-option>
-                        <nz-option nzLabel="user2" nzValue="2"></nz-option>
+                        <ng-container *ngFor="let m of members">
+                          <nz-option
+                            *ngIf="!isLoadingMembers"
+                            [nzValue]="m.userId"
+                            [nzLabel]="m.userName"
+                          ></nz-option>
+                        </ng-container>
+                        <nz-option
+                          *ngIf="isLoadingMembers"
+                          nzDisabled
+                          nzCustomContent
+                        >
+                          <span
+                            nz-icon
+                            nzType="loading"
+                            class="loading-icon"
+                          ></span>
+                          Loading...
+                        </nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
