@@ -38,20 +38,6 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Loại hình</nz-form-label>
-          <nz-form-control nzErrorTip="Hãy chọn loại hình!">
-            <nz-select
-              nzAllowClear
-              nzPlaceHolder="Chọn loại hình"
-              formControlName="type"
-              (ngModelChange)="onChangeSelectType($event)"
-            >
-              <nz-option nzLabel="Đơn lẻ" [nzValue]="1"></nz-option>
-              <nz-option nzLabel="Cả nhóm" [nzValue]="2"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
           <nz-form-label>Ngày</nz-form-label>
           <nz-form-control nzErrorTip="Hãy chọn ngày!">
             <nz-date-picker
@@ -79,92 +65,105 @@
             [nzExtra]="aSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
           >
-            <ng-container formArrayName="aSide">
-              <div
-                nz-row
-                class="inline"
-                *ngFor="let control of aSideFA.controls; let i = index"
-              >
-                <ng-container [formGroupName]="i">
-                  <nz-form-item class="inline-group">
-                    <nz-form-label>{{ i + 1 }}</nz-form-label>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-control nzErrorTip="Hãy chọn thành viên!">
-                      <nz-select
-                        nzShowSearch
-                        nzAllowClear
-                        nzPlaceHolder="Thành viên"
-                        formControlName="userId"
-                        (nzOpenChange)="onOpenSelectMember($event)"
-                      >
-                        <ng-container *ngFor="let m of members">
-                          <nz-option
-                            *ngIf="!isLoadingMembers"
-                            [nzValue]="m.userId"
-                            [nzLabel]="m.userName"
-                          ></nz-option>
-                        </ng-container>
-                        <nz-option
-                          *ngIf="isLoadingMembers"
-                          nzDisabled
-                          nzCustomContent
+            <nz-spin [nzSpinning]="isAutoLoadASide">
+              <ng-container formArrayName="aSide">
+                <div
+                  nz-row
+                  class="inline"
+                  *ngFor="let control of aSideFA.controls; let i = index"
+                >
+                  <ng-container [formGroupName]="i">
+                    <nz-form-item class="inline-group">
+                      <nz-form-label>{{ i + 1 }}</nz-form-label>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Hãy chọn thành viên!">
+                        <nz-select
+                          nzShowSearch
+                          nzAllowClear
+                          nzPlaceHolder="Thành viên"
+                          formControlName="userId"
+                          (nzOpenChange)="onOpenSelectMember($event)"
                         >
-                          <span
-                            nz-icon
-                            nzType="loading"
-                            class="loading-icon"
-                          ></span>
-                          Loading...
-                        </nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-control nzErrorTip="Hãy điền số tiền!">
-                      <input
-                        nz-input
-                        placeholder="Số tiền (k VNĐ)"
-                        formControlName="amount"
-                      />
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <nz-form-control nzErrorTip="Hãy điền lý do!">
-                      <textarea
-                        rows="3"
-                        nz-input
-                        placeholder="Lý do"
-                        formControlName="description"
-                      ></textarea>
-                    </nz-form-control>
-                  </nz-form-item>
-                  <nz-form-item>
-                    <button
-                      nz-button
-                      nzType="primary"
-                      nzShape="circle"
-                      nzSize="small"
-                      nzDanger
-                      (click)="removeFromASide(i)"
-                    >
-                      <span nz-icon nzType="minus" nzTheme="outline"></span>
-                    </button>
-                  </nz-form-item>
-                </ng-container>
-              </div>
-            </ng-container>
+                          <ng-container *ngFor="let m of members">
+                            <nz-option
+                              *ngIf="!isLoadingMembers"
+                              [nzValue]="m.userId"
+                              [nzLabel]="m.userName"
+                            ></nz-option>
+                          </ng-container>
+                          <nz-option
+                            *ngIf="isLoadingMembers"
+                            nzDisabled
+                            nzCustomContent
+                          >
+                            <span
+                              nz-icon
+                              nzType="loading"
+                              class="loading-icon"
+                            ></span>
+                            Loading...
+                          </nz-option>
+                        </nz-select>
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Hãy điền số tiền!">
+                        <input
+                          nz-input
+                          placeholder="Số tiền (k VNĐ)"
+                          formControlName="amount"
+                        />
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <nz-form-control nzErrorTip="Hãy điền lý do!">
+                        <textarea
+                          rows="3"
+                          nz-input
+                          placeholder="Lý do"
+                          formControlName="description"
+                        ></textarea>
+                      </nz-form-control>
+                    </nz-form-item>
+                    <nz-form-item>
+                      <button
+                        nz-button
+                        nzType="primary"
+                        nzShape="circle"
+                        nzSize="small"
+                        nzDanger
+                        (click)="removeFromASide(i)"
+                      >
+                        <span nz-icon nzType="minus" nzTheme="outline"></span>
+                      </button>
+                    </nz-form-item>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </nz-spin>
           </nz-card>
           <ng-template #aSide_extraTemplate>
-            <button
-              nz-button
-              nzType="primary"
-              nzShape="circle"
-              nzSize="small"
-              (click)="onAddToASide()"
-            >
-              <span nz-icon nzType="plus"></span>
-            </button>
+            <div class="inline-group">
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+                (click)="autoLoadASide()"
+              >
+                <span nz-icon nzType="retweet"></span>
+              </button>
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+                (click)="onAddToASide()"
+              >
+                <span nz-icon nzType="plus"></span>
+              </button>
+            </div>
           </ng-template>
         </div>
         <div nz-col [nzSpan]="8">
@@ -233,15 +232,26 @@
             </nz-spin>
           </nz-card>
           <ng-template #bSide_extraTemplate>
-            <button
-              nz-button
-              nzType="primary"
-              nzShape="circle"
-              nzSize="small"
-              (click)="onAddToBSide()"
-            >
-              <span nz-icon nzType="plus"></span>
-            </button>
+            <div class="inline-group">
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+                (click)="autoLoadBSide()"
+              >
+                <span nz-icon nzType="retweet"></span>
+              </button>
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+                (click)="onAddToBSide()"
+              >
+                <span nz-icon nzType="plus"></span>
+              </button>
+            </div>
           </ng-template>
         </div>
       </div>
@@ -249,7 +259,9 @@
   </ng-template>
 
   <ng-template #modalFooter>
-    <button nz-button nzType="primary" nzDanger>Đặt lại</button>
+    <button nz-button nzType="primary" nzDanger (click)="onResetForm()">
+      Xóa trắng
+    </button>
     <button nz-button nzType="primary">Lưu nháp</button>
     <button nz-button nzType="primary" (click)="onSave()">Lưu</button>
   </ng-template>

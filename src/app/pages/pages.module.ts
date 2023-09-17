@@ -59,6 +59,7 @@ import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 
 @NgModule({
@@ -110,6 +111,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzTableModule,
     NzTagModule,
     NzTimePickerModule,
+    NzToolTipModule,
     NzTypographyModule,
   ],
 })

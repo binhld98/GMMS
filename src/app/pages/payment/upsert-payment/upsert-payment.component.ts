@@ -19,6 +19,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
+import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -34,6 +35,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   isLoadingMembers = false;
   members: GroupUserDto[] | [] = [];
   isAutoLoadBSide = false;
+  isAutoLoadASide = false;
 
   constructor(
     private fb: FormBuilder,
@@ -45,13 +47,14 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.form = this.fb.group({
       groupId: [null, [Validators.required]],
-      type: [2, [Validators.required]],
       date: [new Date(), [Validators.required]],
       time: [new Date()],
       aSide: this.fb.array([]),
       bSide: this.fb.array([]),
     });
   }
+
+  ngOnDestroy(): void {}
 
   private touchSelectGroup(): boolean {
     const groupId = this.form.value.groupId;
@@ -71,6 +74,10 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     return <FormArray>this.form.get('aSide');
   }
 
+  get bSideFA() {
+    return <FormArray>this.form.get('bSide');
+  }
+
   onAddToASide() {
     if (this.touchSelectGroup()) {
       this.aSideFA.push(
@@ -83,14 +90,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     }
   }
 
-  removeFromASide(index: number) {
-    this.aSideFA.removeAt(index);
-  }
-
-  get bSideFA() {
-    return <FormArray>this.form.get('bSide');
-  }
-
   onAddToBSide() {
     if (this.touchSelectGroup()) {
       this.bSideFA.push(
@@ -101,11 +100,13 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     }
   }
 
+  removeFromASide(index: number) {
+    this.aSideFA.removeAt(index);
+  }
+
   removeFromBSide(index: number) {
     this.bSideFA.removeAt(index);
   }
-
-  ngOnDestroy(): void {}
 
   handleCancel() {
     this.isVisibleChange.next(false);
@@ -138,19 +139,13 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     this.aSideFA.clear();
     this.bSideFA.clear();
     this.members = [];
-
-    if (!!groupId && this.form.value.type == 2) {
-      this.autoLoadBSide();
-    }
-  }
-
-  onChangeSelectType(type: number) {
-    if (!!this.form.value.groupId && type == 2) {
-      this.autoLoadBSide();
-    }
   }
 
   autoLoadBSide() {
+    if (!this.touchSelectGroup()) {
+      return;
+    }
+
     if (this.members.length > 0) {
       this.bSideFA.clear();
       this.members.forEach((m) => {
@@ -167,7 +162,11 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     this.groupBusiness
       .getGroupDetail(this.form.value.groupId)
       .then((g) => {
-        this.members = !!g ? g.users : [];
+        if (!!g) {
+          this.members = g.users.filter((u) => {
+            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
+          });
+        }
         this.bSideFA.clear();
         this.members.forEach((m) => {
           this.bSideFA.push(
@@ -185,6 +184,53 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       });
   }
 
+  autoLoadASide() {
+    if (!this.touchSelectGroup()) {
+      return;
+    }
+
+    if (this.members.length > 0) {
+      this.aSideFA.clear();
+      this.members.forEach((m) => {
+        this.aSideFA.push(
+          this.fb.group({
+            userId: [m.userId, [Validators.required]],
+            amount: [null, [Validators.required]],
+            description: [null, [Validators.required]],
+          })
+        );
+      });
+      return;
+    }
+
+    this.isAutoLoadASide = true;
+    this.groupBusiness
+      .getGroupDetail(this.form.value.groupId)
+      .then((g) => {
+        if (!!g) {
+          this.members = g.users.filter((u) => {
+            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
+          });
+        }
+        this.aSideFA.clear();
+        this.members.forEach((m) => {
+          this.aSideFA.push(
+            this.fb.group({
+              userId: [m.userId, [Validators.required]],
+              amount: [null, [Validators.required]],
+              description: [null, [Validators.required]],
+            })
+          );
+        });
+      })
+      .catch((error) => {
+        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+      })
+      .finally(() => {
+        this.isAutoLoadASide = false;
+      });
+  }
+
   onOpenSelectMember(isOpen: boolean) {
     if (!isOpen || this.members.length > 0) {
       return;
@@ -194,7 +240,11 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     this.groupBusiness
       .getGroupDetail(this.form.value.groupId)
       .then((g) => {
-        this.members = !!g ? g.users : [];
+        if (!!g?.users) {
+          this.members = g.users.filter((u) => {
+            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
+          });
+        }
       })
       .catch((error) => {
         this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
@@ -202,5 +252,9 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       .finally(() => {
         this.isLoadingMembers = false;
       });
+  }
+
+  onResetForm() {
+    this.form.reset();
   }
 }
