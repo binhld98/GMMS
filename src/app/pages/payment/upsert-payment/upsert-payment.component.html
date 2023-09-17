@@ -20,9 +20,19 @@
               nzAllowClear
               nzPlaceHolder="Chọn nhóm"
               formControlName="groupId"
+              (nzOpenChange)="onOpenSelectGroup($event)"
             >
-              <nz-option nzLabel="AAA" nzValue="1"></nz-option>
-              <nz-option nzLabel="BBB" nzValue="2"></nz-option>
+              <ng-container *ngFor="let g of groups">
+                <nz-option
+                  *ngIf="!isLoadingGroups"
+                  [nzValue]="g.id"
+                  [nzLabel]="g.groupName"
+                ></nz-option>
+              </ng-container>
+              <nz-option *ngIf="isLoadingGroups" nzDisabled nzCustomContent>
+                <span nz-icon nzType="loading" class="loading-icon"></span>
+                Loading...
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -62,7 +72,7 @@
           <nz-card
             nzTitle="Bên A"
             [nzExtra]="aSide_extraTemplate"
-            [nzBodyStyle]="{ height: '49vh' }"
+            [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
           >
             <ng-container formArrayName="aSide">
               <div
@@ -82,8 +92,6 @@
                         nzPlaceHolder="Thành viên"
                         formControlName="userId"
                       >
-                        <nz-option nzLabel="user1" nzValue="1"></nz-option>
-                        <nz-option nzLabel="user2" nzValue="2"></nz-option>
                       </nz-select>
                     </nz-form-control>
                   </nz-form-item>
@@ -138,7 +146,7 @@
           <nz-card
             nzTitle="Bên B"
             [nzExtra]="bSide_extraTemplate"
-            [nzBodyStyle]="{ height: '49vh' }"
+            [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
           >
             <ng-container formArrayName="bSide">
               <div

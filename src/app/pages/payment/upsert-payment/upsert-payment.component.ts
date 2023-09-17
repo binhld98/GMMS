@@ -7,6 +7,12 @@ import {
   Output,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Auth } from '@angular/fire/auth';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+import { GroupBusiness } from 'src/app/@core/businesses/group.business';
+import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -17,8 +23,15 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   @Input() isVisible = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
   form!: FormGroup;
+  isLoadingGroups = false;
+  groups: GroupMasterDto[] | [] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private auth: Auth,
+    private messageService: NzMessageService,
+    private groupBusiness: GroupBusiness
+  ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
@@ -73,5 +86,27 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
 
   onSave() {
     console.log(this.form);
+  }
+
+  onOpenSelectGroup(isOpen: boolean) {
+    if (!isOpen || this.groups.length > 0) {
+      return;
+    }
+
+    this.isLoadingGroups = true;
+    this.groupBusiness
+      .getJoinedGroupsByUserId(this.auth.currentUser!.uid)
+      .then((g) => {
+        this.groups = g;
+      })
+      .catch((error) => {
+        this.messageService.create(
+          'error',
+          'Có lỗi xảy ra, vui lòng thử lại sau'
+        );
+      })
+      .finally(() => {
+        this.isLoadingGroups = false;
+      });
   }
 }
