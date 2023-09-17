@@ -14,7 +14,7 @@
       <div nz-row class="inline">
         <nz-form-item>
           <nz-form-label>Nhóm</nz-form-label>
-          <nz-form-control>
+          <nz-form-control nzErrorTip="Hãy chọn nhóm!">
             <nz-select
               nzShowSearch
               nzAllowClear
@@ -38,9 +38,8 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Hình thức</nz-form-label>
-          <nz-form-control>
+          <nz-form-control nzErrorTip="Hãy chọn hình thức!">
             <nz-select
-              nzShowSearch
               nzAllowClear
               nzPlaceHolder="Chọn hình thức"
               formControlName="type"
@@ -52,19 +51,23 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Ngày</nz-form-label>
-          <nz-date-picker
-            nzPlaceHolder="Chọn ngày giờ"
-            formControlName="date"
-          ></nz-date-picker>
+          <nz-form-control nzErrorTip="Hãy chọn ngày!">
+            <nz-date-picker
+              nzPlaceHolder="Chọn ngày giờ"
+              formControlName="date"
+            ></nz-date-picker>
+          </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label>Giờ</nz-form-label>
-          <nz-time-picker
-            nzFormat="HH:mm"
-            [nzMinuteStep]="15"
-            nzPlaceHolder="Chọn giờ"
-            formControlName="time"
-          ></nz-time-picker>
+          <nz-form-control>
+            <nz-time-picker
+              nzFormat="HH:mm"
+              [nzMinuteStep]="15"
+              nzPlaceHolder="Chọn giờ"
+              formControlName="time"
+            ></nz-time-picker>
+          </nz-form-control>
         </nz-form-item>
       </div>
       <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
@@ -85,7 +88,7 @@
                     <nz-form-label>{{ i + 1 }}</nz-form-label>
                   </nz-form-item>
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control nzErrorTip="Hãy chọn thành viên!">
                       <nz-select
                         nzShowSearch
                         nzAllowClear
@@ -116,7 +119,7 @@
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control nzErrorTip="Hãy điền số tiền!">
                       <input
                         nz-input
                         placeholder="Số tiền (k VNĐ)"
@@ -125,7 +128,7 @@
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control nzErrorTip="Hãy điền lý do!">
                       <textarea
                         rows="3"
                         nz-input
@@ -179,7 +182,7 @@
                     <nz-form-label>{{ i + 1 }}</nz-form-label>
                   </nz-form-item>
                   <nz-form-item>
-                    <nz-form-control>
+                    <nz-form-control nzErrorTip="Hãy chọn thành viên!">
                       <nz-select
                         nzShowSearch
                         nzAllowClear

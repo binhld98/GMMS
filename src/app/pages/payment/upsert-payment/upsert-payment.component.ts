@@ -40,7 +40,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       groupId: [null, [Validators.required]],
       type: [2, [Validators.required]],
       date: [new Date(), [Validators.required]],
-      time: [new Date(), [Validators.required]],
+      time: [new Date()],
       aSide: this.fb.array([]),
       bSide: this.fb.array([]),
     });
