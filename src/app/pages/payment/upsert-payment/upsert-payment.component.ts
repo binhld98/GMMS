@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -26,8 +26,40 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       type: [2, [Validators.required]],
       date: [new Date(), [Validators.required]],
       time: [new Date(), [Validators.required]],
+      aSide: this.fb.array([]),
+      bSide: this.fb.array([]),
     });
   }
+
+  get aSideControl() {
+    return (<FormArray>this.form.get('aSide')).controls;
+  }
+
+  onAddToASide() {
+    this.aSideControl.push(
+      this.fb.group({
+        userId: [null, [Validators.required]],
+        amount: [null, [Validators.required]],
+        description: [null, [Validators.required]],
+      })
+    );
+  }
+
+  removeFromASide() {}
+
+  get bSideControl() {
+    return (<FormArray>this.form.get('bSide')).controls;
+  }
+
+  onAddToBSide() {
+    this.bSideControl.push(
+      this.fb.group({
+        userId: [null, [Validators.required]],
+      })
+    );
+  }
+
+  removeFromBSide() {}
 
   ngOnDestroy(): void {}
 

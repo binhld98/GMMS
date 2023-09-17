@@ -61,12 +61,18 @@
         <div nz-col [nzSpan]="16">
           <nz-card
             nzTitle="Bên A"
-            [nzExtra]="extraTemplate"
+            [nzExtra]="aSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh' }"
           >
           </nz-card>
-          <ng-template #extraTemplate>
-            <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+          <ng-template #aSide_extraTemplate>
+            <button
+              nz-button
+              nzType="primary"
+              nzShape="circle"
+              nzSize="small"
+              (click)="onAddToASide()"
+            >
               <span nz-icon nzType="plus"></span>
             </button>
           </ng-template>
@@ -74,12 +80,18 @@
         <div nz-col [nzSpan]="8">
           <nz-card
             nzTitle="Bên B"
-            [nzExtra]="extraTemplate"
+            [nzExtra]="bSide_extraTemplate"
             [nzBodyStyle]="{ height: '49vh' }"
           >
           </nz-card>
-          <ng-template #extraTemplate>
-            <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+          <ng-template #bSide_extraTemplate>
+            <button
+              nz-button
+              nzType="primary"
+              nzShape="circle"
+              nzSize="small"
+              (click)="onAddToBSide()"
+            >
               <span nz-icon nzType="plus"></span>
             </button>
           </ng-template>
