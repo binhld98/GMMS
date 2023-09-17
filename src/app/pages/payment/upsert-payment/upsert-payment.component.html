@@ -10,78 +10,82 @@
   nzCentered
 >
   <ng-template #modalContent>
-    <div nz-row class="mb-16px">
-      <div class="inline">
-        <div class="inline-group">
-          <label>Nhóm: </label>
-          <nz-select
-            nzShowSearch
-            nzAllowClear
-            nzPlaceHolder="Chọn nhóm"
-            [(ngModel)]="searchParams.groupId"
-          >
-            <nz-option nzLabel="AAA" nzValue="1"></nz-option>
-            <nz-option nzLabel="BBB" nzValue="2"></nz-option>
-          </nz-select>
-        </div>
-        <div class="inline-group">
-          <label>Loại: </label>
-          <nz-select
-            nzShowSearch
-            nzAllowClear
-            nzPlaceHolder="Chọn loại"
-            [(ngModel)]="searchParams.type"
-          >
-            <nz-option nzLabel="Cá nhân" [nzValue]="1"></nz-option>
-            <nz-option nzLabel="Nhóm" [nzValue]="2"></nz-option>
-          </nz-select>
-        </div>
-        <div class="inline-group">
-          <label>Ngày: </label>
+    <form nz-form [formGroup]="form">
+      <div nz-row class="inline">
+        <nz-form-item>
+          <nz-form-label>Nhóm</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Chọn nhóm"
+              formControlName="groupId"
+            >
+              <nz-option nzLabel="AAA" nzValue="1"></nz-option>
+              <nz-option nzLabel="BBB" nzValue="2"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Hình thức</nz-form-label>
+          <nz-form-control>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Chọn hình thức"
+              formControlName="type"
+            >
+              <nz-option nzLabel="Cá nhân" [nzValue]="1"></nz-option>
+              <nz-option nzLabel="Nhóm" [nzValue]="2"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Ngày</nz-form-label>
           <nz-date-picker
-            [(ngModel)]="searchParams.date"
-            nzPlaceHolder="Chọn ngày"
+            nzPlaceHolder="Chọn ngày giờ"
+            formControlName="date"
           ></nz-date-picker>
-        </div>
-        <div class="inline-group">
-          <label>Giờ: </label>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Giờ</nz-form-label>
           <nz-time-picker
-            [(ngModel)]="searchParams.time"
             nzFormat="HH:mm"
             [nzMinuteStep]="15"
             nzPlaceHolder="Chọn giờ"
+            formControlName="time"
           ></nz-time-picker>
+        </nz-form-item>
+      </div>
+      <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
+        <div nz-col [nzSpan]="16">
+          <nz-card
+            nzTitle="Bên A"
+            [nzExtra]="extraTemplate"
+            [nzBodyStyle]="{ height: '49vh' }"
+          >
+          </nz-card>
+          <ng-template #extraTemplate>
+            <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+              <span nz-icon nzType="plus"></span>
+            </button>
+          </ng-template>
+        </div>
+        <div nz-col [nzSpan]="8">
+          <nz-card
+            nzTitle="Bên B"
+            [nzExtra]="extraTemplate"
+            [nzBodyStyle]="{ height: '49vh' }"
+          >
+          </nz-card>
+          <ng-template #extraTemplate>
+            <button nz-button nzType="primary" nzShape="circle" nzSize="small">
+              <span nz-icon nzType="plus"></span>
+            </button>
+          </ng-template>
         </div>
       </div>
-    </div>
-    <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
-      <div nz-col [nzSpan]="16">
-        <nz-card
-          nzTitle="Bên A"
-          [nzExtra]="extraTemplate"
-          [nzBodyStyle]="{ height: '49vh' }"
-        >
-        </nz-card>
-        <ng-template #extraTemplate>
-          <button nz-button nzType="primary" nzShape="circle" nzSize="small">
-            <span nz-icon nzType="plus"></span>
-          </button>
-        </ng-template>
-      </div>
-      <div nz-col [nzSpan]="8">
-        <nz-card
-          nzTitle="Bên B"
-          [nzExtra]="extraTemplate"
-          [nzBodyStyle]="{ height: '49vh' }"
-        >
-        </nz-card>
-        <ng-template #extraTemplate>
-          <button nz-button nzType="primary" nzShape="circle" nzSize="small">
-            <span nz-icon nzType="plus"></span>
-          </button>
-        </ng-template>
-      </div>
-    </div>
+    </form>
   </ng-template>
 
   <ng-template #modalFooter>
