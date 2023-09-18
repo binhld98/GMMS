@@ -35,7 +35,7 @@ export class GroupBusiness {
 
     // #2 --> joined groups
     const grpUids = usr.groups
-      .filter((g) => !!g.groupId)
+      .filter((g) => g.status == GROUP_USER_STATUS.JOINED)
       .map((g) => g.groupId!);
 
     if (grpUids.length == 0) {
