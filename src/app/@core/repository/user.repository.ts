@@ -23,30 +23,30 @@ import { DocumentData } from 'rxfire/firestore/interfaces';
 @Injectable({ providedIn: 'root' })
 export class UserRepository implements BaseRepository<User> {
   public static readonly COLLECTION_NAME = 'users';
-  private readonly usrColRef: CollectionReference<DocumentData>;
+  private readonly colRef: CollectionReference<DocumentData>;
 
   constructor(private fs: Firestore) {
-    this.usrColRef = collection(this.fs, UserRepository.COLLECTION_NAME);
+    this.colRef = collection(this.fs, UserRepository.COLLECTION_NAME);
   }
 
   async getAsync(uid: string): Promise<User | null> {
-    const usrRef = doc(this.fs, UserRepository.COLLECTION_NAME, uid);
-    const usrDocSnap = await getDoc(usrRef);
-    if (!usrDocSnap.exists()) {
+    const docRef = doc(this.fs, UserRepository.COLLECTION_NAME, uid);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
       return null;
     }
 
-    return usrDocSnap.data() as User;
+    return docSnap.data() as User;
   }
 
-  async getManyAsync(ids: string[]): Promise<User[]> {
-    const usrQry = query(this.usrColRef, where('id', 'in', ids));
-    const usrDocSnap = await getDocs(usrQry);
-    if (usrDocSnap.empty) {
+  async getManyAsync(ids: string[]): Promise<User[] | []> {
+    const _query = query(this.colRef, where('id', 'in', ids));
+    const docsSnap = await getDocs(_query);
+    if (docsSnap.empty) {
       return [];
     }
 
-    return usrDocSnap.docs.map((d) => d.data() as User);
+    return docsSnap.docs.map((d) => d.data() as User);
   }
 
   async addAsync(user: User): Promise<User | null> {
@@ -58,8 +58,8 @@ export class UserRepository implements BaseRepository<User> {
       throw new Error('Entity must have id');
     }
 
-    const usrRef = doc(this.fs, UserRepository.COLLECTION_NAME, user.id!);
-    await setDoc(usrRef, user);
+    const docRef = doc(this.fs, UserRepository.COLLECTION_NAME, user.id);
+    await setDoc(docRef, user);
 
     return true;
   }
@@ -69,9 +69,9 @@ export class UserRepository implements BaseRepository<User> {
       throw new Error('Entity must have id');
     }
 
-    const usrRef = doc(this.fs, UserRepository.COLLECTION_NAME, grpUsr.userId);
+    const docRef = doc(this.fs, UserRepository.COLLECTION_NAME, grpUsr.userId);
 
-    await updateDoc(usrRef, {
+    await updateDoc(docRef, {
       groups: arrayUnion(grpUsr),
     });
 
@@ -83,19 +83,19 @@ export class UserRepository implements BaseRepository<User> {
       return [];
     }
 
-    const usrQry = query(
-      this.usrColRef,
+    const _query = query(
+      this.colRef,
       or(
         where('userName', '==', nameOrEmail),
         where('email', '==', nameOrEmail)
       )
     );
-    const usrDocSnap = await getDocs(usrQry);
-    if (usrDocSnap.empty) {
+    const docsSnap = await getDocs(_query);
+    if (docsSnap.empty) {
       return [];
     }
 
-    return usrDocSnap.docs.map((d) => d.data() as User);
+    return docsSnap.docs.map((d) => d.data() as User);
   }
 
   async bulkUnionGroupsAsync(groupUsers: GroupUser[]): Promise<void> {

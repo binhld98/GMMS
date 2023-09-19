@@ -24,38 +24,38 @@ import { GroupUser } from '../models/group-user';
 @Injectable({ providedIn: 'root' })
 export class GroupRepository implements BaseRepository<Group> {
   public static readonly COLLECTION_NAME = 'groups';
-  private readonly grpColRef: CollectionReference<DocumentData>;
+  private readonly colRef: CollectionReference<DocumentData>;
 
   constructor(private fs: Firestore) {
-    this.grpColRef = collection(this.fs, GroupRepository.COLLECTION_NAME);
+    this.colRef = collection(this.fs, GroupRepository.COLLECTION_NAME);
   }
 
   async getAsync(id: string): Promise<Group | null> {
-    const grpRef = doc(this.fs, GroupRepository.COLLECTION_NAME, id);
-    const grpDocSnap = await getDoc(grpRef);
-    if (!grpDocSnap.exists()) {
+    const docRef = doc(this.fs, GroupRepository.COLLECTION_NAME, id);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) {
       return null;
     }
 
-    return grpDocSnap.data() as Group;
+    return docSnap.data() as Group;
   }
 
-  async getManyAsync(ids: string[]): Promise<Group[]> {
-    const grpQry = query(this.grpColRef, where('id', 'in', ids));
-    const grpsDocSnap = await getDocs(grpQry);
+  async getManyAsync(ids: string[]): Promise<Group[] | []> {
+    const _query = query(this.colRef, where('id', 'in', ids));
+    const docsSnap = await getDocs(_query);
 
-    if (grpsDocSnap.empty) {
+    if (docsSnap.empty) {
       return [];
     }
 
-    return grpsDocSnap.docs.map((d) => d.data() as Group);
+    return docsSnap.docs.map((d) => d.data() as Group);
   }
 
   async addAsync(group: Group): Promise<Group | null> {
-    const grpRef = await addDoc(this.grpColRef, group);
+    const docRef = await addDoc(this.colRef, group);
 
-    if (grpRef.id) {
-      group.id = grpRef.id;
+    if (docRef.id) {
+      group.id = docRef.id;
       return group;
     }
 
@@ -67,8 +67,8 @@ export class GroupRepository implements BaseRepository<Group> {
       throw new Error('Entity must have id');
     }
 
-    const grpRef = doc(this.fs, GroupRepository.COLLECTION_NAME, group.id!);
-    await setDoc(grpRef, group);
+    const docRef = doc(this.fs, GroupRepository.COLLECTION_NAME, group.id);
+    await setDoc(docRef, group);
 
     return true;
   }

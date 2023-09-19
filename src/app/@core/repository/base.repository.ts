@@ -9,7 +9,7 @@ export interface BaseRepository<T extends Entity> {
   /**
    * @param ids
    */
-  getManyAsync(ids: string[]): Promise<T[]>;
+  getManyAsync(ids: string[]): Promise<T[] | []>;
 
   /**
    * @param entity
