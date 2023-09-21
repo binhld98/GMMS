@@ -6,12 +6,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
  * MODULES
  */
 import { IconsProviderModule } from './icons-provider.module';
-import { PagesComponent } from './pages.component';
 import { PagesRoutingModule } from './pages-routing.module';
+import { CoreModule } from '../@core/core.module';
 
 /*
  * COMPONENTS
  */
+import { PagesComponent } from './pages.component';
+
 import { GroupComponent } from './group/group.component';
 import { GroupMasterComponent } from './group/group-master/group-master.component';
 import { UpsertGroupComponent } from './group/upsert-group/upsert-group.component';
@@ -85,6 +87,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     FormsModule,
     ReactiveFormsModule,
 
+    CoreModule,
     PagesRoutingModule,
 
     IconsProviderModule,

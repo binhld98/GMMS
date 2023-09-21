@@ -18,6 +18,7 @@ import { Auth } from '@angular/fire/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
+import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
@@ -41,7 +42,8 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private auth: Auth,
     private messageService: NzMessageService,
-    private groupBusiness: GroupBusiness
+    private groupBusiness: GroupBusiness,
+    private paymentBusiness: PaymentBusiness
   ) {}
 
   ngOnInit(): void {
@@ -112,8 +114,9 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
     this.isVisibleChange.next(false);
   }
 
-  onSave() {
-    console.log(this.form);
+  onGeneratePayment() {
+    this.pdfDataUri = this.paymentBusiness.generatePayment();
+    this.isVisiblePdf = true;
   }
 
   onOpenSelectGroup(isOpen: boolean) {
@@ -257,4 +260,12 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   onResetForm() {
     this.form.reset();
   }
+
+  /**
+   *
+   * Payment Pdf
+   *
+   */
+  isVisiblePdf = false;
+  pdfDataUri: string = '';
 }

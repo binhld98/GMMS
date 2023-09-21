@@ -1,0 +1,19 @@
+<nz-drawer
+  [(nzVisible)]="visible"
+  nzPlacement="top"
+  [nzTitle]="title"
+  nzHeight="100vh"
+  (nzOnClose)="onClose()"
+  [nzZIndex]="isUnderModal ? 1000 : 1100"
+  [nzFooter]="nzDrawerFooter"
+>
+  <ng-container *nzDrawerContent>
+    <iframe *ngIf="!!dataUri" [src]="dataUri | safe : 'resourceUrl'"></iframe>
+  </ng-container>
+
+  <ng-template #nzDrawerFooter>
+    <div class="footer">
+      <button nz-button nzType="primary" (click)="onSave()">Đồng ý</button>
+    </div>
+  </ng-template>
+</nz-drawer>
