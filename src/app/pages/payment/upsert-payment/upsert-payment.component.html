@@ -69,6 +69,12 @@
               <ng-container formArrayName="aSide">
                 <div
                   nz-row
+                  *ngIf="aSideFA.value.length == 0 && aSideFA.touched"
+                >
+                  <div class="ant-form-item-explain-error">Hãy thêm bên A!</div>
+                </div>
+                <div
+                  nz-row
                   class="inline"
                   *ngFor="let control of aSideFA.controls; let i = index"
                 >
@@ -174,6 +180,12 @@
           >
             <nz-spin [nzSpinning]="isAutoLoadBSide">
               <ng-container formArrayName="bSide">
+                <div
+                  nz-row
+                  *ngIf="bSideFA.value.length == 0 && bSideFA.touched"
+                >
+                  <div class="ant-form-item-explain-error">Hãy thêm bên B!</div>
+                </div>
                 <div
                   nz-row
                   class="inline"

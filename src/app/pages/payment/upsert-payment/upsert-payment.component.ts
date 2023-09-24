@@ -2,9 +2,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import {
   FormArray,
@@ -27,7 +29,7 @@ import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
   templateUrl: './upsert-payment.component.html',
   styleUrls: ['./upsert-payment.component.css'],
 })
-export class UpsertPaymentComponent implements OnInit, OnDestroy {
+export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isVisible = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
   form!: FormGroup;
@@ -51,25 +53,45 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
       groupId: [null, [Validators.required]],
       date: [new Date(), [Validators.required]],
       time: [new Date()],
-      aSide: this.fb.array([]),
-      bSide: this.fb.array([]),
+      aSide: this.fb.array([], [Validators.required]),
+      bSide: this.fb.array([], [Validators.required]),
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const isVisible: boolean = changes['isVisible'].currentValue;
+    if (isVisible) {
+      this.form.reset({
+        groupId: null,
+        date: new Date(),
+        time: new Date(),
+        aSide: [],
+        bSide: [],
+      });
+    }
   }
 
   ngOnDestroy(): void {}
 
-  private touchSelectGroup(): boolean {
-    const groupId = this.form.value.groupId;
-    if (!groupId) {
+  private touchHeaderForm(): boolean {
+    let valid = true;
+
+    if (!this.form.value.groupId) {
       this.members = [];
-      this.messageService.warning('Hãy chọn nhóm trước');
-      const control = <FormControl>this.form.get('groupId');
-      control.markAsDirty();
-      control.updateValueAndValidity({ onlySelf: true });
-      return false;
+      const c = <FormControl>this.form.get('groupId');
+      c.markAsDirty();
+      c.updateValueAndValidity({ onlySelf: true });
+      valid = false;
     }
 
-    return true;
+    if (!this.form.value.date) {
+      const c = <FormControl>this.form.get('date');
+      c.markAsDirty();
+      c.updateValueAndValidity({ onlySelf: true });
+      valid = false;
+    }
+
+    return valid;
   }
 
   get aSideFA() {
@@ -81,7 +103,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   onAddToASide() {
-    if (this.touchSelectGroup()) {
+    if (this.touchHeaderForm()) {
       this.aSideFA.push(
         this.fb.group({
           userId: [null, [Validators.required]],
@@ -93,7 +115,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   onAddToBSide() {
-    if (this.touchSelectGroup()) {
+    if (this.touchHeaderForm()) {
       this.bSideFA.push(
         this.fb.group({
           userId: [null, [Validators.required]],
@@ -111,10 +133,37 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   handleCancel() {
+    this.onResetForm();
     this.isVisibleChange.next(false);
   }
 
   onGeneratePayment() {
+    if (!this.touchHeaderForm()) {
+      return;
+    }
+
+    if (this.form.invalid) {
+      Object.values(this.form.controls).forEach((c) => {
+        if (c instanceof FormArray) {
+          c.markAsTouched();
+          Object.values(c.controls).forEach((_c) => {
+            if (_c instanceof FormGroup) {
+              Object.values(_c.controls).forEach((__c) => {
+                if (__c.invalid) {
+                  __c.markAsDirty();
+                  __c.updateValueAndValidity({ onlySelf: true });
+                }
+              });
+            }
+          });
+        } else if (c.invalid) {
+          c.markAsDirty();
+          c.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+      return;
+    }
+
     this.pdfDataUri = this.paymentBusiness.generatePayment();
     this.isVisiblePdf = true;
   }
@@ -145,7 +194,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   autoLoadBSide() {
-    if (!this.touchSelectGroup()) {
+    if (!this.touchHeaderForm()) {
       return;
     }
 
@@ -188,7 +237,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy {
   }
 
   autoLoadASide() {
-    if (!this.touchSelectGroup()) {
+    if (!this.touchHeaderForm()) {
       return;
     }
 
