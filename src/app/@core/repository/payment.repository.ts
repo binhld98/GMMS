@@ -16,7 +16,7 @@ import { Payment } from '../models/payment';
 import { BaseRepository } from './base.repository';
 import { DocumentData } from 'rxfire/firestore/interfaces';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class PaymentRepository implements BaseRepository<Payment> {
   public static readonly COLLECTION_NAME = 'payments';
   private readonly colRef: CollectionReference<DocumentData>;

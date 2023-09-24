@@ -21,7 +21,7 @@ import { BaseRepository } from './base.repository';
 import { Group } from '../models/group';
 import { GroupUser } from '../models/group-user';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class GroupRepository implements BaseRepository<Group> {
   public static readonly COLLECTION_NAME = 'groups';
   private readonly colRef: CollectionReference<DocumentData>;

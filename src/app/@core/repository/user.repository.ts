@@ -20,7 +20,7 @@ import { BaseRepository } from './base.repository';
 import { GroupUser } from '../models/group-user';
 import { DocumentData } from 'rxfire/firestore/interfaces';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class UserRepository implements BaseRepository<User> {
   public static readonly COLLECTION_NAME = 'users';
   private readonly colRef: CollectionReference<DocumentData>;

@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Timestamp } from 'firebase/firestore';
 
 import { UserRepository } from '../repository/user.repository';
@@ -16,8 +15,9 @@ import {
   GroupUserDto,
 } from '../dtos/group.dto';
 import { InviteUserDto } from '../dtos/user.dto';
+import { Injectable } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class GroupBusiness {
   public static readonly COLLECTION_NAME = 'users';
 

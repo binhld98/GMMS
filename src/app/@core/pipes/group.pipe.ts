@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../@core/models/group-user';
+import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../models/group-user';
 
 @Pipe({ name: 'gmm_group_status' })
 export class GroupStatusPipe implements PipeTransform {
@@ -50,16 +50,5 @@ export class GroupRolePipe implements PipeTransform {
     }
 
     return text;
-  }
-}
-
-@Pipe({ name: 'gmm_s_to_ms' })
-export class SecondToMilisecond implements PipeTransform {
-  transform(value: number | null | undefined): number | null {
-    if (!value) {
-      return null;
-    }
-
-    return value * 1000;
   }
 }

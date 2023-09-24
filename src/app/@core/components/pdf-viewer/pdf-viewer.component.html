@@ -8,7 +8,10 @@
   [nzFooter]="nzDrawerFooter"
 >
   <ng-container *nzDrawerContent>
-    <iframe *ngIf="!!dataUri" [src]="dataUri | safe : 'resourceUrl'"></iframe>
+    <iframe
+      *ngIf="!!dataUri"
+      [src]="dataUri | gmm_safe : 'resourceUrl'"
+    ></iframe>
   </ng-container>
 
   <ng-template #nzDrawerFooter>

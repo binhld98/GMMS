@@ -27,15 +27,6 @@ import { UpsertPaymentComponent } from './payment/upsert-payment/upsert-payment.
 import { WelcomeComponent } from './welcome/welcome.component';
 
 /*
- * PIPES
- */
-import {
-  GroupStatusPipe,
-  GroupRolePipe,
-  SecondToMilisecond,
-} from './common.pipe';
-
-/*
  * NZ ZORO
  */
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -75,10 +66,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     GroupDetailAdminComponent,
     GroupDetailMemberComponent,
     InviteMemberComponent,
-
-    GroupStatusPipe,
-    GroupRolePipe,
-    SecondToMilisecond,
+    
     PaymentComponent,
     UpsertPaymentComponent,
   ],

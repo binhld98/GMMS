@@ -9,27 +9,12 @@ import {
   SafeResourceUrl,
 } from '@angular/platform-browser';
 
-/**
- * Sanitize HTML
- */
 @Pipe({
-  name: 'safe',
+  name: 'gmm_safe',
 })
 export class SafePipe implements PipeTransform {
-  /**
-   * Pipe Constructor
-   *
-   * @param _sanitizer: DomSanitezer
-   */
-  // tslint:disable-next-line
   constructor(protected _sanitizer: DomSanitizer) {}
 
-  /**
-   * Transform
-   *
-   * @param value: string
-   * @param type: string
-   */
   transform(
     value: string,
     type: string
@@ -48,5 +33,16 @@ export class SafePipe implements PipeTransform {
       default:
         return this._sanitizer.bypassSecurityTrustHtml(value);
     }
+  }
+}
+
+@Pipe({ name: 'gmm_s_to_ms' })
+export class SecondToMilisecond implements PipeTransform {
+  transform(value: number | null | undefined): number | null {
+    if (!value) {
+      return null;
+    }
+
+    return value * 1000;
   }
 }
