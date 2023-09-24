@@ -138,31 +138,31 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onGeneratePayment() {
-    if (!this.touchHeaderForm()) {
-      return;
-    }
+    // if (!this.touchHeaderForm()) {
+    //   return;
+    // }
 
-    if (this.form.invalid) {
-      Object.values(this.form.controls).forEach((c) => {
-        if (c instanceof FormArray) {
-          c.markAsTouched();
-          Object.values(c.controls).forEach((_c) => {
-            if (_c instanceof FormGroup) {
-              Object.values(_c.controls).forEach((__c) => {
-                if (__c.invalid) {
-                  __c.markAsDirty();
-                  __c.updateValueAndValidity({ onlySelf: true });
-                }
-              });
-            }
-          });
-        } else if (c.invalid) {
-          c.markAsDirty();
-          c.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-      return;
-    }
+    // if (this.form.invalid) {
+    //   Object.values(this.form.controls).forEach((c) => {
+    //     if (c instanceof FormArray) {
+    //       c.markAsTouched();
+    //       Object.values(c.controls).forEach((_c) => {
+    //         if (_c instanceof FormGroup) {
+    //           Object.values(_c.controls).forEach((__c) => {
+    //             if (__c.invalid) {
+    //               __c.markAsDirty();
+    //               __c.updateValueAndValidity({ onlySelf: true });
+    //             }
+    //           });
+    //         }
+    //       });
+    //     } else if (c.invalid) {
+    //       c.markAsDirty();
+    //       c.updateValueAndValidity({ onlySelf: true });
+    //     }
+    //   });
+    //   return;
+    // }
 
     this.pdfDataUri = this.paymentBusiness.generatePayment();
     this.isVisiblePdf = true;
