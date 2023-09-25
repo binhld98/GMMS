@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 import { Entity } from './entity';
+import { PAYMENT_STATUS } from '../constants/common.constant';
 
 export interface Payment extends Entity {
   groupId: string;
@@ -7,13 +8,6 @@ export interface Payment extends Entity {
   aSide: ASide[];
   bSide: BSide[];
   paymentAt: Timestamp;
-}
-
-export enum PAYMENT_STATUS {
-  APPROVED = 1,
-  WAIT_APPROVE = 2,
-  SETTLED = 3,
-  DRAFT = 4,
 }
 
 export type ASide = {

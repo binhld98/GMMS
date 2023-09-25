@@ -23,6 +23,9 @@ import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
+import { PdfUtil } from 'src/app/@core/utils/pdf.util';
+import { PaymentPdfDto } from 'src/app/@core/dtos/payment.dto';
+import { Timestamp } from 'firebase/firestore';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -138,33 +141,65 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   onGeneratePayment() {
-    // if (!this.touchHeaderForm()) {
-    //   return;
-    // }
+    if (!this.touchHeaderForm()) {
+      return;
+    }
 
-    // if (this.form.invalid) {
-    //   Object.values(this.form.controls).forEach((c) => {
-    //     if (c instanceof FormArray) {
-    //       c.markAsTouched();
-    //       Object.values(c.controls).forEach((_c) => {
-    //         if (_c instanceof FormGroup) {
-    //           Object.values(_c.controls).forEach((__c) => {
-    //             if (__c.invalid) {
-    //               __c.markAsDirty();
-    //               __c.updateValueAndValidity({ onlySelf: true });
-    //             }
-    //           });
-    //         }
-    //       });
-    //     } else if (c.invalid) {
-    //       c.markAsDirty();
-    //       c.updateValueAndValidity({ onlySelf: true });
-    //     }
-    //   });
-    //   return;
-    // }
+    if (this.form.invalid) {
+      Object.values(this.form.controls).forEach((c) => {
+        if (c instanceof FormArray) {
+          c.markAsTouched();
+          Object.values(c.controls).forEach((_c) => {
+            if (_c instanceof FormGroup) {
+              Object.values(_c.controls).forEach((__c) => {
+                if (__c.invalid) {
+                  __c.markAsDirty();
+                  __c.updateValueAndValidity({ onlySelf: true });
+                }
+              });
+            }
+          });
+        } else if (c.invalid) {
+          c.markAsDirty();
+          c.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+      return;
+    }
 
-    this.pdfDataUri = this.paymentBusiness.generatePayment();
+    const _group = this.groups.find((g) => g.id == this.form.value.groupId)!;
+    const _date = this.form.value.date as Date;
+    const _time = this.form.value.time as Date;
+    const _paymentAtEpoch = new Date(
+      _date.getFullYear(),
+      _date.getMonth(),
+      _date.getDay(),
+      _time.getHours(),
+      _time.getMinutes(),
+      _time.getSeconds()
+    ).getTime();
+    const aSide = this.form.value.aSide.map((a: any) => {
+      const member = this.members.find((m) => m.userId == a.userId)!;
+      return {
+        userName: member.userName,
+        amount: a.amount,
+        description: a.description,
+      };
+    });
+    const bSide = this.form.value.bSide.map((b: any) => {
+      const member = this.members.find((m) => m.userId == b.userId)!;
+      return {
+        userName: member.userName,
+      };
+    });
+
+    const dto = {
+      groupName: _group.groupName,
+      paymentAt: new Timestamp(_paymentAtEpoch / 1000, 0),
+      aSide: aSide,
+      bSide: bSide,
+    } as PaymentPdfDto;
+    this.pdfDataUri = PdfUtil.makePaymentPdf(dto);
     this.isVisiblePdf = true;
   }
 

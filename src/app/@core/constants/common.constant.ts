@@ -1,0 +1,6 @@
+export enum PAYMENT_STATUS {
+  APPROVED = 1,
+  WAIT_APPROVE = 2,
+  SETTLED = 3,
+  DRAFT = 4,
+}
