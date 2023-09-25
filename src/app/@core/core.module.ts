@@ -9,9 +9,9 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
 import { GroupBusiness } from './businesses/group.business';
 import { PaymentBusiness } from './businesses/payment.business';
 
-import { UserRepository } from './repository/user.repository';
-import { GroupRepository } from './repository/group.repository';
-import { PaymentRepository } from './repository/payment.repository';
+import { UserRepository } from './repositories/user.repository';
+import { GroupRepository } from './repositories/group.repository';
+import { PaymentRepository } from './repositories/payment.repository';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';

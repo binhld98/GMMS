@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 
-import { UserRepository } from '../repository/user.repository';
-import { GroupRepository } from '../repository/group.repository';
+import { UserRepository } from '../repositories/user.repository';
+import { GroupRepository } from '../repositories/group.repository';
 import { GROUP_STATUS, Group } from '../models/group';
 import {
   GROUP_USER_ROLE,
