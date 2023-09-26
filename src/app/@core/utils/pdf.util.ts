@@ -99,7 +99,6 @@ export class PdfUtil {
     const asideRows = payment.aSide.map((a) => {
       return [a.userName, a.amount, a.description];
     });
-
     autoTable(doc, {
       head: [
         [
@@ -137,6 +136,11 @@ export class PdfUtil {
     // b side
     // @ts-ignore
     let finalY = doc.lastAutoTable.finalY;
+    if (finalY + 32 > PdfUtil.PAGE_HEIGHT - PdfUtil.BOTTOM_MARGIN) {
+      finalY = PdfUtil.TOP_MARGIN - 32;
+      doc.addPage();
+    }
+
     doc.setFont('gmm_timesbd');
     doc.text('Bên B:', PdfUtil.LEFT_MARGIN, finalY + 32);
     doc.setFont('gmm_times');
@@ -149,7 +153,6 @@ export class PdfUtil {
     const bsideRows = payment.bSide.map((b) => {
       return ['- ' + b.userName];
     });
-
     autoTable(doc, {
       body: bsideRows,
       startY: finalY + 40,
@@ -168,8 +171,12 @@ export class PdfUtil {
     // signature
     // @ts-ignore
     finalY = doc.lastAutoTable.finalY;
-    const nowString = PdfUtil.ToDateViStr(new Date());
+    if (finalY + 64 > PdfUtil.PAGE_HEIGHT - PdfUtil.BOTTOM_MARGIN) {
+      finalY = PdfUtil.TOP_MARGIN - 32;
+      doc.addPage();
+    }
 
+    const nowString = PdfUtil.ToDateViStr(new Date());
     doc.setFont('gmm_timesi');
     doc.text(
       nowString,

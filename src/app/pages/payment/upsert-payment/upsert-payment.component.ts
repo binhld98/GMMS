@@ -173,12 +173,19 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     const _paymentAtEpoch = new Date(
       _date.getFullYear(),
       _date.getMonth(),
-      _date.getDay(),
-      _time.getHours(),
-      _time.getMinutes(),
-      _time.getSeconds()
+      _date.getDate(),
+      _time?.getHours() ?? 0,
+      _time?.getMinutes() ?? 0,
+      _time?.getSeconds() ?? 0
     ).getTime();
-    const aSide = this.form.value.aSide.map((a: any) => {
+
+    const aSide = this.form.value.aSide as {
+      userId: string;
+      amount: number;
+      description: string;
+    }[];
+
+    let _aSide = aSide.map((a) => {
       const member = this.members.find((m) => m.userId == a.userId)!;
       return {
         userName: member.userName,
@@ -186,19 +193,33 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
         description: a.description,
       };
     });
-    const bSide = this.form.value.bSide.map((b: any) => {
+
+    _aSide = _aSide.sort((a, b) => {
+      return a.userName.localeCompare(b.userName);
+    });
+
+    const bSide = this.form.value.bSide as {
+      userName: string;
+    }[];
+
+    let _bSide = bSide.map((b: any) => {
       const member = this.members.find((m) => m.userId == b.userId)!;
       return {
         userName: member.userName,
       };
     });
 
+    _bSide = [
+      ...new Map(_bSide.map((item) => [item.userName, item])).values(),
+    ].sort((a, b) => {
+      return a.userName.localeCompare(b.userName);
+    });
+
     const dto = {
       groupName: _group.groupName,
       paymentAt: new Timestamp(_paymentAtEpoch / 1000, 0),
-      aSide: aSide,
-      bSide: bSide,
-      
+      aSide: _aSide,
+      bSide: _bSide,
     } as PaymentPdfDto;
     this.pdfDataUri = PdfUtil.makePaymentPdf(dto);
     this.isVisiblePdf = true;
