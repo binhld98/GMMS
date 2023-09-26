@@ -1,6 +1,6 @@
 import { Entity } from '../models/entity';
 
-export interface BaseRepository<T extends Entity> {
+export type BaseRepository<T extends Entity> = {
   /**
    * @param id
    */
@@ -21,4 +21,4 @@ export interface BaseRepository<T extends Entity> {
    * @param entity
    */
   updateAsync(entity: T): Promise<boolean>;
-}
+};

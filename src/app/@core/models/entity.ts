@@ -1,7 +1,7 @@
 import { Timestamp } from 'firebase/firestore';
 import { UpdateInfo } from './update-info';
 
-export interface Entity {
+export type Entity = {
   id: string | null;
   creatorId: string;
   createdAt: Timestamp;
