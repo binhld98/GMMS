@@ -68,7 +68,7 @@ export class PdfUtil {
     );
 
     const paymentAt = new Date(payment.paymentAt.seconds * 1000);
-    const paymentAtString = `Ngày ${paymentAt.getDay()} tháng ${paymentAt.getMonth()} năm ${paymentAt.getFullYear()}`;
+    const paymentAtString = PdfUtil.ToDateViStr(paymentAt);
     doc.setFont('gmm_timesi');
     doc.setFontSize(12);
     doc.text(
@@ -81,11 +81,15 @@ export class PdfUtil {
     );
 
     // a side
-    doc.setFont('gmm_times');
+    doc.setFont('gmm_timesbd');
     doc.setFontSize(12);
+    doc.text('Bên A:', PdfUtil.LEFT_MARGIN, PdfUtil.TOP_MARGIN + 96, {
+      align: 'left',
+    });
+    doc.setFont('gmm_times');
     doc.text(
-      'Bên A: Danh sách chủ chi bao gồm:',
-      PdfUtil.LEFT_MARGIN,
+      'Danh sách chủ chi bao gồm:',
+      PdfUtil.LEFT_MARGIN + doc.getTextWidth('Bên A:') + 6,
       PdfUtil.TOP_MARGIN + 96,
       {
         align: 'left',
@@ -118,7 +122,7 @@ export class PdfUtil {
       theme: 'grid',
       headStyles: { halign: 'center' },
       columnStyles: {
-        0: { cellWidth: 150 },
+        0: { cellWidth: 125 },
         1: { halign: 'center', cellWidth: 75 },
       },
       styles: {
@@ -132,15 +136,18 @@ export class PdfUtil {
 
     // b side
     // @ts-ignore
-    const finalY = doc.lastAutoTable.finalY;
+    let finalY = doc.lastAutoTable.finalY;
+    doc.setFont('gmm_timesbd');
+    doc.text('Bên B:', PdfUtil.LEFT_MARGIN, finalY + 32);
+    doc.setFont('gmm_times');
     doc.text(
-      'Bên B: Danh sách thụ hưởng bao gồm:',
-      PdfUtil.LEFT_MARGIN,
+      'Danh sách thụ hưởng bao gồm:',
+      PdfUtil.LEFT_MARGIN + doc.getTextWidth('Bên B:') + 6,
       finalY + 32
     );
 
     const bsideRows = payment.bSide.map((b) => {
-      return [b.userName];
+      return ['- ' + b.userName];
     });
 
     autoTable(doc, {
@@ -150,6 +157,7 @@ export class PdfUtil {
       showHead: 'never',
       styles: {
         font: 'gmm_times',
+        fontSize: 13,
         lineWidth: 0,
         lineColor: '#00000',
         fillColor: '#ffffff',
@@ -157,6 +165,47 @@ export class PdfUtil {
       },
     });
 
+    // signature
+    // @ts-ignore
+    finalY = doc.lastAutoTable.finalY;
+    const nowString = PdfUtil.ToDateViStr(new Date());
+
+    doc.setFont('gmm_timesi');
+    doc.text(
+      nowString,
+      PdfUtil.PAGE_WIDTH - PdfUtil.RIGHT_MARGIN,
+      finalY + 32,
+      {
+        align: 'right',
+      }
+    );
+
+    const centerY =
+      PdfUtil.PAGE_WIDTH -
+      PdfUtil.RIGHT_MARGIN -
+      doc.getTextWidth(nowString) / 2;
+    doc.setFont('gmm_timesbd');
+    doc.text('Người lập phiếu', centerY, finalY + 48, {
+      align: 'center',
+    });
+
+    doc.setFont('gmm_timesi');
+    doc.text('(Ký, họ tên)', centerY, finalY + 64, {
+      align: 'center',
+    });
+
+    // doc.setFont('gmm_times');
+    // doc.text(payment.creatorName, centerY, finalY + 150, {
+    //   align: 'center',
+    // });
+
     return doc.output('datauristring');
+  }
+
+  static ToDateViStr(date: Date) {
+    const day = ('0' + date.getDate()).slice(-2);
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    return 'Ngày ' + day + ' tháng ' + month + ' năm ' + year;
   }
 }

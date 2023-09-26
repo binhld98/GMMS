@@ -198,6 +198,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       paymentAt: new Timestamp(_paymentAtEpoch / 1000, 0),
       aSide: aSide,
       bSide: bSide,
+      
     } as PaymentPdfDto;
     this.pdfDataUri = PdfUtil.makePaymentPdf(dto);
     this.isVisiblePdf = true;
