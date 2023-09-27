@@ -16,6 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+import { Timestamp } from 'firebase/firestore';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -23,9 +24,10 @@ import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
-import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 import { PaymentPdfDto } from 'src/app/@core/dtos/payment.dto';
-import { Timestamp } from 'firebase/firestore';
+
+import { PdfUtil } from 'src/app/@core/utils/pdf.util';
+import { CommonUtil } from 'src/app/@core/utils/common.util';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -221,8 +223,18 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       aSide: _aSide,
       bSide: _bSide,
     } as PaymentPdfDto;
-    this.pdfDataUri = PdfUtil.makePaymentPdf(dto);
-    this.isVisiblePdf = true;
+    this.isLoadingPdf = true;
+    PdfUtil.makePaymentPdf(dto)
+      .then((dataUri) => {
+        this.pdfDataUri = dataUri;
+        this.isVisiblePdf = true;
+      })
+      .catch((error) => {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+      })
+      .finally(() => {
+        this.isLoadingPdf = false;
+      });
   }
 
   onOpenSelectGroup(isOpen: boolean) {
@@ -237,7 +249,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
         this.groups = g;
       })
       .catch((error) => {
-        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isLoadingGroups = false;
@@ -286,7 +298,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
         });
       })
       .catch((error) => {
-        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isAutoLoadBSide = false;
@@ -333,7 +345,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
         });
       })
       .catch((error) => {
-        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isAutoLoadASide = false;
@@ -356,7 +368,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
         }
       })
       .catch((error) => {
-        this.messageService.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isLoadingMembers = false;
@@ -373,5 +385,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
    *
    */
   isVisiblePdf = false;
+  isLoadingPdf = false;
   pdfDataUri: string = '';
 }

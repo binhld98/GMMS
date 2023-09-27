@@ -4,10 +4,13 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { AuthSharingService } from '../auth-sharing.service';
-import { NzMessageService } from 'ng-zorro-antd/message';
 import { Router } from '@angular/router';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
+
+import { AuthSharingService } from '../auth-sharing.service';
+import { CommonUtil } from 'src/app/@core/utils/common.util';
 
 @Component({
   selector: 'app-login',
@@ -59,7 +62,7 @@ export class LoginComponent implements OnInit {
   }
 
   private getSignInError(errorCode: string) {
-    let message = 'Có lỗi xảy ra, vui lòng thử lại sau';
+    let message = CommonUtil.COMMON_ERROR_MESSAGE;
     switch (errorCode) {
       case 'auth/user-not-found':
         message = 'Sai tài khoản';

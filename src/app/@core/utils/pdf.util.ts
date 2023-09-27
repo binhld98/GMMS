@@ -1,35 +1,57 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-import { times } from '../constants/times_font.constant';
-import { timesi } from '../constants/timesi_font.constant';
-import { timesbd } from '../constants/timesbd_font.constant';
-import { timesbi } from '../constants/timesbi_font.constant';
 import { PaymentPdfDto } from '../dtos/payment.dto';
 
 export class PdfUtil {
-  static TOP_MARGIN = 36;
-  static BOTTOM_MARGIN = 36;
-  static LEFT_MARGIN = 36;
-  static RIGHT_MARGIN = 36;
+  static A4_PAGE_W = 596;
+  static A4_PAGE_H = 842;
+  static A4_TOP_MRG = 36;
+  static A4_BOT_MRG = 36;
+  static A4_LEFT_MRG = 36;
+  static A4_RIGHT_MRG = 36;
 
-  static PAGE_WIDTH = 596;
-  static PAGE_HEIGHT = 842;
+  static async initDoc(paperSize: string = 'a4') {
+    // fetch required fonts
+    const cacheName = 'times-cache-v1';
+    const fontNames = ['times', 'timesi', 'timesbd', 'timesbi'];
+    const fn = async (cache: Cache, url: string) => {
+      let response = await cache.match(url);
+      if (response) {
+        return response;
+      }
 
-  static initDoc(paperSize: string = 'a4') {
+      response = await fetch(url);
+      if (response.status == 200) {
+        cache.put(url, response.clone());
+      }
+
+      return response;
+    };
+
+    const cache = await caches.open(cacheName);
+    const responses = await Promise.all(
+      fontNames.map((name) => {
+        return fn(cache, '/assets/fonts/' + name + '.base64');
+      })
+    );
+
     const doc = new jsPDF({
       orientation: 'p',
       unit: 'pt',
       format: paperSize,
     });
-    doc.addFileToVFS('times.ttf', times);
-    doc.addFileToVFS('timesi.ttf', timesi);
-    doc.addFileToVFS('timesbd.ttf', timesbd);
-    doc.addFileToVFS('timesbi.ttf', timesbi);
-    doc.addFont('times.ttf', 'gmm_times', 'normal');
-    doc.addFont('timesi.ttf', 'gmm_timesi', 'normal');
-    doc.addFont('timesbd.ttf', 'gmm_timesbd', 'normal');
-    doc.addFont('timesbi.ttf', 'gmm_timesbi', 'normal');
+
+    const fonts = await Promise.all(
+      responses.map((res) => {
+        return res.text();
+      })
+    );
+
+    for (let i = 0; i < fonts.length; i++) {
+      doc.addFileToVFS(fontNames[i] + '.tff', fonts[i]);
+      doc.addFont(fontNames[i] + '.tff', 'gmm_' + fontNames[i], 'normal');
+    }
 
     return doc;
   }
@@ -37,19 +59,19 @@ export class PdfUtil {
   /**
    * @returns DataUri
    */
-  static makePaymentPdf(payment: PaymentPdfDto): string {
-    const doc = PdfUtil.initDoc();
+  static async makePaymentPdf(payment: PaymentPdfDto) {
+    const doc = await PdfUtil.initDoc();
 
     // left header
     doc.setFont('gmm_times');
     doc.setFontSize(12);
-    doc.text(payment.groupName, PdfUtil.LEFT_MARGIN, PdfUtil.TOP_MARGIN);
+    doc.text(payment.groupName, PdfUtil.A4_LEFT_MRG, PdfUtil.A4_TOP_MRG);
 
     // right header
     doc.text(
       'Group Money Management System - GMMS',
-      PdfUtil.PAGE_WIDTH - PdfUtil.RIGHT_MARGIN,
-      PdfUtil.TOP_MARGIN,
+      PdfUtil.A4_PAGE_W - PdfUtil.A4_RIGHT_MRG,
+      PdfUtil.A4_TOP_MRG,
       {
         align: 'right',
       }
@@ -60,21 +82,21 @@ export class PdfUtil {
     doc.setFontSize(16);
     doc.text(
       'PHIẾU CHI',
-      PdfUtil.PAGE_WIDTH / 2 - doc.getTextWidth('PHIẾU CHI') / 2,
-      PdfUtil.TOP_MARGIN + 48,
+      PdfUtil.A4_PAGE_W / 2 - doc.getTextWidth('PHIẾU CHI') / 2,
+      PdfUtil.A4_TOP_MRG + 48,
       {
         align: 'left',
       }
     );
 
     const paymentAt = new Date(payment.paymentAt.seconds * 1000);
-    const paymentAtString = PdfUtil.ToDateViStr(paymentAt);
+    const paymentAtString = PdfUtil.ToDateStr(paymentAt);
     doc.setFont('gmm_timesi');
     doc.setFontSize(12);
     doc.text(
       paymentAtString,
-      PdfUtil.PAGE_WIDTH / 2 - doc.getTextWidth(paymentAtString) / 2,
-      PdfUtil.TOP_MARGIN + 64,
+      PdfUtil.A4_PAGE_W / 2 - doc.getTextWidth(paymentAtString) / 2,
+      PdfUtil.A4_TOP_MRG + 64,
       {
         align: 'left',
       }
@@ -83,14 +105,14 @@ export class PdfUtil {
     // a side
     doc.setFont('gmm_timesbd');
     doc.setFontSize(12);
-    doc.text('Bên A:', PdfUtil.LEFT_MARGIN, PdfUtil.TOP_MARGIN + 96, {
+    doc.text('Bên A:', PdfUtil.A4_LEFT_MRG, PdfUtil.A4_TOP_MRG + 96, {
       align: 'left',
     });
     doc.setFont('gmm_times');
     doc.text(
       'Danh sách chủ chi bao gồm:',
-      PdfUtil.LEFT_MARGIN + doc.getTextWidth('Bên A:') + 6,
-      PdfUtil.TOP_MARGIN + 96,
+      PdfUtil.A4_LEFT_MRG + doc.getTextWidth('Bên A:') + 6,
+      PdfUtil.A4_TOP_MRG + 96,
       {
         align: 'left',
       }
@@ -136,17 +158,17 @@ export class PdfUtil {
     // b side
     // @ts-ignore
     let finalY = doc.lastAutoTable.finalY;
-    if (finalY + 32 > PdfUtil.PAGE_HEIGHT - PdfUtil.BOTTOM_MARGIN) {
-      finalY = PdfUtil.TOP_MARGIN - 32;
+    if (finalY + 32 > PdfUtil.A4_PAGE_H - PdfUtil.A4_BOT_MRG) {
+      finalY = PdfUtil.A4_TOP_MRG - 32;
       doc.addPage();
     }
 
     doc.setFont('gmm_timesbd');
-    doc.text('Bên B:', PdfUtil.LEFT_MARGIN, finalY + 32);
+    doc.text('Bên B:', PdfUtil.A4_LEFT_MRG, finalY + 32);
     doc.setFont('gmm_times');
     doc.text(
       'Danh sách thụ hưởng bao gồm:',
-      PdfUtil.LEFT_MARGIN + doc.getTextWidth('Bên B:') + 6,
+      PdfUtil.A4_LEFT_MRG + doc.getTextWidth('Bên B:') + 6,
       finalY + 32
     );
 
@@ -171,25 +193,20 @@ export class PdfUtil {
     // signature
     // @ts-ignore
     finalY = doc.lastAutoTable.finalY;
-    if (finalY + 64 > PdfUtil.PAGE_HEIGHT - PdfUtil.BOTTOM_MARGIN) {
-      finalY = PdfUtil.TOP_MARGIN - 32;
+    if (finalY + 64 > PdfUtil.A4_PAGE_H - PdfUtil.A4_BOT_MRG) {
+      finalY = PdfUtil.A4_TOP_MRG - 32;
       doc.addPage();
     }
 
-    const nowString = PdfUtil.ToDateViStr(new Date());
+    const nowString = PdfUtil.ToDateStr(new Date());
     doc.setFont('gmm_timesi');
-    doc.text(
-      nowString,
-      PdfUtil.PAGE_WIDTH - PdfUtil.RIGHT_MARGIN,
-      finalY + 32,
-      {
-        align: 'right',
-      }
-    );
+    doc.text(nowString, PdfUtil.A4_PAGE_W - PdfUtil.A4_RIGHT_MRG, finalY + 32, {
+      align: 'right',
+    });
 
     const centerY =
-      PdfUtil.PAGE_WIDTH -
-      PdfUtil.RIGHT_MARGIN -
+      PdfUtil.A4_PAGE_W -
+      PdfUtil.A4_RIGHT_MRG -
       doc.getTextWidth(nowString) / 2;
     doc.setFont('gmm_timesbd');
     doc.text('Người lập phiếu', centerY, finalY + 48, {
@@ -209,7 +226,10 @@ export class PdfUtil {
     return doc.output('datauristring');
   }
 
-  static ToDateViStr(date: Date) {
+  /**
+   * @returns e.g Ngày 02 tháng 09 năm 2023
+   */
+  static ToDateStr(date: Date) {
     const day = ('0' + date.getDate()).slice(-2);
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const year = date.getFullYear();

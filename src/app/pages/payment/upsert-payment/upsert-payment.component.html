@@ -275,7 +275,12 @@
       Xóa trắng
     </button>
     <button nz-button nzType="primary">Lưu nháp</button>
-    <button nz-button nzType="primary" (click)="onGeneratePayment()">
+    <button
+      nz-button
+      nzType="primary"
+      (click)="onGeneratePayment()"
+      [nzLoading]="isLoadingPdf"
+    >
       Tạo phiếu
     </button>
   </ng-template>
