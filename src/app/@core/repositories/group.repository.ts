@@ -56,6 +56,7 @@ export class GroupRepository implements BaseRepository<Group> {
 
     if (docRef.id) {
       group.id = docRef.id;
+      await this.updateAsync(group);
       return group;
     }
 

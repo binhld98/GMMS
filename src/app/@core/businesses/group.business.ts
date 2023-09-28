@@ -103,20 +103,10 @@ export class GroupBusiness {
       return null;
     }
 
-    // #2 update group + user
-    group.id = groupAdded.id;
+    // #2 update user
     groupUser.groupId = groupAdded.id;
-
-    const updatedResults = await Promise.all([
-      this.groupRepository.updateAsync(group),
-      this.userRepository.unionGroupAsync(groupUser),
-    ]);
-
-    if (updatedResults.indexOf(false) == -1) {
-      return groupAdded.id;
-    }
-
-    return null;
+    await this.userRepository.unionGroupAsync(groupUser);
+    return groupAdded.id;
   }
 
   async getGroupDetail(groupId: string): Promise<GroupDetailDto | null> {

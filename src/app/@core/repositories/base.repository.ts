@@ -12,8 +12,9 @@ export type BaseRepository<T extends Entity> = {
   getManyAsync(ids: string[]): Promise<T[] | []>;
 
   /**
+   * Auto generated id for entity
+   *
    * @param entity
-   * @returns id of newly created entity
    */
   addAsync(entity: T): Promise<T | null>;
 

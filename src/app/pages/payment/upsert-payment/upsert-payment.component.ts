@@ -16,7 +16,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
-import { Timestamp } from 'firebase/firestore';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
@@ -24,10 +23,13 @@ import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
-import { PaymentPdfDto } from 'src/app/@core/dtos/payment.dto';
+import {
+  PaymentPdfDto,
+  UpsertPaymentDto,
+} from 'src/app/@core/dtos/payment.dto';
 
-import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
+import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -112,7 +114,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       this.aSideFA.push(
         this.fb.group({
           userId: [null, [Validators.required]],
-          amount: [null, [Validators.required]],
+          amount: [null, [Validators.min, Validators.max, Validators.required]],
           description: [null, [Validators.required]],
         })
       );
@@ -172,14 +174,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     const _group = this.groups.find((g) => g.id == this.form.value.groupId)!;
     const _date = this.form.value.date as Date;
     const _time = this.form.value.time as Date;
-    const _paymentAtEpoch = new Date(
-      _date.getFullYear(),
-      _date.getMonth(),
-      _date.getDate(),
-      _time?.getHours() ?? 0,
-      _time?.getMinutes() ?? 0,
-      _time?.getSeconds() ?? 0
-    ).getTime();
 
     const aSide = this.form.value.aSide as {
       userId: string;
@@ -219,7 +213,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
 
     const dto = {
       groupName: _group.groupName,
-      paymentAt: new Timestamp(_paymentAtEpoch / 1000, 0),
+      paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
       aSide: _aSide,
       bSide: _bSide,
     } as PaymentPdfDto;
@@ -228,6 +222,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       .then((blob) => {
         this.pdfBlob = blob;
         this.pdfObjUrl = window.URL.createObjectURL(this.pdfBlob);
+        this.pdfName = this.pdfObjUrl.split('/').reverse()[0] + '.pdf';
         this.isVisiblePdf = true;
       })
       .catch((error) => {
@@ -389,10 +384,40 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   isLoadingPdf = false;
   pdfBlob: Blob | null = null;
   pdfObjUrl: string = '';
+  pdfName: string = '';
   isSavingPayment = false;
 
   onSavePayment() {
     this.isSavingPayment = true;
-    this.isVisiblePdf = false;
+
+    const _date = this.form.value.date as Date;
+    const _time = this.form.value.time as Date;
+
+    const dto = {
+      groupId: this.form.value.groupId,
+      aSide: this.form.value.aSide,
+      bSide: this.form.value.bSide,
+      paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
+      pdfBlob: this.pdfBlob,
+      pdfName: this.pdfName,
+    } as UpsertPaymentDto;
+
+    this.paymentBusiness
+      .createNewPayment(dto, this.auth.currentUser!.uid)
+      .then((paymentId) => {
+        if (!!paymentId) {
+          this.messageService.success('Tạo phiếu chi thành công!');
+        } else {
+          this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+        }
+      })
+      .catch((error) => {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+      })
+      .finally(() => {
+        this.isSavingPayment = false;
+        this.isVisiblePdf = false;
+        this.handleCancel();
+      });
   }
 }

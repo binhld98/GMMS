@@ -13,3 +13,18 @@ export type PaymentPdfDto = {
   }[];
   // creatorName: string;
 };
+
+export type UpsertPaymentDto = {
+  groupId: string;
+  paymentAt: Timestamp;
+  aSide: {
+    userId: string;
+    amount: number;
+    description: string;
+  }[];
+  bSide: {
+    userId: string;
+  }[];
+  pdfBlob: Blob;
+  pdfName: string;
+};
