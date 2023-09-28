@@ -9,14 +9,11 @@ export class PdfViewerComponent {
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
   @Input() title: string = '';
-  @Input() dataUri: string = '';
+  @Input() dataObjUrl: string = '';
   @Input() isUnderModal = true;
+  @Output() next = new EventEmitter<void>();
 
   onClose() {
     this.visibleChange.next(false);
-  }
-
-  onSave() {
-    this.onClose();
   }
 }

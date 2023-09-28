@@ -8,6 +8,7 @@ export type Payment = Entity & {
   aSide: ASide[];
   bSide: BSide[];
   paymentAt: Timestamp;
+  pdfPath: string;
 };
 
 export type ASide = {

@@ -9,14 +9,14 @@
 >
   <ng-container *nzDrawerContent>
     <iframe
-      *ngIf="!!dataUri"
-      [src]="dataUri | gmm_safe : 'resourceUrl'"
+      *ngIf="!!dataObjUrl"
+      [src]="dataObjUrl | gmm_safe : 'resourceUrl'"
     ></iframe>
   </ng-container>
 
   <ng-template #nzDrawerFooter>
     <div class="footer">
-      <button nz-button nzType="primary" (click)="onSave()">Đồng ý</button>
+      <ng-content></ng-content>
     </div>
   </ng-template>
 </nz-drawer>

@@ -57,7 +57,7 @@ export class PdfUtil {
   }
 
   /**
-   * @returns DataUri
+   * @returns Blob
    */
   static async makePaymentPdf(payment: PaymentPdfDto) {
     const doc = await PdfUtil.initDoc();
@@ -69,7 +69,7 @@ export class PdfUtil {
 
     // right header
     doc.text(
-      'Group Money Management System - GMMS',
+      'GMM System',
       PdfUtil.A4_PAGE_W - PdfUtil.A4_RIGHT_MRG,
       PdfUtil.A4_TOP_MRG,
       {
@@ -223,7 +223,7 @@ export class PdfUtil {
     //   align: 'center',
     // });
 
-    return doc.output('datauristring');
+    return doc.output('blob');
   }
 
   /**
