@@ -23,3 +23,7 @@ nz-select {
 nz-spin {
   height: 100%;
 }
+
+input[nz-input] {
+  max-width: 150px;
+}

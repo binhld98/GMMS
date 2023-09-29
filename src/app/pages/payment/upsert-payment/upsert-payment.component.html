@@ -119,18 +119,12 @@
                           nz-input
                           placeholder="Số tiền (k VNĐ)"
                           formControlName="amount"
-                          [min]="1"
-                          [max]="999999"
                         />
                         <ng-template #amountErrorTpl let-control>
-                          <ng-container *ngIf="control.hasError('min')">
-                            Số tiền tối thiểu là 1 (1k VNĐ)!
-                          </ng-container>
-                          <ng-container *ngIf="control.hasError('max')">
-                            Số tiền tối đa là 999999 (999m VNĐ)!
-                          </ng-container>
-                          <ng-container *ngIf="control.hasError('required')">
-                            Hãy điền số tiền!
+                          <ng-container
+                            *ngIf="control.hasError('malformedMoney')"
+                          >
+                            Từ 1 đến 99999!
                           </ng-container>
                         </ng-template>
                       </nz-form-control>

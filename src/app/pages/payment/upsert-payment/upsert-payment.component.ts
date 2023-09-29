@@ -101,6 +101,19 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     return valid;
   }
 
+  malformedMoney(control: FormControl): { [key: string]: any } | null {
+    if (!!control.value) {
+      const amount = parseFloat(control.value);
+      if (amount == control.value) {
+        if (0 < amount && amount < 999999) {
+          return null;
+        }
+      }
+    }
+
+    return { malformedMoney: true };
+  }
+
   get aSideFA() {
     return <FormArray>this.form.get('aSide');
   }
@@ -109,23 +122,27 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     return <FormArray>this.form.get('bSide');
   }
 
-  onAddToASide() {
+  onAddToASide(
+    userId: string | null = null,
+    amount: number | null = null,
+    description: string | null = null
+  ) {
     if (this.touchHeaderForm()) {
       this.aSideFA.push(
         this.fb.group({
-          userId: [null, [Validators.required]],
-          amount: [null, [Validators.min, Validators.max, Validators.required]],
-          description: [null, [Validators.required]],
+          userId: [userId, [Validators.required]],
+          amount: [amount, [this.malformedMoney.bind(this)]],
+          description: [description, [Validators.required]],
         })
       );
     }
   }
 
-  onAddToBSide() {
+  onAddToBSide(userId: string | null = null) {
     if (this.touchHeaderForm()) {
       this.bSideFA.push(
         this.fb.group({
-          userId: [null, [Validators.required]],
+          userId: [userId, [Validators.required]],
         })
       );
     }
@@ -195,10 +212,10 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     const bSide = this.form.value.bSide as {
-      userName: string;
+      userId: string;
     }[];
 
-    let _bSide = bSide.map((b: any) => {
+    let _bSide = bSide.map((b) => {
       const member = this.members.find((m) => m.userId == b.userId)!;
       return {
         userName: member.userName,
@@ -257,49 +274,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     this.members = [];
   }
 
-  autoLoadBSide() {
-    if (!this.touchHeaderForm()) {
-      return;
-    }
-
-    if (this.members.length > 0) {
-      this.bSideFA.clear();
-      this.members.forEach((m) => {
-        this.bSideFA.push(
-          this.fb.group({
-            userId: [m.userId, [Validators.required]],
-          })
-        );
-      });
-      return;
-    }
-
-    this.isAutoLoadBSide = true;
-    this.groupBusiness
-      .getGroupDetail(this.form.value.groupId)
-      .then((g) => {
-        if (!!g) {
-          this.members = g.users.filter((u) => {
-            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
-          });
-        }
-        this.bSideFA.clear();
-        this.members.forEach((m) => {
-          this.bSideFA.push(
-            this.fb.group({
-              userId: [m.userId, [Validators.required]],
-            })
-          );
-        });
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isAutoLoadBSide = false;
-      });
-  }
-
   autoLoadASide() {
     if (!this.touchHeaderForm()) {
       return;
@@ -307,15 +281,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
 
     if (this.members.length > 0) {
       this.aSideFA.clear();
-      this.members.forEach((m) => {
-        this.aSideFA.push(
-          this.fb.group({
-            userId: [m.userId, [Validators.required]],
-            amount: [null, [Validators.required]],
-            description: [null, [Validators.required]],
-          })
-        );
-      });
+      this.members.forEach((m) => this.onAddToASide(m.userId, null, null));
       return;
     }
 
@@ -329,21 +295,44 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
           });
         }
         this.aSideFA.clear();
-        this.members.forEach((m) => {
-          this.aSideFA.push(
-            this.fb.group({
-              userId: [m.userId, [Validators.required]],
-              amount: [null, [Validators.required]],
-              description: [null, [Validators.required]],
-            })
-          );
-        });
+        this.members.forEach((m) => this.onAddToASide(m.userId, null, null));
       })
       .catch((error) => {
         this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isAutoLoadASide = false;
+      });
+  }
+
+  autoLoadBSide() {
+    if (!this.touchHeaderForm()) {
+      return;
+    }
+
+    if (this.members.length > 0) {
+      this.bSideFA.clear();
+      this.members.forEach((m) => this.onAddToBSide(m.userId));
+      return;
+    }
+
+    this.isAutoLoadBSide = true;
+    this.groupBusiness
+      .getGroupDetail(this.form.value.groupId)
+      .then((g) => {
+        if (!!g) {
+          this.members = g.users.filter((u) => {
+            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
+          });
+        }
+        this.bSideFA.clear();
+        this.members.forEach((m) => this.onAddToBSide(m.userId));
+      })
+      .catch((error) => {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+      })
+      .finally(() => {
+        this.isAutoLoadBSide = false;
       });
   }
 
@@ -391,10 +380,18 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     const _date = this.form.value.date as Date;
     const _time = this.form.value.time as Date;
 
+    const bSide = this.form.value.bSide as {
+      userId: string;
+    }[];
+
+    const _bSide = [
+      ...new Map(bSide.map((item) => [item.userId, item])).values(),
+    ];
+
     const dto = {
       groupId: this.form.value.groupId,
       aSide: this.form.value.aSide,
-      bSide: this.form.value.bSide,
+      bSide: _bSide,
       paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
       pdfBlob: this.pdfBlob,
     } as UpsertPaymentDto;
