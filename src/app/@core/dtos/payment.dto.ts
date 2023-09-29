@@ -25,6 +25,4 @@ export type UpsertPaymentDto = {
   bSide: {
     userId: string;
   }[];
-  pdfBlob: Blob;
-  pdfName: string;
 };

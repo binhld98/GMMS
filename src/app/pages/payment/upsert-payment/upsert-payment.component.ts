@@ -222,7 +222,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       .then((blob) => {
         this.pdfBlob = blob;
         this.pdfObjUrl = window.URL.createObjectURL(this.pdfBlob);
-        this.pdfName = this.pdfObjUrl.split('/').reverse()[0] + '.pdf';
         this.isVisiblePdf = true;
       })
       .catch((error) => {
@@ -384,7 +383,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   isLoadingPdf = false;
   pdfBlob: Blob | null = null;
   pdfObjUrl: string = '';
-  pdfName: string = '';
   isSavingPayment = false;
 
   onSavePayment() {
@@ -399,7 +397,6 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       bSide: this.form.value.bSide,
       paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
       pdfBlob: this.pdfBlob,
-      pdfName: this.pdfName,
     } as UpsertPaymentDto;
 
     this.paymentBusiness

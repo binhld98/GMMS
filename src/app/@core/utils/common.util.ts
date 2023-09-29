@@ -15,8 +15,4 @@ export class CommonUtil {
 
     return new Timestamp(paymentAtEpoch / 1000, 0);
   }
-
-  static getPaymentBasePath(groupId: string) {
-    return '/groups/' + groupId + '/payments/';
-  }
 }
