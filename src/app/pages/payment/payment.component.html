@@ -1,19 +1,6 @@
 <nz-card nzTitle="Phiếu chi" [nzExtra]="extraTemplate">
-  <form nz-form [formGroup]="form" nzLayout="vertical">
-    <nz-space nzSize="large" nzAlign="end">
-      <nz-form-item *nzSpaceItem>
-        <nz-form-label>Nhóm</nz-form-label>
-        <nz-form-control nzErrorTip="Hãy chọn nhóm!">
-          <nz-select
-            nzShowSearch
-            nzAllowClear
-            nzPlaceHolder="Chọn nhóm"
-            formControlName="groupId"
-          >
-            <nz-option nzValue="-1" nzLabel="Tất cả"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
+  <form nz-form [formGroup]="form">
+    <nz-space nzSize="large" nz-row>
       <nz-form-item *nzSpaceItem>
         <nz-form-label>Từ ngày</nz-form-label>
         <nz-form-control nzErrorTip="Hãy chọn từ ngày!">
@@ -33,12 +20,12 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *nzSpaceItem>
-        <nz-form-label>Theo</nz-form-label>
-        <nz-form-control nzErrorTip="Hãy chọn loại ngày!">
+        <nz-form-label>Tiêu chí</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn tiêu chí!">
           <nz-select
             nzShowSearch
             nzAllowClear
-            nzPlaceHolder="Chọn loại ngày"
+            nzPlaceHolder="Chọn tiêu chí"
             formControlName="fromToType"
           >
             <nz-option nzValue="created_at" nzLabel="Ngày tạo"></nz-option>
@@ -61,7 +48,7 @@
       </nz-form-item>
     </nz-space>
   </form>
-  <nz-table #table nzSize="small" nzBordered>
+  <nz-table #table nzSize="small" nzBordered [nzLoading]="isLoadingPayments">
     <thead>
       <tr>
         <th nzAlign="center" nzWidth="100px">STT</th>

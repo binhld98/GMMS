@@ -10,9 +10,9 @@ import {
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
+import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupDetailDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
-import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 
 @Component({
   selector: 'gmm-group-detail-admin',

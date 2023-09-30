@@ -1,5 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../models/group-user';
+import {
+  GROUP_USER_ROLE,
+  GROUP_USER_STATUS,
+} from '../constants/common.constant';
 
 @Pipe({ name: 'gmm_group_status' })
 export class GroupStatusPipe implements PipeTransform {

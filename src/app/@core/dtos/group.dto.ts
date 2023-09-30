@@ -1,5 +1,8 @@
 import { Timestamp } from 'firebase/firestore';
-import { GROUP_USER_ROLE, GROUP_USER_STATUS } from '../models/group-user';
+import {
+  GROUP_USER_ROLE,
+  GROUP_USER_STATUS,
+} from '../constants/common.constant';
 
 export type GroupMasterDto = {
   id: string;

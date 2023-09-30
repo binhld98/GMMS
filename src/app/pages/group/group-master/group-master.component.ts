@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 
+import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 
@@ -31,7 +32,7 @@ export class GroupMasterComponent {
   onGroupSaved() {
     this.isLoading = true;
     this.groupBusiness
-      .getJoinedGroupsByUserId(this.auth.currentUser!.uid)
+      .getGroupsOfUserBy(this.auth.currentUser!.uid, [GROUP_USER_STATUS.JOINED])
       .then((groups) => {
         this.groups = groups;
         this.isLoading = false;

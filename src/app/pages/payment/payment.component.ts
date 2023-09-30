@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { Auth } from '@angular/fire/auth';
 
-import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
+import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
+import { GroupBusiness } from 'src/app/@core/businesses/group.business';
+import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 import {
   FromToTypeDto,
@@ -19,7 +22,7 @@ import {
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css'],
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements OnInit, AfterViewInit {
   isVisibleUpsert = false;
   form!: FormGroup;
   isLoadingPayments = false;
@@ -27,6 +30,8 @@ export class PaymentComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private auth: Auth,
+    private groupBusiness: GroupBusiness,
     private paymentBusiness: PaymentBusiness
   ) {}
 
@@ -40,11 +45,22 @@ export class PaymentComponent implements OnInit {
     );
 
     this.form = this.fb.group({
-      groupId: ['-1', [Validators.required]],
       fromToType: ['payment_at', [Validators.required]],
       fromDate: [startOfCurrentMonth, [Validators.required]],
       toDate: [endOfCurrentMonth, [Validators.required]],
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.groupBusiness
+      .getGroupsOfUserBy(this.auth.currentUser!.uid, [
+        GROUP_USER_STATUS.JOINED,
+        GROUP_USER_STATUS.DEACTIVATED,
+      ])
+      .then((groups) => {
+        this.groups = groups;
+        this.onSearchPayments();
+      });
   }
 
   onAddPayment() {
@@ -63,18 +79,16 @@ export class PaymentComponent implements OnInit {
     }
 
     const formValue = this.form.value as {
-      groupId: string;
       fromDate: Date;
       toDate: Date;
       fromToType: FromToTypeDto;
     };
 
-    const _groupIds = formValue.groupId != '-1' ? [formValue.groupId] : null;
     const _fromDate = CommonUtil.startOfDate(formValue.fromDate);
     const _toDate = CommonUtil.endOfDate(formValue.toDate);
 
     const paramsDto = {
-      groupIds: _groupIds,
+      groupIds: this.groups.map((g) => g.id),
       fromDate: _fromDate,
       toDate: _toDate,
       fromToType: formValue.fromToType,

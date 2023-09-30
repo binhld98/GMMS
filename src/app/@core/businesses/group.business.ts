@@ -1,21 +1,21 @@
+import { Injectable } from '@angular/core';
 import { Timestamp } from 'firebase/firestore';
 
-import { UserRepository } from '../repositories/user.repository';
-import { GroupRepository } from '../repositories/group.repository';
-import { GROUP_STATUS, Group } from '../models/group';
 import {
+  GROUP_STATUS,
   GROUP_USER_ROLE,
   GROUP_USER_STATUS,
-  GroupUser,
-} from '../models/group-user';
-
+} from '../constants/common.constant';
+import { UserRepository } from '../repositories/user.repository';
+import { GroupRepository } from '../repositories/group.repository';
+import { Group } from '../models/group';
+import { GroupUser } from '../models/group-user';
 import {
   GroupDetailDto,
   GroupMasterDto,
   GroupUserDto,
 } from '../dtos/group.dto';
 import { InviteUserDto } from '../dtos/user.dto';
-import { Injectable } from '@angular/core';
 
 @Injectable()
 export class GroupBusiness {
@@ -26,7 +26,10 @@ export class GroupBusiness {
     private groupRepository: GroupRepository
   ) {}
 
-  async getJoinedGroupsByUserId(userId: string): Promise<GroupMasterDto[]> {
+  async getGroupsOfUserBy(
+    userId: string,
+    statuses: GROUP_USER_STATUS[]
+  ): Promise<GroupMasterDto[]> {
     // #1 --> user
     const usr = await this.userRepository.getAsync(userId);
     if (!usr) {
@@ -35,7 +38,7 @@ export class GroupBusiness {
 
     // #2 --> joined groups
     const grpUids = usr.groups
-      .filter((g) => g.status == GROUP_USER_STATUS.JOINED)
+      .filter((g) => statuses.indexOf(g.status) != -1)
       .map((g) => g.groupId!);
 
     if (grpUids.length == 0) {

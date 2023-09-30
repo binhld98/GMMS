@@ -19,17 +19,16 @@ import { Auth } from '@angular/fire/auth';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
+import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
+import { CommonUtil } from 'src/app/@core/utils/common.util';
+import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
-import { GROUP_USER_STATUS } from 'src/app/@core/models/group-user';
 import {
   PaymentPdfDto,
   UpsertPaymentDto,
 } from 'src/app/@core/dtos/payment.dto';
-
-import { CommonUtil } from 'src/app/@core/utils/common.util';
-import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 
 @Component({
   selector: 'gmm-upsert-payment-modal',
@@ -256,7 +255,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
 
     this.isLoadingGroups = true;
     this.groupBusiness
-      .getJoinedGroupsByUserId(this.auth.currentUser!.uid)
+      .getGroupsOfUserBy(this.auth.currentUser!.uid, [GROUP_USER_STATUS.JOINED])
       .then((g) => {
         this.groups = g;
       })
