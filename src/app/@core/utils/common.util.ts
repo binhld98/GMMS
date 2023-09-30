@@ -15,4 +15,20 @@ export class CommonUtil {
 
     return new Timestamp(paymentAtEpoch / 1000, 0);
   }
+
+  static getMinDate() {
+    return new Date(1, 1, 1, 0, 0, 0);
+  }
+
+  static getMinTimestamp() {
+    return Timestamp.fromDate(this.getMinDate());
+  }
+
+  static getMaxDate() {
+    return new Date(9999, 12, 31, 23, 59, 59);
+  }
+
+  static getMaxTimestamp() {
+    return Timestamp.fromDate(this.getMaxDate());
+  }
 }

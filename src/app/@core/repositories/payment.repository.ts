@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   CollectionReference,
   Firestore,
+  Timestamp,
   addDoc,
+  and,
   collection,
   doc,
   getDoc,
@@ -15,6 +17,7 @@ import {
 import { Payment } from '../models/payment';
 import { BaseRepository } from './base.repository';
 import { DocumentData } from 'rxfire/firestore/interfaces';
+import { Time } from '@angular/common';
 
 @Injectable()
 export class PaymentRepository implements BaseRepository<Payment> {
@@ -66,5 +69,28 @@ export class PaymentRepository implements BaseRepository<Payment> {
     await setDoc(docRef, payment);
 
     return true;
+  }
+
+  async findManyAsync(
+    groupIds: string[] | [],
+    createdAtFrom: Timestamp,
+    createdAtTo: Timestamp,
+    paymentAtFrom: Timestamp,
+    paymentAtTo: Timestamp
+  ): Promise<Payment[] | []> {
+    let _where = and(
+      where('groupId', 'in', groupIds),
+      where('createdAt', '>=', createdAtFrom),
+      where('createdAt', '<=', createdAtTo),
+      where('paymentAt', '>=', paymentAtFrom),
+      where('paymentAt', '<=', paymentAtTo)
+    );
+    const _query = query(this.colRef, _where);
+    const docsSnap = await getDocs(_query);
+    if (docsSnap.empty) {
+      return [];
+    }
+
+    return docsSnap.docs.map((d) => d.data() as Payment);
   }
 }

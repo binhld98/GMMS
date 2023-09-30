@@ -4,9 +4,10 @@ import { Timestamp } from 'firebase/firestore';
 
 import { PAYMENT_STATUS } from '../constants/common.constant';
 
-import { UpsertPaymentDto } from '../dtos/payment.dto';
+import { SearchPaymentParamsDto, UpsertPaymentDto } from '../dtos/payment.dto';
 import { Payment } from '../models/payment';
 import { PaymentRepository } from '../repositories/payment.repository';
+import { CommonUtil } from '../utils/common.util';
 
 @Injectable()
 export class PaymentBusiness {
@@ -35,5 +36,22 @@ export class PaymentBusiness {
     }
 
     return paymentAdded.id;
+  }
+
+  async getPayments(params: SearchPaymentParamsDto) {
+    const endOfCurrentDay = CommonUtil.dateTimeToTimestamp(
+      new Date(),
+      new Date(0, 0, 0, 23, 59, 59)
+    );
+
+    const payments = await this.paymentRepository.findManyAsync(
+      params.groupIds,
+      params.createdAtFrom,
+      params.createdAtTo,
+      params.paymentAtFrom,
+      params.paymentAtTo
+    );
+    console.log(payments);
+    return payments;
   }
 }

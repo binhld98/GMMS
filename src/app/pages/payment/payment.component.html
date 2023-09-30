@@ -15,20 +15,6 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *nzSpaceItem>
-        <nz-form-label>Loại</nz-form-label>
-        <nz-form-control nzErrorTip="Hãy chọn loại!">
-          <nz-select
-            nzShowSearch
-            nzAllowClear
-            nzPlaceHolder="Chọn loại"
-            formControlName="fromToType"
-          >
-            <nz-option nzValue="created_at" nzLabel="Ngày tạo"></nz-option>
-            <nz-option nzValue="payment_at" nzLabel="Ngày chi"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item *nzSpaceItem>
         <nz-form-label>Từ ngày</nz-form-label>
         <nz-form-control nzErrorTip="Hãy chọn từ ngày!">
           <nz-date-picker
@@ -47,6 +33,20 @@
         </nz-form-control>
       </nz-form-item>
       <nz-form-item *nzSpaceItem>
+        <nz-form-label>Theo</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn loại ngày!">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn loại ngày"
+            formControlName="fromToType"
+          >
+            <nz-option nzValue="created_at" nzLabel="Ngày tạo"></nz-option>
+            <nz-option nzValue="payment_at" nzLabel="Ngày chi"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *nzSpaceItem>
         <nz-form-control nzErrorTip="Hãy chọn đến ngày!">
           <button
             nz-button
@@ -61,6 +61,25 @@
       </nz-form-item>
     </nz-space>
   </form>
+  <nz-table #table nzSize="small" nzBordered>
+    <thead>
+      <tr>
+        <th nzAlign="center" nzWidth="100px">STT</th>
+        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">Tên nhóm</th>
+        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">
+          Người tạo
+        </th>
+        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Ngày tạo</th>
+        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Ngày chi</th>
+        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Tổng tiền</th>
+        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">
+          Trạng thái
+        </th>
+        <th nzAlign="center" nzWidth="200px">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </nz-table>
 </nz-card>
 <ng-template #extraTemplate>
   <button
