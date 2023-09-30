@@ -3,32 +3,64 @@ import { Timestamp } from 'firebase/firestore';
 export class CommonUtil {
   static COMMON_ERROR_MESSAGE = 'Có lỗi xảy ra, vui lòng thử lại sau!';
 
-  static dateTimeToTimestamp(date: Date, time: Date | null) {
-    const paymentAtEpoch = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      time?.getHours() ?? 0,
-      time?.getMinutes() ?? 0,
-      time?.getSeconds() ?? 0
-    ).getTime();
+  /**
+   *
+   * @param d Date parts
+   * @param t Time parts
+   * @returns Combine date and time
+   */
+  static combineDateTime(d: Date, t: Date) {
+    const date = new Date();
+    date.setFullYear(d.getFullYear());
+    date.setMonth(d.getMonth());
+    date.setDate(d.getDate());
+    date.setHours(t.getHours());
+    date.setMinutes(t.getMinutes());
+    date.setSeconds(t.getSeconds());
+    date.setMilliseconds(t.getMilliseconds());
 
-    return new Timestamp(paymentAtEpoch / 1000, 0);
+    return date;
   }
 
-  static getMinDate() {
-    return new Date(1, 1, 1, 0, 0, 0);
+  static startOfDate(d: Date) {
+    const date = new Date();
+    date.setFullYear(d.getFullYear());
+    date.setMonth(d.getMonth());
+    date.setDate(d.getDate());
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+
+    return date;
   }
 
-  static getMinTimestamp() {
-    return Timestamp.fromDate(this.getMinDate());
+  static endOfDate(d: Date) {
+    const date = new Date();
+    date.setFullYear(d.getFullYear());
+    date.setMonth(d.getMonth());
+    date.setDate(d.getDate());
+    date.setHours(23);
+    date.setMinutes(59);
+    date.setSeconds(59);
+    date.setMilliseconds(999);
+
+    return date;
   }
 
-  static getMaxDate() {
-    return new Date(9999, 12, 31, 23, 59, 59);
+  /**
+   *
+   * @returns Min UTC timestamp
+   */
+  static getMinTs() {
+    return Timestamp.fromDate(new Date('0001-01-01T00:00:00.00Z'));
   }
 
-  static getMaxTimestamp() {
-    return Timestamp.fromDate(this.getMaxDate());
+  /**
+   *
+   * @returns Max UTC timestamp
+   */
+  static getMaxTs() {
+    return Timestamp.fromDate(new Date('9999-12-31T23:59:59.99Z'));
   }
 }

@@ -89,8 +89,7 @@ export class PdfUtil {
       }
     );
 
-    const paymentAt = new Date(payment.paymentAt.seconds * 1000);
-    const paymentAtString = PdfUtil.ToDateStr(paymentAt);
+    const paymentAtString = PdfUtil.ToDateStr(payment.paymentAt);
     doc.setFont('gmm_timesi');
     doc.setFontSize(12);
     doc.text(

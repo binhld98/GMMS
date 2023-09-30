@@ -5,12 +5,14 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { Timestamp } from 'firebase/firestore';
-import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 
-import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
-import { SearchPaymentParamsDto } from 'src/app/@core/dtos/payment.dto';
+import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
+import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
+import {
+  FromToTypeDto,
+  SearchPaymentParamsDto,
+} from 'src/app/@core/dtos/payment.dto';
 
 @Component({
   selector: 'gmm-payment',
@@ -64,38 +66,27 @@ export class PaymentComponent implements OnInit {
       groupId: string;
       fromDate: Date;
       toDate: Date;
-      fromToType: string;
+      fromToType: FromToTypeDto;
     };
 
     const _groupIds = formValue.groupId != '-1' ? [formValue.groupId] : null;
-    let _createdAtFrom: Timestamp = CommonUtil.getMinTimestamp();
-    let _createdAtTo: Timestamp = CommonUtil.getMaxTimestamp();
-    let _paymentAtFrom: Timestamp = CommonUtil.getMinTimestamp();
-    let _paymentAtTo: Timestamp = CommonUtil.getMaxTimestamp();
-    if (formValue.fromToType == 'created_at') {
-      _createdAtFrom = CommonUtil.dateTimeToTimestamp(formValue.fromDate, null);
-      _createdAtTo = CommonUtil.dateTimeToTimestamp(
-        formValue.toDate,
-        CommonUtil.getMaxDate()
-      );
-    } else if (formValue.fromToType == 'payment_at') {
-      _paymentAtFrom = CommonUtil.dateTimeToTimestamp(formValue.fromDate, null);
-      _paymentAtTo = CommonUtil.dateTimeToTimestamp(
-        formValue.toDate,
-        CommonUtil.getMaxDate()
-      );
-    }
+    const _fromDate = CommonUtil.startOfDate(formValue.fromDate);
+    const _toDate = CommonUtil.endOfDate(formValue.toDate);
 
     const paramsDto = {
       groupIds: _groupIds,
-      createdAtFrom: _createdAtFrom,
-      createdAtTo: _createdAtTo,
-      paymentAtFrom: _paymentAtFrom,
-      paymentAtTo: _paymentAtTo,
+      fromDate: _fromDate,
+      toDate: _toDate,
+      fromToType: formValue.fromToType,
     } as SearchPaymentParamsDto;
     this.isLoadingPayments = true;
-    this.paymentBusiness.getPayments(paramsDto).finally(() => {
-      this.isLoadingPayments = false;
-    });
+    this.paymentBusiness
+      .getPayments(paramsDto)
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.isLoadingPayments = false;
+      });
   }
 }

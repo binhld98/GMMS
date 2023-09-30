@@ -3,7 +3,7 @@ import { PAYMENT_STATUS } from '../constants/common.constant';
 
 export type PaymentPdfDto = {
   groupName: string;
-  paymentAt: Timestamp;
+  paymentAt: Date;
   aSide: {
     userName: string;
     amount: number;
@@ -17,7 +17,7 @@ export type PaymentPdfDto = {
 
 export type UpsertPaymentDto = {
   groupId: string;
-  paymentAt: Timestamp;
+  paymentAt: Date;
   aSide: {
     userId: string;
     amount: number;
@@ -30,11 +30,12 @@ export type UpsertPaymentDto = {
 
 export type SearchPaymentParamsDto = {
   groupIds: string[];
-  createdAtFrom: Timestamp;
-  createdAtTo: Timestamp;
-  paymentAtFrom: Timestamp;
-  paymentAtTo: Timestamp;
+  fromDate: Date;
+  toDate: Date;
+  fromToType: FromToTypeDto;
 };
+
+export type FromToTypeDto = 'created_at' | 'payment_at';
 
 export type SearchPaymentResultDto = {
   groupId: string;

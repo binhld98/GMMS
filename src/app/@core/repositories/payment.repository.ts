@@ -4,7 +4,6 @@ import {
   Firestore,
   Timestamp,
   addDoc,
-  and,
   collection,
   doc,
   getDoc,
@@ -17,7 +16,6 @@ import {
 import { Payment } from '../models/payment';
 import { BaseRepository } from './base.repository';
 import { DocumentData } from 'rxfire/firestore/interfaces';
-import { Time } from '@angular/common';
 
 @Injectable()
 export class PaymentRepository implements BaseRepository<Payment> {
@@ -71,21 +69,36 @@ export class PaymentRepository implements BaseRepository<Payment> {
     return true;
   }
 
-  async findManyAsync(
-    groupIds: string[] | [],
+  async findByCreatedAtRangeAsync(
+    groupIds: string[],
     createdAtFrom: Timestamp,
-    createdAtTo: Timestamp,
+    createdAtTo: Timestamp
+  ): Promise<Payment[] | []> {
+    const _query = query(
+      this.colRef,
+      where('groupId', 'in', groupIds),
+      where('createdAt', '>=', createdAtFrom),
+      where('createdAt', '<=', createdAtTo)
+    );
+    const docsSnap = await getDocs(_query);
+    if (docsSnap.empty) {
+      return [];
+    }
+
+    return docsSnap.docs.map((d) => d.data() as Payment);
+  }
+
+  async findByPaymentAtRangeAsync(
+    groupIds: string[],
     paymentAtFrom: Timestamp,
     paymentAtTo: Timestamp
   ): Promise<Payment[] | []> {
-    let _where = and(
+    const _query = query(
+      this.colRef,
       where('groupId', 'in', groupIds),
-      where('createdAt', '>=', createdAtFrom),
-      where('createdAt', '<=', createdAtTo),
       where('paymentAt', '>=', paymentAtFrom),
       where('paymentAt', '<=', paymentAtTo)
     );
-    const _query = query(this.colRef, _where);
     const docsSnap = await getDocs(_query);
     if (docsSnap.empty) {
       return [];

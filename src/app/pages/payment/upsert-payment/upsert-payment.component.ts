@@ -230,7 +230,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
 
     const dto = {
       groupName: _group.groupName,
-      paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
+      paymentAt: CommonUtil.combineDateTime(_date, _time),
       aSide: _aSide,
       bSide: _bSide,
     } as PaymentPdfDto;
@@ -392,7 +392,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       groupId: this.form.value.groupId,
       aSide: this.form.value.aSide,
       bSide: _bSide,
-      paymentAt: CommonUtil.dateTimeToTimestamp(_date, _time),
+      paymentAt: CommonUtil.combineDateTime(_date, _time),
       pdfBlob: this.pdfBlob,
     } as UpsertPaymentDto;
 
