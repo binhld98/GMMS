@@ -29,3 +29,7 @@ nz-card {
 :host ::ng-deep .ant-spin-nested-loading > div > .ant-spin {
   max-height: 100%;
 }
+
+nz-select {
+  min-width: 150px;
+}

@@ -1,4 +1,67 @@
-<nz-card nzTitle="Phiếu chi" [nzExtra]="extraTemplate"> </nz-card>
+<nz-card nzTitle="Phiếu chi" [nzExtra]="extraTemplate">
+  <form nz-form [formGroup]="form" nzLayout="vertical">
+    <nz-space nzSize="large" nzAlign="end">
+      <nz-form-item *nzSpaceItem>
+        <nz-form-label>Nhóm</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn nhóm!">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn nhóm"
+            formControlName="groupId"
+          >
+            <nz-option nzValue="-1" nzLabel="Tất cả"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *nzSpaceItem>
+        <nz-form-label>Loại</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn loại!">
+          <nz-select
+            nzShowSearch
+            nzAllowClear
+            nzPlaceHolder="Chọn loại"
+            formControlName="fromToType"
+          >
+            <nz-option nzValue="created_at" nzLabel="Ngày tạo"></nz-option>
+            <nz-option nzValue="payment_at" nzLabel="Ngày chi"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *nzSpaceItem>
+        <nz-form-label>Từ ngày</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn từ ngày!">
+          <nz-date-picker
+            nzPlaceHolder="Chọn từ ngày"
+            formControlName="fromDate"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *nzSpaceItem>
+        <nz-form-label>Đến ngày</nz-form-label>
+        <nz-form-control nzErrorTip="Hãy chọn đến ngày!">
+          <nz-date-picker
+            nzPlaceHolder="Chọn đến ngày"
+            formControlName="toDate"
+          ></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item *nzSpaceItem>
+        <nz-form-control nzErrorTip="Hãy chọn đến ngày!">
+          <button
+            nz-button
+            nzType="primary"
+            (click)="onSearchPayments()"
+            [nzLoading]="isLoadingPayments"
+          >
+            <span nz-icon nzType="search"></span>
+            Tìm kiếm
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-space>
+  </form>
+</nz-card>
 <ng-template #extraTemplate>
   <button
     nz-button
