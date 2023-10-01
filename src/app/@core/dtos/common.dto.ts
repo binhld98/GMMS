@@ -18,7 +18,7 @@ export type ColumnFilterSorterConfig<T> = {
     filterOpts: NzTableFilterList;
     filterFn: NzTableFilterFn<T> | null;
     showSort: boolean;
-    sortPriority: number;
+    sortPriority: number | boolean;
     sortOrder: NzTableSortOrder | null;
     sortFn: NzTableSortFn<T> | null;
     sortDirections: NzTableSortOrder[];

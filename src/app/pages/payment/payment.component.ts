@@ -11,7 +11,10 @@ import { Subject, Subscription } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
+import {
+  GROUP_USER_STATUS,
+  PAYMENT_STATUS,
+} from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
@@ -22,6 +25,7 @@ import {
   SearchPaymentParamsDto,
   SearchPaymentResultDto,
 } from 'src/app/@core/dtos/payment.dto';
+import { PaymentStatusPipe } from 'src/app/@core/pipes/payment.pipe';
 
 @Component({
   selector: 'gmm-payment',
@@ -48,6 +52,71 @@ export class PaymentComponent implements OnInit, OnDestroy {
         return list.some((name) => item.groupName.indexOf(name) !== -1);
       },
       showSort: false,
+      sortPriority: false,
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+    },
+    creatorName: {
+      showFilter: true,
+      multiFilter: true,
+      filterOpts: [],
+      filterFn: (list: string[], item: SearchPaymentResultDto) => {
+        return list.some((name) => item.creatorName.indexOf(name) !== -1);
+      },
+      showSort: false,
+      sortPriority: false,
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+    },
+    createdAt: {
+      showFilter: false,
+      multiFilter: false,
+      filterOpts: [],
+      filterFn: null,
+      showSort: true,
+      sortPriority: false,
+      sortOrder: null,
+      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+        return a.createdAt.getTime() - b.createdAt.getTime();
+      },
+      sortDirections: [],
+    },
+    paymentAt: {
+      showFilter: false,
+      multiFilter: false,
+      filterOpts: [],
+      filterFn: null,
+      showSort: true,
+      sortPriority: false,
+      sortOrder: null,
+      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+        return a.paymentAt.getTime() - b.paymentAt.getTime();
+      },
+      sortDirections: [],
+    },
+    totalAmount: {
+      showFilter: false,
+      multiFilter: false,
+      filterOpts: [],
+      filterFn: null,
+      showSort: true,
+      sortPriority: false,
+      sortOrder: null,
+      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+        return a.totalAmount - b.totalAmount;
+      },
+      sortDirections: [],
+    },
+    status: {
+      showFilter: true,
+      multiFilter: true,
+      filterOpts: [],
+      filterFn: (list: PAYMENT_STATUS[], item: SearchPaymentResultDto) => {
+        return list.some((status) => item.status == status);
+      },
+      showSort: false,
       sortPriority: -1,
       sortOrder: null,
       sortFn: null,
@@ -60,7 +129,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
     private auth: Auth,
     private messageService: NzMessageService,
     private groupBusiness: GroupBusiness,
-    private paymentBusiness: PaymentBusiness
+    private paymentBusiness: PaymentBusiness,
+    private paymentStatusPipe: PaymentStatusPipe
   ) {}
 
   ngOnInit(): void {
@@ -87,15 +157,44 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private _OnInitTable() {
     this.rowsSub = this.rowsObs.subscribe((payments) => {
       this.rows = payments;
-      const filterOpts = this.rows
+
+      // group name
+      const groupNameFilterOpts = this.rows
         .map((r) => ({
           text: r.groupName,
           value: r.groupName,
         }))
         .sort((a, b) => a.text.localeCompare(b.text));
       this.colConf['groupName'].filterOpts = CommonUtil.arrayDistinct(
-        filterOpts,
+        groupNameFilterOpts,
         'text'
+      );
+
+      // creator name
+      const creatorNameFilterOpts = this.rows
+        .map((r) => ({
+          text: r.creatorName,
+          value: r.creatorName,
+        }))
+        .sort((a, b) => a.text.localeCompare(b.text));
+      this.colConf['creatorName'].filterOpts = CommonUtil.arrayDistinct(
+        creatorNameFilterOpts,
+        'text'
+      );
+
+      // status
+      const statusFilterOpts = this.rows
+        .map((r) => {
+          const tag = this.paymentStatusPipe.transform(r.status);
+          return {
+            text: tag.text,
+            value: r.status,
+          };
+        })
+        .sort((a, b) => a.value.toString().localeCompare(b.value.toString()));
+      this.colConf['status'].filterOpts = CommonUtil.arrayDistinct(
+        statusFilterOpts,
+        'value'
       );
     });
 

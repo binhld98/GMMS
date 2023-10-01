@@ -73,13 +73,79 @@
         >
           Tên nhóm
         </th>
-        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="colConf['creatorName'].showFilter"
+          [nzFilterMultiple]="colConf['creatorName'].multiFilter"
+          [nzFilters]="colConf['creatorName'].filterOpts"
+          [nzFilterFn]="colConf['creatorName'].filterFn"
+          [nzShowSort]="colConf['creatorName'].showSort"
+          [nzSortPriority]="colConf['creatorName'].sortPriority"
+          [nzSortOrder]="colConf['creatorName'].sortOrder"
+          [nzSortFn]="colConf['creatorName'].sortFn"
+          [nzSortDirections]="colConf['creatorName'].sortDirections"
+        >
           Người tạo
         </th>
-        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Ngày tạo</th>
-        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Ngày chi</th>
-        <th nzAlign="center" nzWidth="200px" [nzShowSort]="true">Tổng tiền</th>
-        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="colConf['createdAt'].showFilter"
+          [nzFilterMultiple]="colConf['createdAt'].multiFilter"
+          [nzFilters]="colConf['createdAt'].filterOpts"
+          [nzFilterFn]="colConf['createdAt'].filterFn"
+          [nzShowSort]="colConf['createdAt'].showSort"
+          [nzSortPriority]="colConf['createdAt'].sortPriority"
+          [nzSortOrder]="colConf['createdAt'].sortOrder"
+          [nzSortFn]="colConf['createdAt'].sortFn"
+          [nzSortDirections]="colConf['createdAt'].sortDirections"
+        >
+          Ngày tạo
+        </th>
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="colConf['paymentAt'].showFilter"
+          [nzFilterMultiple]="colConf['paymentAt'].multiFilter"
+          [nzFilters]="colConf['paymentAt'].filterOpts"
+          [nzFilterFn]="colConf['paymentAt'].filterFn"
+          [nzShowSort]="colConf['paymentAt'].showSort"
+          [nzSortPriority]="colConf['paymentAt'].sortPriority"
+          [nzSortOrder]="colConf['paymentAt'].sortOrder"
+          [nzSortFn]="colConf['paymentAt'].sortFn"
+          [nzSortDirections]="colConf['paymentAt'].sortDirections"
+        >
+          Ngày chi
+        </th>
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="colConf['totalAmount'].showFilter"
+          [nzFilterMultiple]="colConf['totalAmount'].multiFilter"
+          [nzFilters]="colConf['totalAmount'].filterOpts"
+          [nzFilterFn]="colConf['totalAmount'].filterFn"
+          [nzShowSort]="colConf['totalAmount'].showSort"
+          [nzSortPriority]="colConf['totalAmount'].sortPriority"
+          [nzSortOrder]="colConf['totalAmount'].sortOrder"
+          [nzSortFn]="colConf['totalAmount'].sortFn"
+          [nzSortDirections]="colConf['totalAmount'].sortDirections"
+        >
+          Tổng tiền
+        </th>
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="colConf['status'].showFilter"
+          [nzFilterMultiple]="colConf['status'].multiFilter"
+          [nzFilters]="colConf['status'].filterOpts"
+          [nzFilterFn]="colConf['status'].filterFn"
+          [nzShowSort]="colConf['status'].showSort"
+          [nzSortPriority]="colConf['status'].sortPriority"
+          [nzSortOrder]="colConf['status'].sortOrder"
+          [nzSortFn]="colConf['status'].sortFn"
+          [nzSortDirections]="colConf['status'].sortDirections"
+        >
           Trạng thái
         </th>
         <th nzAlign="center" nzWidth="200px">Thao tác</th>

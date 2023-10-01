@@ -39,6 +39,9 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
     UserRepository,
     GroupRepository,
     PaymentRepository,
+
+    // PIPE
+    PaymentStatusPipe,
   ],
   bootstrap: [],
   exports: [
