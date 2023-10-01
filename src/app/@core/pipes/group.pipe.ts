@@ -4,7 +4,7 @@ import {
   GROUP_USER_STATUS,
   TAG_COLOR,
 } from '../constants/common.constant';
-import { TagDto } from '../dtos/common.dto';
+import { Tag } from '../dtos/common.dto';
 
 @Pipe({ name: 'gmm_group_status' })
 export class GroupStatusPipe implements PipeTransform {
@@ -12,7 +12,7 @@ export class GroupStatusPipe implements PipeTransform {
     let tag = {
       text: 'unknown',
       color: TAG_COLOR.DEFAULT,
-    } as TagDto;
+    } as Tag;
 
     switch (value) {
       case GROUP_USER_STATUS.JOINED:

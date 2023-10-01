@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { PAYMENT_STATUS, TAG_COLOR } from '../constants/common.constant';
-import { TagDto } from '../dtos/common.dto';
+import { Tag } from '../dtos/common.dto';
 
 @Pipe({ name: 'gmm_payment_status' })
 export class PaymentStatusPipe implements PipeTransform {
@@ -8,7 +8,7 @@ export class PaymentStatusPipe implements PipeTransform {
     let tag = {
       text: 'unknown',
       color: TAG_COLOR.DEFAULT,
-    } as TagDto;
+    } as Tag;
     switch (value) {
       case PAYMENT_STATUS.DRAFT:
         tag.text = 'Lưu nháp';

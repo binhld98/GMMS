@@ -63,4 +63,8 @@ export class CommonUtil {
   static getMaxTs() {
     return Timestamp.fromDate(new Date('9999-12-31T23:59:59.99Z'));
   }
+
+  static arrayDistinct(arr: any[], key: string) {
+    return [...new Map(arr.map((item) => [item[key], item])).values()];
+  }
 }

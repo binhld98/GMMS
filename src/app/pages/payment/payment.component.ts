@@ -10,17 +10,12 @@ import { Auth } from '@angular/fire/auth';
 import { Subject, Subscription } from 'rxjs';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {
-  NzTableFilterFn,
-  NzTableFilterList,
-  NzTableSortFn,
-  NzTableSortOrder,
-} from 'ng-zorro-antd/table';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
+import { ColumnFilterSorterConfig } from 'src/app/@core/dtos/common.dto';
 import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 import {
   FromToTypeDto,
@@ -41,27 +36,19 @@ export class PaymentComponent implements OnInit, OnDestroy {
   joinedGroups: GroupMasterDto[] = [];
 
   // Table
-  paymentObs = new Subject<SearchPaymentResultDto[]>();
-  paymentRowsSub = new Subscription();
-  paymentColsSub = new Subscription();
-  paymentRows: SearchPaymentResultDto[] = [];
-  paymentCols: {
+  rowsObs = new Subject<SearchPaymentResultDto[]>();
+  rowsSub = new Subscription();
+  rows: SearchPaymentResultDto[] = [];
+  colConf: ColumnFilterSorterConfig<SearchPaymentResultDto> = {
     groupName: {
-      text: string;
-      listOfFilter: NzTableFilterList | [];
-      filterFn: NzTableFilterFn<SearchPaymentResultDto> | null;
-      filterMultiple: boolean;
-      sortOrder: NzTableSortOrder | null;
-      sortFn: NzTableSortFn<SearchPaymentResultDto> | null;
-      sortDirections: NzTableSortOrder[] | [];
-    };
-  } = {
-    groupName: {
-      text: 'Tên nhóm',
-      listOfFilter: [],
-      filterFn: (list: string[], item: SearchPaymentResultDto) =>
-        list.some((name) => item.groupName == name),
-      filterMultiple: true,
+      showFilter: true,
+      multiFilter: true,
+      filterOpts: [],
+      filterFn: (list: string[], item: SearchPaymentResultDto) => {
+        return list.some((name) => item.groupName.indexOf(name) !== -1);
+      },
+      showSort: false,
+      sortPriority: -1,
       sortOrder: null,
       sortFn: null,
       sortDirections: [],
@@ -98,15 +85,18 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   private _OnInitTable() {
-    this.paymentRowsSub = this.paymentObs.subscribe((payments) => {
-      this.paymentRows = payments;
-    });
-
-    this.paymentColsSub = this.paymentObs.subscribe((payments) => {
-      this.paymentCols.groupName.listOfFilter = payments.map((p) => ({
-        text: p.groupName,
-        value: p.groupName,
-      }));
+    this.rowsSub = this.rowsObs.subscribe((payments) => {
+      this.rows = payments;
+      const filterOpts = this.rows
+        .map((r) => ({
+          text: r.groupName,
+          value: r.groupName,
+        }))
+        .sort((a, b) => a.text.localeCompare(b.text));
+      this.colConf['groupName'].filterOpts = CommonUtil.arrayDistinct(
+        filterOpts,
+        'text'
+      );
     });
 
     this.isLoadingPayments = true;
@@ -125,8 +115,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.paymentRowsSub.unsubscribe();
-    this.paymentColsSub.unsubscribe();
+    this.rowsSub.unsubscribe();
   }
 
   onAddPayment() {
@@ -162,7 +151,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.paymentBusiness
       .getPayments(paramsDto)
       .then((payments) => {
-        this.paymentObs.next(payments);
+        this.rowsObs.next(payments);
       })
       .catch((error) => {
         this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);

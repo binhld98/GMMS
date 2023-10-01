@@ -50,7 +50,7 @@
   </form>
   <nz-table
     #table
-    [nzData]="paymentRows"
+    [nzData]="rows"
     nzSize="small"
     nzBordered
     [nzLoading]="isLoadingPayments"
@@ -61,10 +61,15 @@
         <th
           nzAlign="center"
           nzWidth="200px"
-          [nzShowFilter]="true"
-          [nzFilterMultiple]="paymentCols.groupName.filterMultiple"
-          [nzFilters]="paymentCols.groupName.listOfFilter"
-          [nzFilterFn]="paymentCols.groupName.filterFn"
+          [nzShowFilter]="colConf['groupName'].showFilter"
+          [nzFilterMultiple]="colConf['groupName'].multiFilter"
+          [nzFilters]="colConf['groupName'].filterOpts"
+          [nzFilterFn]="colConf['groupName'].filterFn"
+          [nzShowSort]="colConf['groupName'].showSort"
+          [nzSortPriority]="colConf['groupName'].sortPriority"
+          [nzSortOrder]="colConf['groupName'].sortOrder"
+          [nzSortFn]="colConf['groupName'].sortFn"
+          [nzSortDirections]="colConf['groupName'].sortDirections"
         >
           Tên nhóm
         </th>
