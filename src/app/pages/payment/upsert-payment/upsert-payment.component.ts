@@ -40,7 +40,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   @Output() isVisibleChange = new EventEmitter<boolean>();
   form!: FormGroup;
   isLoadingGroups = false;
-  groups: GroupMasterDto[] | [] = [];
+  @Input() groups: GroupMasterDto[] | [] = [];
   isLoadingMembers = false;
   members: GroupUserDto[] | [] = [];
   isAutoLoadBSide = false;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
@@ -10,7 +10,7 @@ import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
   templateUrl: './group-master.component.html',
   styleUrls: ['./group-master.component.css'],
 })
-export class GroupMasterComponent {
+export class GroupMasterComponent implements OnInit {
   groups: GroupMasterDto[] = [];
   isLoading = true;
   isVisibleUpsert = false;
@@ -22,8 +22,6 @@ export class GroupMasterComponent {
   ngOnInit(): void {
     this.onGroupSaved();
   }
-
-  ngOnDestroy(): void {}
 
   onAddGroup() {
     this.isVisibleUpsert = true;

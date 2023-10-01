@@ -36,7 +36,7 @@ export class GroupBusiness {
       throw new Error('user is null');
     }
 
-    // #2 --> joined groups
+    // #2 --> groups
     const grpUids = usr.groups
       .filter((g) => statuses.indexOf(g.status) != -1)
       .map((g) => g.groupId!);

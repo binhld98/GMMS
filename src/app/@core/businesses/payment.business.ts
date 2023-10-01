@@ -3,13 +3,21 @@ import { Timestamp, serverTimestamp } from '@angular/fire/firestore';
 
 import { PAYMENT_STATUS } from '../constants/common.constant';
 
-import { SearchPaymentParamsDto, UpsertPaymentDto } from '../dtos/payment.dto';
+import {
+  SearchPaymentParamsDto,
+  SearchPaymentResultDto,
+  UpsertPaymentDto,
+} from '../dtos/payment.dto';
 import { Payment } from '../models/payment';
 import { PaymentRepository } from '../repositories/payment.repository';
+import { UserRepository } from '../repositories/user.repository';
 
 @Injectable()
 export class PaymentBusiness {
-  constructor(private paymentRepository: PaymentRepository) {}
+  constructor(
+    private paymentRepository: PaymentRepository,
+    private userRepository: UserRepository
+  ) {}
 
   async createNewPayment(
     dto: UpsertPaymentDto,
@@ -37,21 +45,45 @@ export class PaymentBusiness {
   }
 
   async getPayments(params: SearchPaymentParamsDto) {
+    // search payments
     let payments: Payment[] = [];
     if (params.fromToType == 'created_at') {
       payments = await this.paymentRepository.findByCreatedAtRangeAsync(
-        params.groupIds,
+        params.groups.map((g) => g.id),
         Timestamp.fromDate(params.fromDate),
         Timestamp.fromDate(params.toDate)
       );
     } else if (params.fromToType == 'payment_at') {
       payments = await this.paymentRepository.findByPaymentAtRangeAsync(
-        params.groupIds,
+        params.groups.map((g) => g.id),
         Timestamp.fromDate(params.fromDate),
         Timestamp.fromDate(params.toDate)
       );
     }
 
-    return payments;
+    // process results
+    const userIds = payments.map((p) => p.creatorId);
+    const creators = await this.userRepository.getManyAsync(userIds);
+
+    const searchResult = payments.map((p) => {
+      const group = params.groups.find((g) => g.id == p.groupId)!;
+      const creator = creators.find((u) => u.id == p.creatorId)!;
+      const totalAmount = p.aSide.reduce((total, current) => {
+        return total + current.amount;
+      }, 0);
+
+      return {
+        groupId: p.groupId,
+        groupName: group.groupName,
+        creatorId: p.creatorId,
+        creatorName: creator.userName,
+        createdAt: p.createdAt.toDate(),
+        paymentAt: p.paymentAt.toDate(),
+        totalAmount: totalAmount,
+        status: p.status,
+      } as SearchPaymentResultDto;
+    });
+
+    return searchResult;
   }
 }

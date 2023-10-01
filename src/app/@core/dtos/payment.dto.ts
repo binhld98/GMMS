@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 import { PAYMENT_STATUS } from '../constants/common.constant';
+import { GroupMasterDto } from './group.dto';
 
 export type PaymentPdfDto = {
   groupName: string;
@@ -29,7 +30,7 @@ export type UpsertPaymentDto = {
 };
 
 export type SearchPaymentParamsDto = {
-  groupIds: string[];
+  groups: GroupMasterDto[];
   fromDate: Date;
   toDate: Date;
   fromToType: FromToTypeDto;
@@ -38,22 +39,13 @@ export type SearchPaymentParamsDto = {
 export type FromToTypeDto = 'created_at' | 'payment_at';
 
 export type SearchPaymentResultDto = {
+  paymentId: string;
   groupId: string;
   groupName: string;
   creatorId: string;
   creatorName: string;
-  createdAt: Timestamp;
-  paymentAt: Timestamp;
+  createdAt: Date;
+  paymentAt: Date;
   totalAmount: number;
   status: PAYMENT_STATUS;
-  aSide: {
-    userId: string;
-    userName: string;
-    amount: number;
-    description: string;
-  }[];
-  bSide: {
-    userId: string;
-    userName: string;
-  }[];
-}[];
+};

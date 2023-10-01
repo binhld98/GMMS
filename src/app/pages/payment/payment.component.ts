@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -6,6 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
+
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
@@ -22,15 +24,17 @@ import {
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css'],
 })
-export class PaymentComponent implements OnInit, AfterViewInit {
+export class PaymentComponent implements OnInit {
   isVisibleUpsert = false;
   form!: FormGroup;
   isLoadingPayments = false;
   groups: GroupMasterDto[] = [];
+  joinedGroups: GroupMasterDto[] = [];
 
   constructor(
     private fb: FormBuilder,
     private auth: Auth,
+    private messageService: NzMessageService,
     private groupBusiness: GroupBusiness,
     private paymentBusiness: PaymentBusiness
   ) {}
@@ -49,9 +53,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
       fromDate: [startOfCurrentMonth, [Validators.required]],
       toDate: [endOfCurrentMonth, [Validators.required]],
     });
-  }
 
-  ngAfterViewInit(): void {
+    this.isLoadingPayments = true;
     this.groupBusiness
       .getGroupsOfUserBy(this.auth.currentUser!.uid, [
         GROUP_USER_STATUS.JOINED,
@@ -60,6 +63,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
       .then((groups) => {
         this.groups = groups;
         this.onSearchPayments();
+      })
+      .finally(() => {
+        this.isLoadingPayments = false;
       });
   }
 
@@ -83,12 +89,11 @@ export class PaymentComponent implements OnInit, AfterViewInit {
       toDate: Date;
       fromToType: FromToTypeDto;
     };
-
     const _fromDate = CommonUtil.startOfDate(formValue.fromDate);
     const _toDate = CommonUtil.endOfDate(formValue.toDate);
 
     const paramsDto = {
-      groupIds: this.groups.map((g) => g.id),
+      groups: this.groups,
       fromDate: _fromDate,
       toDate: _toDate,
       fromToType: formValue.fromToType,
@@ -97,7 +102,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     this.paymentBusiness
       .getPayments(paramsDto)
       .catch((error) => {
-        console.log(error);
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
         this.isLoadingPayments = false;
