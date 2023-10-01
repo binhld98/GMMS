@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { SafePipe, SecondToMilisecond } from './pipes/common.pipe';
 import { GroupRolePipe, GroupStatusPipe } from './pipes/group.pipe';
+import { PaymentStatusPipe } from './pipes/payment.pipe';
 
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
@@ -23,6 +24,7 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
     SecondToMilisecond,
     GroupStatusPipe,
     GroupRolePipe,
+    PaymentStatusPipe,
 
     // COMPONENT
     PdfViewerComponent,
@@ -45,6 +47,7 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
     SecondToMilisecond,
     GroupStatusPipe,
     GroupRolePipe,
+    PaymentStatusPipe,
 
     // COMPONENT
     PdfViewerComponent,

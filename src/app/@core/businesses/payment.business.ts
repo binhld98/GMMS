@@ -45,6 +45,14 @@ export class PaymentBusiness {
   }
 
   async getPayments(params: SearchPaymentParamsDto) {
+    // validate params
+    if (
+      !params.groups.length ||
+      params.fromDate.getTime() > params.toDate.getTime()
+    ) {
+      throw new Error('malformed params');
+    }
+
     // search payments
     let payments: Payment[] = [];
     if (params.fromToType == 'created_at') {
@@ -62,6 +70,9 @@ export class PaymentBusiness {
     }
 
     // process results
+    if (!payments.length) {
+      return [];
+    }
     const userIds = payments.map((p) => p.creatorId);
     const creators = await this.userRepository.getManyAsync(userIds);
 
@@ -69,7 +80,7 @@ export class PaymentBusiness {
       const group = params.groups.find((g) => g.id == p.groupId)!;
       const creator = creators.find((u) => u.id == p.creatorId)!;
       const totalAmount = p.aSide.reduce((total, current) => {
-        return total + current.amount;
+        return total + +current.amount;
       }, 0);
 
       return {

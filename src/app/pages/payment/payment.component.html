@@ -48,7 +48,13 @@
       </nz-form-item>
     </nz-space>
   </form>
-  <nz-table #table nzSize="small" nzBordered [nzLoading]="isLoadingPayments">
+  <nz-table
+    #table
+    [nzData]="payments"
+    nzSize="small"
+    nzBordered
+    [nzLoading]="isLoadingPayments"
+  >
     <thead>
       <tr>
         <th nzAlign="center" nzWidth="100px">STT</th>
@@ -65,7 +71,26 @@
         <th nzAlign="center" nzWidth="200px">Thao tác</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+      <tr *ngFor="let data of table.data; let i = index">
+        <td nzAlign="center">{{ i + 1 }}</td>
+        <td nzAlign="center">{{ data.groupName }}</td>
+        <td nzAlign="center">{{ data.creatorName }}</td>
+        <td nzAlign="center">
+          {{ data.createdAt | date : "dd/MM/yyyy hh:mm" }}
+        </td>
+        <td nzAlign="center">
+          {{ data.paymentAt | date : "dd/MM/yyyy hh:mm" }}
+        </td>
+        <td nzAlign="center">{{ data.totalAmount }} (kVNĐ)</td>
+        <td nzAlign="center">
+          <ng-container *ngIf="data.status | gmm_payment_status as paymentTag">
+            <nz-tag [nzColor]="paymentTag.color">{{ paymentTag.text }}</nz-tag>
+          </ng-container>
+        </td>
+        <td nzAlign="center"></td>
+      </tr>
+    </tbody>
   </nz-table>
 </nz-card>
 <ng-template #extraTemplate>

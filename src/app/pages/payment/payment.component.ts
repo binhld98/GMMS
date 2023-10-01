@@ -17,6 +17,7 @@ import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 import {
   FromToTypeDto,
   SearchPaymentParamsDto,
+  SearchPaymentResultDto,
 } from 'src/app/@core/dtos/payment.dto';
 
 @Component({
@@ -30,6 +31,7 @@ export class PaymentComponent implements OnInit {
   isLoadingPayments = false;
   groups: GroupMasterDto[] = [];
   joinedGroups: GroupMasterDto[] = [];
+  payments: SearchPaymentResultDto[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -101,6 +103,9 @@ export class PaymentComponent implements OnInit {
     this.isLoadingPayments = true;
     this.paymentBusiness
       .getPayments(paramsDto)
+      .then((payments) => {
+        this.payments = payments;
+      })
       .catch((error) => {
         this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })

@@ -26,9 +26,9 @@
         <tr *ngFor="let data of borderedTable.data">
           <td nzAlign="left">{{ data.userName }}</td>
           <td nzAlign="center">
-            <div *ngIf="data.joinedStatus | gmm_group_status as joinedStatus">
-              <nz-tag [nzColor]="joinedStatus.color">
-                {{ joinedStatus.text }}
+            <div *ngIf="data.joinedStatus | gmm_group_status as joinedTag">
+              <nz-tag [nzColor]="joinedTag.color">
+                {{ joinedTag.text }}
               </nz-tag>
             </div>
           </td>

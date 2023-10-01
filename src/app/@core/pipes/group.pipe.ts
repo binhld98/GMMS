@@ -2,36 +2,39 @@ import { Pipe, PipeTransform } from '@angular/core';
 import {
   GROUP_USER_ROLE,
   GROUP_USER_STATUS,
+  TAG_COLOR,
 } from '../constants/common.constant';
+import { TagDto } from '../dtos/common.dto';
 
 @Pipe({ name: 'gmm_group_status' })
 export class GroupStatusPipe implements PipeTransform {
-  transform(value: number): { text: string; color: string } {
-    let result = {
-      text: '',
-      color: '',
-    };
+  transform(value: number) {
+    let tag = {
+      text: 'unknown',
+      color: TAG_COLOR.DEFAULT,
+    } as TagDto;
+
     switch (value) {
       case GROUP_USER_STATUS.JOINED:
-        result.text = 'Đã tham gia';
-        result.color = 'success';
+        tag.text = 'Đã tham gia';
+        tag.color = TAG_COLOR.GREEN;
         break;
 
       case GROUP_USER_STATUS.WAIT_CONFIRM:
-        result.text = 'Chờ xác nhận';
-        result.color = 'warning';
+        tag.text = 'Chờ xác nhận';
+        tag.color = TAG_COLOR.YELLOW;
         break;
 
       case GROUP_USER_STATUS.DEACTIVATED:
-        result.text = 'Đã vô hiệu hóa';
-        result.color = 'error';
+        tag.text = 'Đã vô hiệu hóa';
+        tag.color = TAG_COLOR.RED;
         break;
 
       default:
         break;
     }
 
-    return result;
+    return tag;
   }
 }
 

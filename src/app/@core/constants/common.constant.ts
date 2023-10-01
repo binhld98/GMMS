@@ -14,8 +14,26 @@ export enum GROUP_STATUS {
 }
 
 export enum PAYMENT_STATUS {
-  APPROVED = 1,
+  DRAFT = 1,
   WAIT_APPROVE = 2,
-  SETTLED = 3,
-  DRAFT = 4,
+  REJECTED = 3,
+  APPROVED = 4,
+  SETTLED = 5,
+  DUPPLICATE_SETTLED = 6,
+}
+
+export enum TAG_COLOR {
+  DEFAULT = 'default',
+  MAGENTA = 'magenta',
+  RED = 'red',
+  VOLCANO = 'volcano',
+  ORANGE = 'orange',
+  GOLD = 'gold',
+  YELLOW = 'yellow',
+  LIME = 'lime',
+  GREEN = 'green',
+  CYAN = 'cyan',
+  BLUE = 'blue',
+  GEEKBLUE = 'geekblue',
+  PURPLE = 'purple',
 }
