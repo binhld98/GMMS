@@ -50,7 +50,7 @@
   </form>
   <nz-table
     #table
-    [nzData]="payments"
+    [nzData]="paymentRows"
     nzSize="small"
     nzBordered
     [nzLoading]="isLoadingPayments"
@@ -58,7 +58,16 @@
     <thead>
       <tr>
         <th nzAlign="center" nzWidth="100px">STT</th>
-        <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">Tên nhóm</th>
+        <th
+          nzAlign="center"
+          nzWidth="200px"
+          [nzShowFilter]="true"
+          [nzFilterMultiple]="paymentCols.groupName.filterMultiple"
+          [nzFilters]="paymentCols.groupName.listOfFilter"
+          [nzFilterFn]="paymentCols.groupName.filterFn"
+        >
+          Tên nhóm
+        </th>
         <th nzAlign="center" nzWidth="200px" [nzShowFilter]="true">
           Người tạo
         </th>

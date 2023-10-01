@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -7,7 +7,15 @@ import {
 } from '@angular/forms';
 import { Auth } from '@angular/fire/auth';
 
+import { Subject, Subscription } from 'rxjs';
+
 import { NzMessageService } from 'ng-zorro-antd/message';
+import {
+  NzTableFilterFn,
+  NzTableFilterList,
+  NzTableSortFn,
+  NzTableSortOrder,
+} from 'ng-zorro-antd/table';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
@@ -25,13 +33,40 @@ import {
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.css'],
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements OnInit, OnDestroy {
   isVisibleUpsert = false;
   form!: FormGroup;
   isLoadingPayments = false;
   groups: GroupMasterDto[] = [];
   joinedGroups: GroupMasterDto[] = [];
-  payments: SearchPaymentResultDto[] = [];
+
+  // Table
+  paymentObs = new Subject<SearchPaymentResultDto[]>();
+  paymentRowsSub = new Subscription();
+  paymentColsSub = new Subscription();
+  paymentRows: SearchPaymentResultDto[] = [];
+  paymentCols: {
+    groupName: {
+      text: string;
+      listOfFilter: NzTableFilterList | [];
+      filterFn: NzTableFilterFn<SearchPaymentResultDto> | null;
+      filterMultiple: boolean;
+      sortOrder: NzTableSortOrder | null;
+      sortFn: NzTableSortFn<SearchPaymentResultDto> | null;
+      sortDirections: NzTableSortOrder[] | [];
+    };
+  } = {
+    groupName: {
+      text: 'Tên nhóm',
+      listOfFilter: [],
+      filterFn: (list: string[], item: SearchPaymentResultDto) =>
+        list.some((name) => item.groupName == name),
+      filterMultiple: true,
+      sortOrder: null,
+      sortFn: null,
+      sortDirections: [],
+    },
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +77,11 @@ export class PaymentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this._OnInitForm();
+    this._OnInitTable();
+  }
+
+  private _OnInitForm() {
     const now = new Date();
     const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfCurrentMonth = new Date(
@@ -54,6 +94,19 @@ export class PaymentComponent implements OnInit {
       fromToType: ['payment_at', [Validators.required]],
       fromDate: [startOfCurrentMonth, [Validators.required]],
       toDate: [endOfCurrentMonth, [Validators.required]],
+    });
+  }
+
+  private _OnInitTable() {
+    this.paymentRowsSub = this.paymentObs.subscribe((payments) => {
+      this.paymentRows = payments;
+    });
+
+    this.paymentColsSub = this.paymentObs.subscribe((payments) => {
+      this.paymentCols.groupName.listOfFilter = payments.map((p) => ({
+        text: p.groupName,
+        value: p.groupName,
+      }));
     });
 
     this.isLoadingPayments = true;
@@ -69,6 +122,11 @@ export class PaymentComponent implements OnInit {
       .finally(() => {
         this.isLoadingPayments = false;
       });
+  }
+
+  ngOnDestroy(): void {
+    this.paymentRowsSub.unsubscribe();
+    this.paymentColsSub.unsubscribe();
   }
 
   onAddPayment() {
@@ -104,7 +162,7 @@ export class PaymentComponent implements OnInit {
     this.paymentBusiness
       .getPayments(paramsDto)
       .then((payments) => {
-        this.payments = payments;
+        this.paymentObs.next(payments);
       })
       .catch((error) => {
         this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
