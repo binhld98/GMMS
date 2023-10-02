@@ -50,9 +50,10 @@
   </form>
   <nz-table
     #table
-    [nzData]="rows"
-    nzSize="small"
     nzBordered
+    nzShowSizeChanger
+    nzSize="small"
+    [nzData]="rows"
     [nzLoading]="isLoadingPayments"
   >
     <thead>

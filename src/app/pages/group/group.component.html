@@ -1,4 +1,4 @@
-<nz-row nzGutter="xs" [nzGutter]="[16, 16]">
+<div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
   <div nz-col nzSpan="8" class="left-panel">
     <gmm-group-master
       (targetGroupChange)="viewGroupDetail($event)"
@@ -17,4 +17,4 @@
       *ngIf="currentUserId != groupDetailAdminId && groupDetailId != null"
     ></gmm-group-detail-member>
   </div>
-</nz-row>
+</div>

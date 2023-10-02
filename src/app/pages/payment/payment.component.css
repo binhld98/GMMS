@@ -33,3 +33,7 @@ nz-card {
 nz-select {
   min-width: 150px;
 }
+
+:host ::ng-deep nz-pagination {
+  padding-right: 8px;
+}

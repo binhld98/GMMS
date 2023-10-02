@@ -3,29 +3,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100%;
 }
 
-.app-layout {
-  min-height: 100vh;
-}
+/* SIDER */
 
 .menu-sidebar {
-  position: relative;
-  z-index: 10;
-  min-height: 100vh;
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
-}
-
-.header-trigger {
-  height: 64px;
-  padding: 20px 24px;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.3s, padding 0s;
-}
-
-.trigger:hover {
-  color: #1890ff;
 }
 
 .sidebar-logo {
@@ -47,39 +31,59 @@
 
 .sidebar-logo h1 {
   display: inline-block;
-  margin: 0 0 0 20px;
+  margin: 0 0 0 18px;
   color: #fff;
   font-weight: 600;
   font-size: 14px;
-  font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
   vertical-align: middle;
 }
 
+/* APP HEADER */
 nz-header {
   padding: 0;
-  width: 100%;
-  z-index: 2;
 }
 
 .app-header {
   position: relative;
   height: 64px;
-  padding: 0;
+  padding: 0px;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
-nz-content {
-  margin: 24px;
+.left-header {
+  position: absolute;
+  left: 24px;
 }
 
-.inner-content {
-  padding: 24px;
-  background: #fff;
-  height: 100%;
+.trigger {
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s, padding 0s;
+}
+
+.trigger:hover {
+  color: #1890ff;
 }
 
 .right-header {
   position: absolute;
   right: 24px;
+}
+
+/* APP CONTENT */
+nz-content {
+  margin: 24px 24px 0px 24px;
+}
+
+.app-content {
+  padding: 24px;
+  background: #fff;
+  border-radius: 5px;
+  height: 100%;
+}
+
+/* APP FOOTER */
+nz-footer {
+  text-align: center;
 }

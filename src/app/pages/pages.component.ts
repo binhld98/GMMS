@@ -22,12 +22,7 @@ export class PagesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const email = this.auth.currentUser?.email ?? '';
-    if (email.length > 7) {
-      this.userName = email.substring(0, 7) + '...';
-    } else {
-      this.userName = email;
-    }
+    this.userName = this.auth.currentUser?.email ?? '';
   }
 
   onLogout() {

@@ -46,6 +46,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzPipesModule } from 'ng-zorro-antd/pipes';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -66,7 +67,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     GroupDetailAdminComponent,
     GroupDetailMemberComponent,
     InviteMemberComponent,
-    
+
     PaymentComponent,
     UpsertPaymentComponent,
   ],
@@ -96,6 +97,7 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     NzMessageModule,
     NzModalModule,
     NzPageHeaderModule,
+    NzPipesModule,
     NzSelectModule,
     NzSpaceModule,
     NzSpinModule,
