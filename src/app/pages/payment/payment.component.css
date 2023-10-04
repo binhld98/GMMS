@@ -29,3 +29,8 @@ nz-select {
 :host ::ng-deep nz-pagination {
   padding-right: 8px;
 }
+
+.operation > * {
+  margin-left: 8px;
+  margin-right: 8px;
+}

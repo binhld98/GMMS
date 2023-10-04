@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 
 import {
+  EditOutline,
+  EyeOutline,
   FormOutline,
   HomeOutline,
   LockOutline,
@@ -16,6 +18,8 @@ import {
 } from '@ant-design/icons-angular/icons';
 
 const icons = [
+  EditOutline,
+  EyeOutline,
   FormOutline,
   HomeOutline,
   LockOutline,

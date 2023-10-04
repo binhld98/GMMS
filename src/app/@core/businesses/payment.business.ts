@@ -19,23 +19,43 @@ export class PaymentBusiness {
     private userRepository: UserRepository
   ) {}
 
-  async createNewPayment(
+  private mapToPayment(
     dto: UpsertPaymentDto,
-    userId: string
-  ): Promise<string | null> {
-    const payment = {
+    userId: string,
+    status: PAYMENT_STATUS
+  ) {
+    return {
       id: null,
       creatorId: userId,
       createdAt: serverTimestamp(),
       modifiedInfos: [],
       isActive: true,
       groupId: dto.groupId,
-      status: PAYMENT_STATUS.WAIT_APPROVE,
+      status: status,
       aSide: dto.aSide,
       bSide: dto.bSide,
       paymentAt: Timestamp.fromDate(dto.paymentAt),
     } as Payment;
+  }
 
+  async createWaitAprrovePayment(
+    dto: UpsertPaymentDto,
+    userId: string
+  ): Promise<string | null> {
+    const payment = this.mapToPayment(dto, userId, PAYMENT_STATUS.WAIT_APPROVE);
+    const paymentAdded = await this.paymentRepository.addAsync(payment);
+    if (!paymentAdded) {
+      return null;
+    }
+
+    return paymentAdded.id;
+  }
+
+  async createDraftPayment(
+    dto: UpsertPaymentDto,
+    userId: string
+  ): Promise<string | null> {
+    const payment = this.mapToPayment(dto, userId, PAYMENT_STATUS.DRAFT);
     const paymentAdded = await this.paymentRepository.addAsync(payment);
     if (!paymentAdded) {
       return null;

@@ -281,7 +281,14 @@
     <button nz-button nzType="primary" nzDanger (click)="onResetForm()">
       Xóa trắng
     </button>
-    <button nz-button nzType="primary">Lưu nháp</button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="onSaveDraft()"
+      [nzLoading]="isSavingDraft"
+    >
+      Lưu nháp
+    </button>
     <button
       nz-button
       nzType="primary"

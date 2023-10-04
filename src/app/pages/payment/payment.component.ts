@@ -34,6 +34,7 @@ import { PaymentStatusPipe } from 'src/app/@core/pipes/payment.pipe';
   styleUrls: ['./payment.component.css'],
 })
 export class PaymentComponent implements OnInit, OnDestroy {
+  isInitiating = false;
   isVisibleUpsert = false;
   form!: FormGroup;
   isLoadingPayments = false;
@@ -138,8 +139,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isInitiating = true;
     this._OnInitForm();
-    this._OnInitTable();
+    this._OnInitTable().finally(() => {
+      this.isInitiating = false;
+    });
 
     this.app_h$_sub = this.appService.h$.subscribe((h) => {
       this.tblScroll = {
@@ -164,7 +168,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
     });
   }
 
-  private _OnInitTable() {
+  private _OnInitTable(): Promise<void> {
     this.rowsSub = this.rowsObs.subscribe((payments) => {
       this.rows = payments;
 
@@ -208,18 +212,14 @@ export class PaymentComponent implements OnInit, OnDestroy {
       );
     });
 
-    this.isLoadingPayments = true;
-    this.groupBusiness
+    return this.groupBusiness
       .getGroupsOfUserBy(this.auth.currentUser!.uid, [
         GROUP_USER_STATUS.JOINED,
         GROUP_USER_STATUS.DEACTIVATED,
       ])
       .then((groups) => {
         this.groups = groups;
-        this.onSearchPayments();
-      })
-      .finally(() => {
-        this.isLoadingPayments = false;
+        return this.onSearchPayments();
       });
   }
 
@@ -257,7 +257,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
       fromToType: formValue.fromToType,
     } as SearchPaymentParamsDto;
     this.isLoadingPayments = true;
-    this.paymentBusiness
+
+    return this.paymentBusiness
       .getPayments(paramsDto)
       .then((payments) => {
         this.rowsObs.next(payments);

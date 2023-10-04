@@ -19,7 +19,10 @@ import { Auth } from '@angular/fire/auth';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
+import {
+  GROUP_USER_STATUS,
+  PAYMENT_STATUS,
+} from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
 import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
@@ -160,9 +163,9 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     this.isVisibleChange.next(false);
   }
 
-  onGeneratePayment() {
+  private touchFullForm() {
     if (!this.touchHeaderForm()) {
-      return;
+      return false;
     }
 
     if (this.form.invalid) {
@@ -184,68 +187,10 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
           c.updateValueAndValidity({ onlySelf: true });
         }
       });
-      return;
+      return false;
     }
 
-    const _group = this.groups.find((g) => g.id == this.form.value.groupId)!;
-    const _date = this.form.value.date as Date;
-    const _time = this.form.value.time as Date;
-
-    const aSide = this.form.value.aSide as {
-      userId: string;
-      amount: number;
-      description: string;
-    }[];
-
-    let _aSide = aSide.map((a) => {
-      const member = this.members.find((m) => m.userId == a.userId)!;
-      return {
-        userName: member.userName,
-        amount: a.amount,
-        description: a.description,
-      };
-    });
-
-    _aSide = _aSide.sort((a, b) => {
-      return a.userName.localeCompare(b.userName);
-    });
-
-    const bSide = this.form.value.bSide as {
-      userId: string;
-    }[];
-
-    let _bSide = bSide.map((b) => {
-      const member = this.members.find((m) => m.userId == b.userId)!;
-      return {
-        userName: member.userName,
-      };
-    });
-
-    _bSide = [
-      ...new Map(_bSide.map((item) => [item.userName, item])).values(),
-    ].sort((a, b) => {
-      return a.userName.localeCompare(b.userName);
-    });
-
-    const dto = {
-      groupName: _group.groupName,
-      paymentAt: CommonUtil.combineDateTime(_date, _time),
-      aSide: _aSide,
-      bSide: _bSide,
-    } as PaymentPdfDto;
-    this.isLoadingPdf = true;
-    PdfUtil.makePaymentPdf(dto)
-      .then((blob) => {
-        this.pdfBlob = blob;
-        this.pdfObjUrl = window.URL.createObjectURL(this.pdfBlob);
-        this.isVisiblePdf = true;
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isLoadingPdf = false;
-      });
+    return true;
   }
 
   onOpenSelectGroup(isOpen: boolean) {
@@ -364,20 +309,17 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
 
   /**
    *
-   * Payment Pdf
+   * Draft
    *
    */
-  isVisiblePdf = false;
-  isLoadingPdf = false;
-  pdfBlob: Blob | null = null;
-  pdfObjUrl: string = '';
-  isSavingPayment = false;
+  isSavingDraft = false;
 
-  onSavePayment() {
-    this.isSavingPayment = true;
-
+  private getUpsertDtoForSave(): UpsertPaymentDto {
     const _date = this.form.value.date as Date;
-    const _time = this.form.value.time as Date;
+    let _time = this.form.value.time as Date;
+    if (!_time) {
+      _time = new Date(0, 0, 0, 0, 0, 0, 0);
+    }
 
     const bSide = this.form.value.bSide as {
       userId: string;
@@ -387,16 +329,128 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       ...new Map(bSide.map((item) => [item.userId, item])).values(),
     ];
 
-    const dto = {
+    return {
       groupId: this.form.value.groupId,
       aSide: this.form.value.aSide,
       bSide: _bSide,
       paymentAt: CommonUtil.combineDateTime(_date, _time),
-      pdfBlob: this.pdfBlob,
-    } as UpsertPaymentDto;
+    };
+  }
 
+  onSaveDraft() {
+    if (!this.touchFullForm()) {
+      return;
+    }
+
+    this.isSavingDraft = true;
     this.paymentBusiness
-      .createNewPayment(dto, this.auth.currentUser!.uid)
+      .createDraftPayment(
+        this.getUpsertDtoForSave(),
+        this.auth.currentUser!.uid
+      )
+      .then((paymentId) => {
+        if (!!paymentId) {
+          this.messageService.success('Lưu nháp phiếu chi thành công!');
+        } else {
+          this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+        }
+      })
+      .catch((error) => {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+      })
+      .finally(() => {
+        this.isSavingDraft = false;
+        this.handleCancel();
+      });
+  }
+
+  /**
+   *
+   * Payment Pdf
+   *
+   */
+  isVisiblePdf = false;
+  isLoadingPdf = false;
+  pdfBlob: Blob | null = null;
+  pdfObjUrl: string = '';
+  isSavingPayment = false;
+
+  onGeneratePayment() {
+    if (!this.touchFullForm()) {
+      return;
+    }
+
+    const _group = this.groups.find((g) => g.id == this.form.value.groupId)!;
+    const _date = this.form.value.date as Date;
+    let _time = this.form.value.time as Date;
+    if (!_time) {
+      _time = new Date(0, 0, 0, 0, 0, 0);
+    }
+
+    const aSide = this.form.value.aSide as {
+      userId: string;
+      amount: number;
+      description: string;
+    }[];
+
+    let _aSide = aSide.map((a) => {
+      const member = this.members.find((m) => m.userId == a.userId)!;
+      return {
+        userName: member.userName,
+        amount: a.amount,
+        description: a.description,
+      };
+    });
+
+    _aSide = _aSide.sort((a, b) => {
+      return a.userName.localeCompare(b.userName);
+    });
+
+    const bSide = this.form.value.bSide as {
+      userId: string;
+    }[];
+
+    let _bSide = bSide.map((b) => {
+      const member = this.members.find((m) => m.userId == b.userId)!;
+      return {
+        userName: member.userName,
+      };
+    });
+
+    _bSide = [
+      ...new Map(_bSide.map((item) => [item.userName, item])).values(),
+    ].sort((a, b) => {
+      return a.userName.localeCompare(b.userName);
+    });
+
+    const dto = {
+      groupName: _group.groupName,
+      paymentAt: CommonUtil.combineDateTime(_date, _time),
+      aSide: _aSide,
+      bSide: _bSide,
+    } as PaymentPdfDto;
+    this.isLoadingPdf = true;
+    PdfUtil.makePaymentPdf(dto)
+      .then((blob) => {
+        this.pdfBlob = blob;
+        this.pdfObjUrl = window.URL.createObjectURL(this.pdfBlob);
+        this.isVisiblePdf = true;
+      })
+      .catch((error) => {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+      })
+      .finally(() => {
+        this.isLoadingPdf = false;
+      });
+  }
+
+  onSavePayment() {
+    this.isSavingPayment = true;
+    this.paymentBusiness
+      .createWaitAprrovePayment(
+        this.getUpsertDtoForSave(),
+        this.auth.currentUser!.uid
+      )
       .then((paymentId) => {
         if (!!paymentId) {
           this.messageService.success('Tạo phiếu chi thành công!');
