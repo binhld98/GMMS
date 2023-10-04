@@ -73,11 +73,12 @@ nz-header {
 
 /* APP CONTENT */
 nz-content {
-  margin: 24px 24px 0px 24px;
+  margin: 24px;
+  margin-bottom: 0px;
 }
 
 .app-content {
-  padding: 24px;
+  padding: 16px;
   background: #fff;
   border-radius: 5px;
   height: 100%;
@@ -86,4 +87,5 @@ nz-content {
 /* APP FOOTER */
 nz-footer {
   text-align: center;
+  height: 64px;
 }

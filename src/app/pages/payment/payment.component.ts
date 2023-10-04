@@ -9,6 +9,7 @@ import { Auth } from '@angular/fire/auth';
 
 import { Subject, Subscription } from 'rxjs';
 
+import { AppService } from 'src/app/app.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import {
@@ -123,10 +124,13 @@ export class PaymentComponent implements OnInit, OnDestroy {
       sortDirections: [],
     },
   };
+  tblScroll: { x?: string; y?: string } = {};
+  app_h$_sub = new Subscription();
 
   constructor(
     private fb: FormBuilder,
     private auth: Auth,
+    private appService: AppService,
     private messageService: NzMessageService,
     private groupBusiness: GroupBusiness,
     private paymentBusiness: PaymentBusiness,
@@ -136,6 +140,12 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._OnInitForm();
     this._OnInitTable();
+
+    this.app_h$_sub = this.appService.h$.subscribe((h) => {
+      this.tblScroll = {
+        y: h - 428 + 'px',
+      };
+    });
   }
 
   private _OnInitForm() {
