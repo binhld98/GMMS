@@ -1,11 +1,3 @@
-nz-spin {
-  height: 100%;
-}
-
-nz-card {
-  height: 100%;
-}
-
 :host ::ng-deep div.ant-table {
   overflow-y: auto;
   padding-right: 8px;
