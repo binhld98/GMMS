@@ -34,99 +34,103 @@ import { PaymentStatusPipe } from 'src/app/@core/pipes/payment.pipe';
   styleUrls: ['./payment.component.css'],
 })
 export class PaymentComponent implements OnInit, OnDestroy {
-  isInitiating = false;
+  app_h$_sub = new Subscription();
+
+  // Card
+  isLoadingCard = false;
   isVisibleUpsert = false;
   form!: FormGroup;
-  isLoadingPayments = false;
   groups: GroupMasterDto[] = [];
-  joinedGroups: GroupMasterDto[] = [];
 
   // Table
-  rowsObs = new Subject<SearchPaymentResultDto[]>();
-  rowsSub = new Subscription();
+  isLoadingTable = false;
+  rowsObservable$ = new Subject<SearchPaymentResultDto[]>();
+  rowsSubscription$ = new Subscription();
   rows: SearchPaymentResultDto[] = [];
-  colConf: ColumnFilterSorterConfig<SearchPaymentResultDto> = {
+  columnsConfig: ColumnFilterSorterConfig<SearchPaymentResultDto> = {
     groupName: {
       showFilter: true,
-      multiFilter: true,
-      filterOpts: [],
-      filterFn: (list: string[], item: SearchPaymentResultDto) => {
+      filterMultiple: true,
+      filterOptions: [],
+      filterFunction: (list: string[], item: SearchPaymentResultDto) => {
         return list.some((name) => item.groupName.indexOf(name) !== -1);
       },
       showSort: false,
       sortPriority: false,
       sortOrder: null,
-      sortFn: null,
+      sortFunction: null,
       sortDirections: [],
     },
     creatorName: {
       showFilter: true,
-      multiFilter: true,
-      filterOpts: [],
-      filterFn: (list: string[], item: SearchPaymentResultDto) => {
+      filterMultiple: true,
+      filterOptions: [],
+      filterFunction: (list: string[], item: SearchPaymentResultDto) => {
         return list.some((name) => item.creatorName.indexOf(name) !== -1);
       },
       showSort: false,
       sortPriority: false,
       sortOrder: null,
-      sortFn: null,
+      sortFunction: null,
       sortDirections: [],
     },
     createdAt: {
       showFilter: false,
-      multiFilter: false,
-      filterOpts: [],
-      filterFn: null,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
       showSort: true,
       sortPriority: false,
       sortOrder: null,
-      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+      sortFunction: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
         return a.createdAt.getTime() - b.createdAt.getTime();
       },
       sortDirections: [],
     },
     paymentAt: {
       showFilter: false,
-      multiFilter: false,
-      filterOpts: [],
-      filterFn: null,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
       showSort: true,
       sortPriority: false,
       sortOrder: null,
-      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+      sortFunction: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
         return a.paymentAt.getTime() - b.paymentAt.getTime();
       },
       sortDirections: [],
     },
     totalAmount: {
       showFilter: false,
-      multiFilter: false,
-      filterOpts: [],
-      filterFn: null,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
       showSort: true,
       sortPriority: false,
       sortOrder: null,
-      sortFn: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
+      sortFunction: (a: SearchPaymentResultDto, b: SearchPaymentResultDto) => {
         return a.totalAmount - b.totalAmount;
       },
       sortDirections: [],
     },
     status: {
       showFilter: true,
-      multiFilter: true,
-      filterOpts: [],
-      filterFn: (list: PAYMENT_STATUS[], item: SearchPaymentResultDto) => {
+      filterMultiple: true,
+      filterOptions: [],
+      filterFunction: (
+        list: PAYMENT_STATUS[],
+        item: SearchPaymentResultDto
+      ) => {
         return list.some((status) => item.status == status);
       },
       showSort: false,
       sortPriority: -1,
       sortOrder: null,
-      sortFn: null,
+      sortFunction: null,
       sortDirections: [],
     },
   };
-  tblScroll: { x?: string; y?: string } = {};
-  app_h$_sub = new Subscription();
+  tableScroll: { x?: string; y?: string } = {};
 
   constructor(
     private fb: FormBuilder,
@@ -139,37 +143,31 @@ export class PaymentComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.isInitiating = true;
-    this._OnInitForm();
-    this._OnInitTable().finally(() => {
-      this.isInitiating = false;
-    });
-
+    // window resize
     this.app_h$_sub = this.appService.h$.subscribe((h) => {
-      this.tblScroll = {
+      this.tableScroll = {
         y: h - 428 + 'px',
       };
     });
-  }
 
-  private _OnInitForm() {
+    this.isLoadingCard = true;
+
+    // 1) card - search form
     const now = new Date();
-    const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfCurrentMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0
+    const fromDate = CommonUtil.startOfDate(
+      new Date(now.getFullYear(), now.getMonth(), 1)
     );
-
+    const toDate = CommonUtil.endOfDate(
+      new Date(now.getFullYear(), now.getMonth() + 1, 0)
+    );
     this.form = this.fb.group({
       fromToType: ['payment_at', [Validators.required]],
-      fromDate: [startOfCurrentMonth, [Validators.required]],
-      toDate: [endOfCurrentMonth, [Validators.required]],
+      fromDate: [fromDate, [Validators.required]],
+      toDate: [toDate, [Validators.required]],
     });
-  }
 
-  private _OnInitTable(): Promise<void> {
-    this.rowsSub = this.rowsObs.subscribe((payments) => {
+    // 2) card - table
+    this.rowsSubscription$ = this.rowsObservable$.subscribe((payments) => {
       this.rows = payments;
 
       // group name
@@ -179,7 +177,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
           value: r.groupName,
         }))
         .sort((a, b) => a.text.localeCompare(b.text));
-      this.colConf['groupName'].filterOpts = CommonUtil.arrayDistinct(
+      this.columnsConfig['groupName'].filterOptions = CommonUtil.arrayDistinct(
         groupNameFilterOpts,
         'text'
       );
@@ -191,10 +189,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
           value: r.creatorName,
         }))
         .sort((a, b) => a.text.localeCompare(b.text));
-      this.colConf['creatorName'].filterOpts = CommonUtil.arrayDistinct(
-        creatorNameFilterOpts,
-        'text'
-      );
+      this.columnsConfig['creatorName'].filterOptions =
+        CommonUtil.arrayDistinct(creatorNameFilterOpts, 'text');
 
       // status
       const statusFilterOpts = this.rows
@@ -206,25 +202,41 @@ export class PaymentComponent implements OnInit, OnDestroy {
           };
         })
         .sort((a, b) => a.value.toString().localeCompare(b.value.toString()));
-      this.colConf['status'].filterOpts = CommonUtil.arrayDistinct(
+      this.columnsConfig['status'].filterOptions = CommonUtil.arrayDistinct(
         statusFilterOpts,
         'value'
       );
     });
 
-    return this.groupBusiness
+    this.groupBusiness
       .getGroupsOfUserBy(this.auth.currentUser!.uid, [
         GROUP_USER_STATUS.JOINED,
         GROUP_USER_STATUS.DEACTIVATED,
       ])
       .then((groups) => {
         this.groups = groups;
-        return this.onSearchPayments();
+        const paramsDto = {
+          groups: this.groups,
+          fromDate: fromDate,
+          toDate: toDate,
+          fromToType: 'payment_at',
+        } as SearchPaymentParamsDto;
+        this.paymentBusiness
+          .getPayments(paramsDto)
+          .then((payments) => {
+            this.rowsObservable$.next(payments);
+          })
+          .catch((error) => {
+            this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+          })
+          .finally(() => {
+            this.isLoadingCard = false;
+          });
       });
   }
 
   ngOnDestroy(): void {
-    this.rowsSub.unsubscribe();
+    this.rowsSubscription$.unsubscribe();
   }
 
   onAddPayment() {
@@ -247,27 +259,32 @@ export class PaymentComponent implements OnInit, OnDestroy {
       toDate: Date;
       fromToType: FromToTypeDto;
     };
-    const _fromDate = CommonUtil.startOfDate(formValue.fromDate);
-    const _toDate = CommonUtil.endOfDate(formValue.toDate);
-
     const paramsDto = {
       groups: this.groups,
-      fromDate: _fromDate,
-      toDate: _toDate,
+      fromDate: CommonUtil.startOfDate(formValue.fromDate),
+      toDate: CommonUtil.endOfDate(formValue.toDate),
       fromToType: formValue.fromToType,
     } as SearchPaymentParamsDto;
-    this.isLoadingPayments = true;
 
-    return this.paymentBusiness
+    this.isLoadingTable = true;
+    this.paymentBusiness
       .getPayments(paramsDto)
       .then((payments) => {
-        this.rowsObs.next(payments);
+        this.rowsObservable$.next(payments);
       })
       .catch((error) => {
         this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
       })
       .finally(() => {
-        this.isLoadingPayments = false;
+        this.isLoadingTable = false;
       });
+  }
+
+  canEditPayment(data: SearchPaymentResultDto) {
+    return (
+      (data.status == PAYMENT_STATUS.DRAFT ||
+        data.status == PAYMENT_STATUS.REJECTED) &&
+      data.creatorId == this.auth.currentUser!.uid
+    );
   }
 }

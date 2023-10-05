@@ -3,7 +3,7 @@
     <nz-card
       nzTitle="Phiếu chi"
       [nzExtra]="extraTemplate"
-      [nzLoading]="isInitiating"
+      [nzLoading]="isLoadingCard"
     >
       <form nz-form [formGroup]="form">
         <nz-space nzSize="large" nz-row>
@@ -45,7 +45,7 @@
                 nz-button
                 nzType="primary"
                 (click)="onSearchPayments()"
-                [nzLoading]="isLoadingPayments"
+                [nzLoading]="isLoadingTable"
               >
                 <span nz-icon nzType="search"></span>
                 Tìm kiếm
@@ -60,8 +60,8 @@
         nzShowSizeChanger
         nzSize="small"
         [nzData]="rows"
-        [nzLoading]="isLoadingPayments"
-        [nzScroll]="tblScroll"
+        [nzLoading]="isLoadingTable"
+        [nzScroll]="tableScroll"
       >
         <thead>
           <tr>
@@ -69,90 +69,90 @@
             <th
               nzAlign="center"
               nzWidth="200px"
-              [nzShowFilter]="colConf['groupName'].showFilter"
-              [nzFilterMultiple]="colConf['groupName'].multiFilter"
-              [nzFilters]="colConf['groupName'].filterOpts"
-              [nzFilterFn]="colConf['groupName'].filterFn"
-              [nzShowSort]="colConf['groupName'].showSort"
-              [nzSortPriority]="colConf['groupName'].sortPriority"
-              [nzSortOrder]="colConf['groupName'].sortOrder"
-              [nzSortFn]="colConf['groupName'].sortFn"
-              [nzSortDirections]="colConf['groupName'].sortDirections"
+              [nzShowFilter]="columnsConfig['groupName'].showFilter"
+              [nzFilterMultiple]="columnsConfig['groupName'].filterMultiple"
+              [nzFilters]="columnsConfig['groupName'].filterOptions"
+              [nzFilterFn]="columnsConfig['groupName'].filterFunction"
+              [nzShowSort]="columnsConfig['groupName'].showSort"
+              [nzSortPriority]="columnsConfig['groupName'].sortPriority"
+              [nzSortOrder]="columnsConfig['groupName'].sortOrder"
+              [nzSortFn]="columnsConfig['groupName'].sortFunction"
+              [nzSortDirections]="columnsConfig['groupName'].sortDirections"
             >
               Tên nhóm
             </th>
             <th
               nzAlign="center"
               nzWidth="200px"
-              [nzShowFilter]="colConf['creatorName'].showFilter"
-              [nzFilterMultiple]="colConf['creatorName'].multiFilter"
-              [nzFilters]="colConf['creatorName'].filterOpts"
-              [nzFilterFn]="colConf['creatorName'].filterFn"
-              [nzShowSort]="colConf['creatorName'].showSort"
-              [nzSortPriority]="colConf['creatorName'].sortPriority"
-              [nzSortOrder]="colConf['creatorName'].sortOrder"
-              [nzSortFn]="colConf['creatorName'].sortFn"
-              [nzSortDirections]="colConf['creatorName'].sortDirections"
+              [nzShowFilter]="columnsConfig['creatorName'].showFilter"
+              [nzFilterMultiple]="columnsConfig['creatorName'].filterMultiple"
+              [nzFilters]="columnsConfig['creatorName'].filterOptions"
+              [nzFilterFn]="columnsConfig['creatorName'].filterFunction"
+              [nzShowSort]="columnsConfig['creatorName'].showSort"
+              [nzSortPriority]="columnsConfig['creatorName'].sortPriority"
+              [nzSortOrder]="columnsConfig['creatorName'].sortOrder"
+              [nzSortFn]="columnsConfig['creatorName'].sortFunction"
+              [nzSortDirections]="columnsConfig['creatorName'].sortDirections"
             >
               Người tạo
             </th>
             <th
               nzAlign="center"
               nzWidth="200px"
-              [nzShowFilter]="colConf['createdAt'].showFilter"
-              [nzFilterMultiple]="colConf['createdAt'].multiFilter"
-              [nzFilters]="colConf['createdAt'].filterOpts"
-              [nzFilterFn]="colConf['createdAt'].filterFn"
-              [nzShowSort]="colConf['createdAt'].showSort"
-              [nzSortPriority]="colConf['createdAt'].sortPriority"
-              [nzSortOrder]="colConf['createdAt'].sortOrder"
-              [nzSortFn]="colConf['createdAt'].sortFn"
-              [nzSortDirections]="colConf['createdAt'].sortDirections"
+              [nzShowFilter]="columnsConfig['createdAt'].showFilter"
+              [nzFilterMultiple]="columnsConfig['createdAt'].filterMultiple"
+              [nzFilters]="columnsConfig['createdAt'].filterOptions"
+              [nzFilterFn]="columnsConfig['createdAt'].filterFunction"
+              [nzShowSort]="columnsConfig['createdAt'].showSort"
+              [nzSortPriority]="columnsConfig['createdAt'].sortPriority"
+              [nzSortOrder]="columnsConfig['createdAt'].sortOrder"
+              [nzSortFn]="columnsConfig['createdAt'].sortFunction"
+              [nzSortDirections]="columnsConfig['createdAt'].sortDirections"
             >
               Ngày tạo
             </th>
             <th
               nzAlign="center"
               nzWidth="200px"
-              [nzShowFilter]="colConf['paymentAt'].showFilter"
-              [nzFilterMultiple]="colConf['paymentAt'].multiFilter"
-              [nzFilters]="colConf['paymentAt'].filterOpts"
-              [nzFilterFn]="colConf['paymentAt'].filterFn"
-              [nzShowSort]="colConf['paymentAt'].showSort"
-              [nzSortPriority]="colConf['paymentAt'].sortPriority"
-              [nzSortOrder]="colConf['paymentAt'].sortOrder"
-              [nzSortFn]="colConf['paymentAt'].sortFn"
-              [nzSortDirections]="colConf['paymentAt'].sortDirections"
+              [nzShowFilter]="columnsConfig['paymentAt'].showFilter"
+              [nzFilterMultiple]="columnsConfig['paymentAt'].filterMultiple"
+              [nzFilters]="columnsConfig['paymentAt'].filterOptions"
+              [nzFilterFn]="columnsConfig['paymentAt'].filterFunction"
+              [nzShowSort]="columnsConfig['paymentAt'].showSort"
+              [nzSortPriority]="columnsConfig['paymentAt'].sortPriority"
+              [nzSortOrder]="columnsConfig['paymentAt'].sortOrder"
+              [nzSortFn]="columnsConfig['paymentAt'].sortFunction"
+              [nzSortDirections]="columnsConfig['paymentAt'].sortDirections"
             >
               Ngày chi
             </th>
             <th
               nzAlign="center"
               nzWidth="150px"
-              [nzShowFilter]="colConf['totalAmount'].showFilter"
-              [nzFilterMultiple]="colConf['totalAmount'].multiFilter"
-              [nzFilters]="colConf['totalAmount'].filterOpts"
-              [nzFilterFn]="colConf['totalAmount'].filterFn"
-              [nzShowSort]="colConf['totalAmount'].showSort"
-              [nzSortPriority]="colConf['totalAmount'].sortPriority"
-              [nzSortOrder]="colConf['totalAmount'].sortOrder"
-              [nzSortFn]="colConf['totalAmount'].sortFn"
-              [nzSortDirections]="colConf['totalAmount'].sortDirections"
+              [nzShowFilter]="columnsConfig['totalAmount'].showFilter"
+              [nzFilterMultiple]="columnsConfig['totalAmount'].filterMultiple"
+              [nzFilters]="columnsConfig['totalAmount'].filterOptions"
+              [nzFilterFn]="columnsConfig['totalAmount'].filterFunction"
+              [nzShowSort]="columnsConfig['totalAmount'].showSort"
+              [nzSortPriority]="columnsConfig['totalAmount'].sortPriority"
+              [nzSortOrder]="columnsConfig['totalAmount'].sortOrder"
+              [nzSortFn]="columnsConfig['totalAmount'].sortFunction"
+              [nzSortDirections]="columnsConfig['totalAmount'].sortDirections"
             >
               Tổng tiền
             </th>
             <th
               nzAlign="center"
               nzWidth="150px"
-              [nzShowFilter]="colConf['status'].showFilter"
-              [nzFilterMultiple]="colConf['status'].multiFilter"
-              [nzFilters]="colConf['status'].filterOpts"
-              [nzFilterFn]="colConf['status'].filterFn"
-              [nzShowSort]="colConf['status'].showSort"
-              [nzSortPriority]="colConf['status'].sortPriority"
-              [nzSortOrder]="colConf['status'].sortOrder"
-              [nzSortFn]="colConf['status'].sortFn"
-              [nzSortDirections]="colConf['status'].sortDirections"
+              [nzShowFilter]="columnsConfig['status'].showFilter"
+              [nzFilterMultiple]="columnsConfig['status'].filterMultiple"
+              [nzFilters]="columnsConfig['status'].filterOptions"
+              [nzFilterFn]="columnsConfig['status'].filterFunction"
+              [nzShowSort]="columnsConfig['status'].showSort"
+              [nzSortPriority]="columnsConfig['status'].sortPriority"
+              [nzSortOrder]="columnsConfig['status'].sortOrder"
+              [nzSortFn]="columnsConfig['status'].sortFunction"
+              [nzSortDirections]="columnsConfig['status'].sortDirections"
             >
               Trạng thái
             </th>
@@ -197,6 +197,7 @@
                 nzType="primary"
                 nzShape="circle"
                 nzSize="small"
+                *ngIf="canEditPayment(data)"
               >
                 <span nz-icon nzType="edit" nzTheme="outline"></span>
               </button>
@@ -218,7 +219,7 @@
     </ng-template>
     <gmm-upsert-payment-modal
       [(isVisible)]="isVisibleUpsert"
-      [groups]="joinedGroups"
+      (paymentSaved)="onSearchPayments()"
     ></gmm-upsert-payment-modal>
   </div>
 </div>

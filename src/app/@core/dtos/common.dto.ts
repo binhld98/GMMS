@@ -14,13 +14,13 @@ export type Tag = {
 export type ColumnFilterSorterConfig<T> = {
   [key: string]: {
     showFilter: boolean;
-    multiFilter: boolean;
-    filterOpts: NzTableFilterList;
-    filterFn: NzTableFilterFn<T> | null;
+    filterMultiple: boolean;
+    filterOptions: NzTableFilterList;
+    filterFunction: NzTableFilterFn<T> | null;
     showSort: boolean;
     sortPriority: number | boolean;
     sortOrder: NzTableSortOrder | null;
-    sortFn: NzTableSortFn<T> | null;
+    sortFunction: NzTableSortFn<T> | null;
     sortDirections: NzTableSortOrder[];
   };
 };

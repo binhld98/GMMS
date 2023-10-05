@@ -19,10 +19,7 @@ import { Auth } from '@angular/fire/auth';
 
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import {
-  GROUP_USER_STATUS,
-  PAYMENT_STATUS,
-} from 'src/app/@core/constants/common.constant';
+import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
 import { PdfUtil } from 'src/app/@core/utils/pdf.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
@@ -30,6 +27,7 @@ import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import {
   PaymentPdfDto,
+  SearchPaymentResultDto,
   UpsertPaymentDto,
 } from 'src/app/@core/dtos/payment.dto';
 
@@ -43,7 +41,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
   @Output() isVisibleChange = new EventEmitter<boolean>();
   form!: FormGroup;
   isLoadingGroups = false;
-  @Input() groups: GroupMasterDto[] | [] = [];
+  groups: GroupMasterDto[] | [] = [];
   isLoadingMembers = false;
   members: GroupUserDto[] | [] = [];
   isAutoLoadBSide = false;
@@ -313,6 +311,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
    *
    */
   isSavingDraft = false;
+  @Output() paymentSaved = new EventEmitter<void>();
 
   private getUpsertDtoForSave(): UpsertPaymentDto {
     const _date = this.form.value.date as Date;
@@ -351,6 +350,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       .then((paymentId) => {
         if (!!paymentId) {
           this.messageService.success('Lưu nháp phiếu chi thành công!');
+          this.paymentSaved.emit();
         } else {
           this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
         }
@@ -454,6 +454,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       .then((paymentId) => {
         if (!!paymentId) {
           this.messageService.success('Tạo phiếu chi thành công!');
+          this.paymentSaved.emit();
         } else {
           this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
         }
