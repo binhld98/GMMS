@@ -26,6 +26,7 @@ export type UpsertPaymentDto = {
   bSide: {
     userId: string;
   }[];
+  comment: string | null;
 };
 
 export type SearchPaymentParamsDto = {

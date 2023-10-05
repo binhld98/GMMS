@@ -38,7 +38,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Ngày</nz-form-label>
+          <nz-form-label>Ngày chi</nz-form-label>
           <nz-form-control nzErrorTip="Hãy chọn ngày!">
             <nz-date-picker
               nzPlaceHolder="Chọn ngày"
@@ -47,7 +47,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label>Giờ</nz-form-label>
+          <nz-form-label>Giờ chi</nz-form-label>
           <nz-form-control>
             <nz-time-picker
               nzFormat="HH:mm"
@@ -55,6 +55,12 @@
               nzPlaceHolder="Chọn giờ"
               formControlName="time"
             ></nz-time-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label>Ý kiến</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="Ý kiến" formControlName="comment" />
           </nz-form-control>
         </nz-form-item>
       </div>

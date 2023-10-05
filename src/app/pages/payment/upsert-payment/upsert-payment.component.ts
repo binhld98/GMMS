@@ -27,7 +27,6 @@ import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { GroupMasterDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
 import {
   PaymentPdfDto,
-  SearchPaymentResultDto,
   UpsertPaymentDto,
 } from 'src/app/@core/dtos/payment.dto';
 
@@ -59,9 +58,10 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
     this.form = this.fb.group({
       groupId: [null, [Validators.required]],
       date: [new Date(), [Validators.required]],
-      time: [new Date()],
+      time: [null],
       aSide: this.fb.array([], [Validators.required]),
       bSide: this.fb.array([], [Validators.required]),
+      comment: [null],
     });
   }
 
@@ -71,9 +71,10 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       this.form.reset({
         groupId: null,
         date: new Date(),
-        time: new Date(),
+        time: null,
         aSide: [],
         bSide: [],
+        comment: null,
       });
     }
   }
@@ -333,6 +334,7 @@ export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
       aSide: this.form.value.aSide,
       bSide: _bSide,
       paymentAt: CommonUtil.combineDateTime(_date, _time),
+      comment: this.form.value.comment,
     };
   }
 

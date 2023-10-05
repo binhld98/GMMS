@@ -28,13 +28,19 @@ export class PaymentBusiness {
       id: null,
       creatorId: userId,
       createdAt: serverTimestamp(),
-      modifiedInfos: [],
       isActive: true,
       groupId: dto.groupId,
       status: status,
       aSide: dto.aSide,
       bSide: dto.bSide,
       paymentAt: Timestamp.fromDate(dto.paymentAt),
+      olderHistory: [],
+      lastHistory: {
+        userId: userId,
+        status: status,
+        comment: dto.comment,
+        modifiedAt: serverTimestamp(),
+      },
     } as Payment;
   }
 

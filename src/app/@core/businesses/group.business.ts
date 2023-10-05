@@ -90,7 +90,6 @@ export class GroupBusiness {
       id: null,
       creatorId: userId,
       createdAt: Timestamp.now(),
-      modifiedInfos: [],
       isActive: true,
       groupName: groupName,
       groupDescription: groupDescription,

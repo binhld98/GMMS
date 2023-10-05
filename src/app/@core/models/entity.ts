@@ -5,6 +5,5 @@ export type Entity = {
   id: string | null;
   creatorId: string;
   createdAt: Timestamp;
-  modifiedInfos: UpdateInfo[] | [];
   isActive: boolean;
-}
+};

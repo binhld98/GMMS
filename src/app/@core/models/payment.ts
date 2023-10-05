@@ -14,4 +14,13 @@ export type Payment = Entity & {
     userId: string;
   }[];
   paymentAt: Timestamp;
+  olderHistory: PaymentHistory[] | [];
+  lastHistory: PaymentHistory;
+};
+
+export type PaymentHistory = {
+  userId: string;
+  status: PAYMENT_STATUS;
+  comment: string;
+  modifiedAt: Timestamp;
 };
