@@ -198,6 +198,7 @@
                 nzShape="circle"
                 nzSize="small"
                 *ngIf="canEditPayment(data)"
+                (click)="onEditPayment(data)"
               >
                 <span nz-icon nzType="edit" nzTheme="outline"></span>
               </button>
@@ -217,9 +218,14 @@
         <span nz-icon nzType="plus"></span>
       </button>
     </ng-template>
-    <gmm-upsert-payment-modal
-      [(isVisible)]="isVisibleUpsert"
+    <gmm-create-payment-modal
+      [(isVisible)]="isVisibleCreate"
       (paymentSaved)="onSearchPayments()"
-    ></gmm-upsert-payment-modal>
+    ></gmm-create-payment-modal>
+    <gmm-edit-payment-modal
+      [(isVisible)]="isVisibleEdit"
+      [paymentId]="paymentIdForEdit"
+      (paymentSaved)="onSearchPayments()"
+    ></gmm-edit-payment-modal>
   </div>
 </div>

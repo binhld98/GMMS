@@ -110,6 +110,7 @@ export class PaymentBusiness {
       }, 0);
 
       return {
+        paymentId: p.id,
         groupId: p.groupId,
         groupName: group.groupName,
         creatorId: p.creatorId,

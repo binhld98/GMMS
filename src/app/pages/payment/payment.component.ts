@@ -38,7 +38,6 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   // Card
   isLoadingCard = false;
-  isVisibleUpsert = false;
   form!: FormGroup;
   groups: GroupMasterDto[] = [];
 
@@ -131,6 +130,11 @@ export class PaymentComponent implements OnInit, OnDestroy {
     },
   };
   tableScroll: { x?: string; y?: string } = {};
+
+  // Modals
+  isVisibleCreate = false;
+  isVisibleEdit = false;
+  paymentIdForEdit = '';
 
   constructor(
     private fb: FormBuilder,
@@ -240,7 +244,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   onAddPayment() {
-    this.isVisibleUpsert = true;
+    this.isVisibleCreate = true;
   }
 
   onSearchPayments() {
@@ -286,5 +290,10 @@ export class PaymentComponent implements OnInit, OnDestroy {
         data.status == PAYMENT_STATUS.REJECTED) &&
       data.creatorId == this.auth.currentUser!.uid
     );
+  }
+
+  onEditPayment(data: SearchPaymentResultDto) {
+    this.paymentIdForEdit = data.paymentId;
+    this.isVisibleEdit = true;
   }
 }

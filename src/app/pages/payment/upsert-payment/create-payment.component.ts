@@ -31,11 +31,11 @@ import {
 } from 'src/app/@core/dtos/payment.dto';
 
 @Component({
-  selector: 'gmm-upsert-payment-modal',
-  templateUrl: './upsert-payment.component.html',
-  styleUrls: ['./upsert-payment.component.css'],
+  selector: 'gmm-create-payment-modal',
+  templateUrl: './create-payment.component.html',
+  styleUrls: ['./create-payment.component.css'],
 })
-export class UpsertPaymentComponent implements OnInit, OnDestroy, OnChanges {
+export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isVisible = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
   form!: FormGroup;

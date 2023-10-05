@@ -22,7 +22,7 @@ import { GroupDetailMemberComponent } from './group/group-detail/group-detail-me
 import { InviteMemberComponent } from './group/invite-member/invite-member.component';
 
 import { PaymentComponent } from './payment/payment.component';
-import { UpsertPaymentComponent } from './payment/upsert-payment/upsert-payment.component';
+import { CreatePaymentComponent } from './payment/upsert-payment/create-payment.component';
 
 import { WelcomeComponent } from './welcome/welcome.component';
 
@@ -55,6 +55,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { EditPaymentComponent } from './payment/edit-payment/edit-payment.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
     InviteMemberComponent,
 
     PaymentComponent,
-    UpsertPaymentComponent,
+    CreatePaymentComponent,
+    EditPaymentComponent,
   ],
   imports: [
     CommonModule,
