@@ -1,74 +1,132 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChange,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { GroupDetailDto, GroupUserDto } from 'src/app/@core/dtos/group.dto';
+import { GroupInUserDto, UserInGroupDto } from 'src/app/@core/dtos/group.dto';
+import { ColumnFilterSorterConfig } from 'src/app/@core/dtos/common.dto';
 
 @Component({
   selector: 'gmm-group-detail-admin',
   templateUrl: './group-detail-admin.component.html',
   styleUrls: ['./group-detail-admin.component.css'],
 })
-export class GroupDetailAdminComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() groupId: string | null = null;
-  group: GroupDetailDto | null = null;
-  isLoading = false;
+export class GroupDetailAdminComponent implements OnChanges {
+  @Input() cardMaxHeight = 0;
+  tableScroll: { x?: string; y?: string } = {};
+  @Input() group: GroupInUserDto | null = null;
+  users: UserInGroupDto[] = [];
+  isLoadingCard = false;
   isVisibleInvite = false;
-  memberIds: string[] | [] = [];
+  userIds: string[] = [];
+
+  // table
+  columnsConfig: ColumnFilterSorterConfig<UserInGroupDto> = {
+    userName: {
+      showFilter: false,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
+      showSort: true,
+      sortPriority: false,
+      sortOrder: null,
+      sortFunction: (a, b) => {
+        return a.userName.localeCompare(b.userName);
+      },
+      sortDirections: [],
+    },
+    groupUserStatus: {
+      showFilter: false,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
+      showSort: false,
+      sortPriority: false,
+      sortOrder: null,
+      sortFunction: null,
+      sortDirections: [],
+    },
+    lastJoinedAt: {
+      showFilter: false,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
+      showSort: true,
+      sortPriority: false,
+      sortOrder: null,
+      sortFunction: (a, b) => {
+        const aTime = !!a.joinedAt
+          ? a.joinedAt.getTime()
+          : a.activatedAt
+          ? a.activatedAt.getTime()
+          : 0;
+
+        const bTime = !!b.joinedAt
+          ? b.joinedAt.getTime()
+          : b.activatedAt
+          ? b.activatedAt.getTime()
+          : 0;
+
+        return aTime - bTime;
+      },
+      sortDirections: [],
+    },
+    role: {
+      showFilter: false,
+      filterMultiple: false,
+      filterOptions: [],
+      filterFunction: null,
+      showSort: false,
+      sortPriority: false,
+      sortOrder: null,
+      sortFunction: null,
+      sortDirections: [],
+    },
+  };
+
+  private resetColumnConfig() {
+    for (let key in this.columnsConfig) {
+      this.columnsConfig[key].sortOrder = null;
+    }
+  }
 
   constructor(
-    private groupBuiness: GroupBusiness,
+    private groupBusiness: GroupBusiness,
     private modalService: NzModalService,
     private messageService: NzMessageService
   ) {}
 
-  isShowDeactivateMemberButton(gu: GroupUserDto): boolean {
-    if (
-      gu.joinedStatus == GROUP_USER_STATUS.JOINED &&
-      this.group?.adminId != gu.userId
-    ) {
-      return true;
-    }
-
-    return false;
+  isShowDeactivateMemberButton(user: UserInGroupDto): boolean {
+    return (
+      user.userId != this.group!.adminId &&
+      (user.groupUserStatus == GROUP_USER_STATUS.JOINED ||
+        user.groupUserStatus == GROUP_USER_STATUS.ACTIVATED)
+    );
   }
 
-  isShowActivateMemberButton(gu: GroupUserDto) {
-    if (
-      gu.joinedStatus == GROUP_USER_STATUS.DEACTIVATED &&
-      this.group?.adminId != gu.userId
-    ) {
-      return true;
-    }
-
-    return false;
+  isShowActivateMemberButton(user: UserInGroupDto) {
+    return (
+      user.userId != this.group!.adminId &&
+      user.groupUserStatus == GROUP_USER_STATUS.DEACTIVATED
+    );
   }
-
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
 
   ngOnChanges(changes: SimpleChanges) {
-    const groupId: string | null = changes['groupId'].currentValue;
-    if (groupId != null) {
-      this.isLoading = true;
-      this.groupBuiness.getGroupDetail(groupId).then((g) => {
-        this.group = g;
-        this.memberIds = !!this.group
-          ? this.group.users.map((u) => u.userId)
-          : [];
-        this.isLoading = false;
+    if (!!changes['group'] && !!changes['group'].currentValue) {
+      this.isLoadingCard = true;
+      const group = changes['group'].currentValue as GroupInUserDto;
+      this.groupBusiness.getListUserInGroup(group.groupId).then((users) => {
+        this.users = users;
+        this.userIds = this.users.map((u) => u.userId);
+        this.isLoadingCard = false;
       });
+      this.resetColumnConfig();
+    }
+
+    if (!!changes['cardMaxHeight'] && !!changes['cardMaxHeight'].currentValue) {
+      const cardMaxHeight = changes['cardMaxHeight'].currentValue;
+      this.tableScroll = { y: cardMaxHeight - 137 + 'px' };
     }
   }
 
@@ -76,30 +134,29 @@ export class GroupDetailAdminComponent implements OnInit, OnDestroy, OnChanges {
     this.isVisibleInvite = true;
   }
 
-  onInvitedSuccess() {
-    this.reloadPanel();
+  onInvitedSuccess(users: UserInGroupDto[]) {
+    users.forEach((u) => {
+      this.users.push(u);
+    });
+    this.users.sort((a, b) => a.userName.localeCompare(b.userName));
+
+    this.users = JSON.parse(JSON.stringify(this.users));
   }
 
-  private reloadPanel() {
-    const changes = {
-      groupId: new SimpleChange(this.groupId, this.groupId, false),
-    } as SimpleChanges;
-    this.ngOnChanges(changes);
-  }
-
-  onDeactivatemMember(gu: GroupUserDto) {
+  onDeactivatemMember(user: UserInGroupDto) {
     this.modalService.confirm({
-      nzTitle: `Vô hiệu hóa thành viên <i>${gu.userName}</i>?`,
+      nzTitle: `Vô hiệu hóa thành viên <i>${user.userName}</i>?`,
       nzContent:
         'Thành viên bị vô hiệu hóa sẽ không thể xuất hiện trong các phiếu chi mới tính từ thời điểm bị vô hiệu hóa. Tuy nhiên với các hóa đơn mà có phiếu chi phát sinh trước thời điểm bị vô hiệu hóa, thành viên này vẫn có nghĩa vụ phải thanh toán đầy đủ.',
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        return this.groupBuiness
-          .deactivateMember(this.group!.id, gu.userId)
+        return this.groupBusiness
+          .deactivateMember(this.group!.groupId, user.userId)
           .then(() => {
             this.messageService.create('success', 'Vô hiệu hóa thành công');
-            gu.joinedStatus = GROUP_USER_STATUS.DEACTIVATED; // no need this.reloadPanel();
+            user.groupUserStatus = GROUP_USER_STATUS.DEACTIVATED;
+            user.deactivatedAt = new Date();
           })
           .catch((error) => {
             this.messageService.create('error', 'Vô hiệu hóa thất bại');
@@ -108,19 +165,20 @@ export class GroupDetailAdminComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  onActivatemMember(gu: GroupUserDto) {
+  onActivatemMember(user: UserInGroupDto) {
     this.modalService.confirm({
-      nzTitle: `Hủy vô hiệu hóa thành viên <i>${gu.userName}</i>?`,
+      nzTitle: `Hủy vô hiệu hóa thành viên <i>${user.userName}</i>?`,
       nzContent:
         'Thành viên có thể xuất hiện trong các phiếu chi mới kể từ khi được hủy vô hiệu hóa.',
       nzOkText: 'Đồng ý',
       nzCancelText: 'Hủy',
       nzOnOk: () => {
-        return this.groupBuiness
-          .activateMember(this.group!.id, gu.userId)
+        return this.groupBusiness
+          .activateMember(this.group!.groupId, user.userId)
           .then(() => {
             this.messageService.create('success', 'Hủy vô hiệu hóa thành công');
-            gu.joinedStatus = GROUP_USER_STATUS.JOINED; // no need this.reloadPanel();
+            user.groupUserStatus = GROUP_USER_STATUS.JOINED;
+            user.activatedAt = new Date();
           })
           .catch((error) => {
             this.messageService.create('error', 'Hủy vô hiệu hóa thất bại');

@@ -12,21 +12,18 @@ import { Subject, Subscription } from 'rxjs';
 import { AppService } from 'src/app/app.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
-import {
-  GROUP_USER_STATUS,
-  PAYMENT_STATUS,
-} from 'src/app/@core/constants/common.constant';
+import { PAYMENT_STATUS } from 'src/app/@core/constants/common.constant';
 import { CommonUtil } from 'src/app/@core/utils/common.util';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 import { PaymentBusiness } from 'src/app/@core/businesses/payment.business';
 import { ColumnFilterSorterConfig } from 'src/app/@core/dtos/common.dto';
-import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
 import {
   FromToTypeDto,
   SearchPaymentParamsDto,
   SearchPaymentResultDto,
 } from 'src/app/@core/dtos/payment.dto';
 import { PaymentStatusPipe } from 'src/app/@core/pipes/payment.pipe';
+import { GroupInUserDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-payment',
@@ -39,7 +36,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
   // Card
   isLoadingCard = false;
   form!: FormGroup;
-  groups: GroupMasterDto[] = [];
+  groups: GroupInUserDto[] = [];
 
   // Table
   isLoadingTable = false;
@@ -213,12 +210,9 @@ export class PaymentComponent implements OnInit, OnDestroy {
     });
 
     this.groupBusiness
-      .getGroupsOfUserBy(this.auth.currentUser!.uid, [
-        GROUP_USER_STATUS.JOINED,
-        GROUP_USER_STATUS.DEACTIVATED,
-      ])
-      .then((groups) => {
-        this.groups = groups;
+      .getListGroupInUser(this.auth.currentUser!.uid)
+      .then((g) => {
+        this.groups = g;
         const paramsDto = {
           groups: this.groups,
           fromDate: fromDate,
@@ -226,7 +220,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
           fromToType: 'payment_at',
         } as SearchPaymentParamsDto;
         this.paymentBusiness
-          .getPayments(paramsDto)
+          .searchPayments(paramsDto)
           .then((payments) => {
             this.rowsObservable$.next(payments);
           })
@@ -272,7 +266,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
     this.isLoadingTable = true;
     this.paymentBusiness
-      .getPayments(paramsDto)
+      .searchPayments(paramsDto)
       .then((payments) => {
         this.rowsObservable$.next(payments);
       })

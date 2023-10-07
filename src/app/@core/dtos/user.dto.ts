@@ -1,6 +1,7 @@
-export type InviteUserDto = {
-  id: string;
+export type SimpleUserDto = {
+  userId: string;
   userName: string;
   email: string;
-  avatarUrl: string;
+  creatorId: string;
+  createdAt: Date;
 };

@@ -1,20 +1,36 @@
-<div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
-  <div nz-col nzSpan="8" class="left-panel">
-    <gmm-group-master
-      (targetGroupChange)="viewGroupDetail($event)"
-    ></gmm-group-master>
-  </div>
-  <div nz-col nzSpan="16" class="right-panel">
-    <nz-card *ngIf="!groupDetailId">
-      <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
+<div nz-row>
+  <div nz-col nzSpan="24">
+    <nz-card
+      [nzLoading]="isLoadingCard"
+      [nzBordered]="false"
+      [nzBodyStyle]="{ padding: '0px' }"
+    >
+      <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
+        <div nz-col nzSpan="8" class="left-panel">
+          <gmm-group-master
+            (targetGroupChange)="viewGroupDetail($event)"
+            [cardMaxHeight]="cardMaxHeight"
+            [groups]="groups"
+          ></gmm-group-master>
+        </div>
+        <div nz-col nzSpan="16" class="right-panel">
+          <nz-card *ngIf="group == null">
+            <p nz-typography>Hãy chọn một nhóm để xem chi tiết!</p>
+          </nz-card>
+          <ng-container *ngIf="group != null && currentUserId == group.adminId">
+            <gmm-group-detail-admin
+              [cardMaxHeight]="cardMaxHeight"
+              [group]="group"
+            ></gmm-group-detail-admin>
+          </ng-container>
+          <ng-container *ngIf="group != null && currentUserId != group.adminId">
+            <gmm-group-detail-member
+              [cardMaxHeight]="cardMaxHeight"
+              [group]="group"
+            ></gmm-group-detail-member>
+          </ng-container>
+        </div>
+      </div>
     </nz-card>
-    <gmm-group-detail-admin
-      [groupId]="groupDetailId"
-      *ngIf="currentUserId == groupDetailAdminId && groupDetailId != null"
-    ></gmm-group-detail-admin>
-    <gmm-group-detail-member
-      [groupId]="groupDetailId"
-      *ngIf="currentUserId != groupDetailAdminId && groupDetailId != null"
-    ></gmm-group-detail-member>
   </div>
 </div>

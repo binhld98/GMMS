@@ -3,7 +3,6 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -31,13 +30,15 @@ import {
 import { GroupInUserDto, UserInGroupDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
-  selector: 'gmm-create-payment-modal',
-  templateUrl: './create-payment.component.html',
-  styleUrls: ['./create-payment.component.css'],
+  selector: 'gmm-edit-payment-modal',
+  templateUrl: './edit-payment.component.html',
+  styleUrls: ['./edit-payment.component.css'],
 })
-export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
+export class EditPaymentComponent implements OnInit, OnChanges {
   @Input() isVisible = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
+  @Input() paymentId = '';
+  isLoadingCard = false;
   form!: FormGroup;
   isLoadingGroups = false;
   groups: GroupInUserDto[] = [];
@@ -45,6 +46,7 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
   members: UserInGroupDto[] = [];
   isAutoLoadBSide = false;
   isAutoLoadASide = false;
+  adminComment = '';
 
   constructor(
     private fb: FormBuilder,
@@ -59,27 +61,61 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
       groupId: [null, [Validators.required]],
       date: [new Date(), [Validators.required]],
       time: [null],
+      comment: [null],
       aSide: this.fb.array([], [Validators.required]),
       bSide: this.fb.array([], [Validators.required]),
-      comment: [null],
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const isVisible: boolean = changes['isVisible'].currentValue;
-    if (isVisible) {
-      this.form.reset({
-        groupId: null,
-        date: new Date(),
-        time: null,
-        aSide: [],
-        bSide: [],
-        comment: null,
+  async ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['paymentId'] &&
+      !!changes['paymentId'].currentValue &&
+      changes['paymentId'] &&
+      !!changes['paymentId'].currentValue
+    ) {
+      this.isLoadingCard = true;
+
+      // loading data
+      const payment = await this.paymentBusiness.getUpsertPayment(
+        changes['paymentId'].currentValue
+      );
+      if (!payment) {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+        return;
+      }
+
+      this.groups = await this.groupBusiness.getListGroupInUser(
+        this.auth.currentUser!.uid
+      );
+
+      const users = await this.groupBusiness.getListUserInGroup(
+        payment.groupId
+      );
+      if (users.length <= 0) {
+        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
+        return;
+      }
+      const members = users.filter(
+        (u) => u.groupUserStatus != GROUP_USER_STATUS.INVITED
+      );
+
+      // filling form
+      this.form.get('groupId')!.setValue(payment.groupId);
+      this.form.get('date')!.setValue(payment.paymentAt);
+      this.form.get('time')!.setValue(payment.paymentAt);
+      this.adminComment = payment.comment;
+      this.members = members;
+      payment.aSide.forEach((s) => {
+        this.onAddToASide(s.userId, s.amount, s.description);
       });
+      payment.bSide.forEach((s) => {
+        this.onAddToBSide(s.userId);
+      });
+
+      this.isLoadingCard = false;
     }
   }
-
-  ngOnDestroy(): void {}
 
   private touchHeaderForm(): boolean {
     let valid = true;
@@ -158,7 +194,6 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   handleCancel() {
-    this.onResetForm();
     this.isVisibleChange.next(false);
   }
 
@@ -222,28 +257,12 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    if (this.members.length > 0) {
-      this.aSideFA.clear();
-      this.members.forEach((m) => this.onAddToASide(m.userId, null, null));
-      return;
+    if (this.members.length <= 0) {
+      throw new Error('empty members');
     }
 
-    this.isAutoLoadASide = true;
-    this.groupBusiness
-      .getListUserInGroup(this.form.value.groupId)
-      .then((users) => {
-        this.members = users.filter((u) => {
-          return u.groupUserStatus == GROUP_USER_STATUS.JOINED;
-        });
-        this.aSideFA.clear();
-        this.members.forEach((m) => this.onAddToASide(m.userId, null, null));
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isAutoLoadASide = false;
-      });
+    this.aSideFA.clear();
+    this.members.forEach((m) => this.onAddToASide(m.userId, null, null));
   }
 
   autoLoadBSide() {
@@ -251,49 +270,12 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    if (this.members.length > 0) {
-      this.bSideFA.clear();
-      this.members.forEach((m) => this.onAddToBSide(m.userId));
-      return;
+    if (this.members.length <= 0) {
+      throw new Error('empty members');
     }
 
-    this.isAutoLoadBSide = true;
-    this.groupBusiness
-      .getListUserInGroup(this.form.value.groupId)
-      .then((users) => {
-        this.members = users.filter((u) => {
-          return u.groupUserStatus == GROUP_USER_STATUS.JOINED;
-        });
-        this.bSideFA.clear();
-        this.members.forEach((m) => this.onAddToBSide(m.userId));
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isAutoLoadBSide = false;
-      });
-  }
-
-  onOpenSelectMember(isOpen: boolean) {
-    if (!isOpen || this.members.length > 0) {
-      return;
-    }
-
-    this.isLoadingMembers = true;
-    this.groupBusiness
-      .getListUserInGroup(this.form.value.groupId)
-      .then((users) => {
-        this.members = users.filter((u) => {
-          return u.groupUserStatus == GROUP_USER_STATUS.JOINED;
-        });
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isLoadingMembers = false;
-      });
+    this.bSideFA.clear();
+    this.members.forEach((m) => this.onAddToBSide(m.userId));
   }
 
   onResetForm() {
@@ -302,11 +284,9 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
 
   /**
    *
-   * Draft
+   * Payment Pdf
    *
    */
-  isSavingDraft = false;
-  @Output() paymentSaved = new EventEmitter<void>();
 
   private getUpsertDtoForSave(): UpsertPaymentDto {
     const _date = this.form.value.date as Date;
@@ -332,44 +312,12 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
     };
   }
 
-  onSaveDraft() {
-    if (!this.touchFullForm()) {
-      return;
-    }
-
-    this.isSavingDraft = true;
-    this.paymentBusiness
-      .createDraftPayment(
-        this.getUpsertDtoForSave(),
-        this.auth.currentUser!.uid
-      )
-      .then((paymentId) => {
-        if (!!paymentId) {
-          this.messageService.success('Lưu nháp phiếu chi thành công!');
-          this.paymentSaved.emit();
-        } else {
-          this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-        }
-      })
-      .catch((error) => {
-        this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);
-      })
-      .finally(() => {
-        this.isSavingDraft = false;
-        this.handleCancel();
-      });
-  }
-
-  /**
-   *
-   * Payment Pdf
-   *
-   */
   isVisiblePdf = false;
   isLoadingPdf = false;
   pdfBlob: Blob | null = null;
   pdfObjUrl: string = '';
   isSavingPayment = false;
+  @Output() paymentSaved = new EventEmitter<void>();
 
   onGeneratePayment() {
     if (!this.touchFullForm()) {
@@ -451,7 +399,7 @@ export class CreatePaymentComponent implements OnInit, OnDestroy, OnChanges {
       )
       .then((paymentId) => {
         if (!!paymentId) {
-          this.messageService.success('Tạo phiếu chi thành công!');
+          this.messageService.success('Cập nhật phiếu chi thành công!');
           this.paymentSaved.emit();
         } else {
           this.messageService.error(CommonUtil.COMMON_ERROR_MESSAGE);

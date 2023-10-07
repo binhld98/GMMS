@@ -1,43 +1,45 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
-
-import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
-import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { GroupMasterDto } from 'src/app/@core/dtos/group.dto';
+import {
+  Component,
+  EventEmitter,
+  Output,
+  Input,
+  SimpleChanges,
+} from '@angular/core';
+import { GroupInUserDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-group-master',
   templateUrl: './group-master.component.html',
   styleUrls: ['./group-master.component.css'],
 })
-export class GroupMasterComponent implements OnInit {
-  groups: GroupMasterDto[] = [];
-  isLoading = true;
+export class GroupMasterComponent {
+  @Input() cardMaxHeight = 0;
+  listMaxHeight = 0;
+  @Input() groups: GroupInUserDto[] = [];
   isVisibleUpsert = false;
-  @Output() targetGroupChange = new EventEmitter<GroupMasterDto>();
+  @Output() targetGroupChange = new EventEmitter<GroupInUserDto>();
   activeIndex: number = -1;
 
-  constructor(private auth: Auth, private groupBusiness: GroupBusiness) {}
-
-  ngOnInit(): void {
-    this.onGroupSaved();
+  ngOnChanges(changes: SimpleChanges) {
+    if (!!changes['cardMaxHeight'] && !!changes['cardMaxHeight'].currentValue) {
+      this.listMaxHeight = this.cardMaxHeight - 98;
+    }
   }
 
   onAddGroup() {
     this.isVisibleUpsert = true;
   }
 
-  onGroupSaved() {
-    this.isLoading = true;
-    this.groupBusiness
-      .getGroupsOfUserBy(this.auth.currentUser!.uid, [GROUP_USER_STATUS.JOINED])
-      .then((groups) => {
-        this.groups = groups;
-        this.isLoading = false;
-      });
+  onGroupSaved(group: GroupInUserDto) {
+    const _groups = JSON.parse(JSON.stringify(this.groups)) as GroupInUserDto[];
+    _groups.push(group);
+    _groups.sort((a, b) => {
+      return a.groupName.localeCompare(b.groupName);
+    });
+    this.groups = _groups;
   }
 
-  onClickGroup(group: GroupMasterDto) {
+  onClickGroup(group: GroupInUserDto) {
     this.targetGroupChange.emit(group);
     this.activeIndex = this.groups.indexOf(group);
   }

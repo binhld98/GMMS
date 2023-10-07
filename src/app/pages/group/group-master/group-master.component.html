@@ -1,33 +1,31 @@
-<nz-spin [nzSpinning]="isLoading">
-  <nz-card nzTitle="Nhóm" [nzExtra]="extraTemplate">
-    <nz-list>
-      <nz-list-item
-        *ngFor="let group of groups; index as idx"
-        (click)="onClickGroup(group)"
-        [ngClass]="{ active: idx == activeIndex }"
-      >
-        <nz-list-item-meta
-          nzAvatar="{{ group.avatarUrl }}"
-          nzTitle="{{ group.groupName }}"
-          nzDescription="{{ group.adminName }} là quản trị viên"
-        >
-        </nz-list-item-meta>
-      </nz-list-item>
-    </nz-list>
-  </nz-card>
-  <ng-template #extraTemplate>
-    <button
-      nz-button
-      nzType="primary"
-      nzShape="circle"
-      nzSize="small"
-      (click)="onAddGroup()"
+<nz-card nzTitle="Nhóm" [nzExtra]="extraTemplate">
+  <nz-list [ngStyle]="{ maxHeight: listMaxHeight + 'px' }">
+    <nz-list-item
+      *ngFor="let group of groups; let i = index"
+      (click)="onClickGroup(group)"
+      [ngClass]="{ active: i == activeIndex }"
     >
-      <span nz-icon nzType="plus"></span>
-    </button>
-  </ng-template>
-  <gmm-upsert-group-modal
-    [(isVisible)]="isVisibleUpsert"
-    (groupSaved)="onGroupSaved()"
-  ></gmm-upsert-group-modal>
-</nz-spin>
+      <nz-list-item-meta
+        nzAvatar="/assets/logo.svg"
+        nzTitle="{{ group.groupName }}"
+        nzDescription="{{ group.adminName }} là quản trị viên"
+      >
+      </nz-list-item-meta>
+    </nz-list-item>
+  </nz-list>
+</nz-card>
+<ng-template #extraTemplate>
+  <button
+    nz-button
+    nzType="primary"
+    nzShape="circle"
+    nzSize="small"
+    (click)="onAddGroup()"
+  >
+    <span nz-icon nzType="plus"></span>
+  </button>
+</ng-template>
+<gmm-upsert-group-modal
+  [(isVisible)]="isVisibleUpsert"
+  (groupSaved)="onGroupSaved($event)"
+></gmm-upsert-group-modal>

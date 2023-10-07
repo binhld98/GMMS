@@ -70,7 +70,7 @@ export class PaymentBusiness {
     return paymentAdded.id;
   }
 
-  async getPayments(params: SearchPaymentParamsDto) {
+  async searchPayments(params: SearchPaymentParamsDto) {
     // validate params
     if (
       !params.groups.length ||
@@ -83,13 +83,13 @@ export class PaymentBusiness {
     let payments: Payment[] = [];
     if (params.fromToType == 'created_at') {
       payments = await this.paymentRepository.findByCreatedAtRangeAsync(
-        params.groups.map((g) => g.id),
+        params.groups.map((g) => g.groupId),
         Timestamp.fromDate(params.fromDate),
         Timestamp.fromDate(params.toDate)
       );
     } else if (params.fromToType == 'payment_at') {
       payments = await this.paymentRepository.findByPaymentAtRangeAsync(
-        params.groups.map((g) => g.id),
+        params.groups.map((g) => g.groupId),
         Timestamp.fromDate(params.fromDate),
         Timestamp.fromDate(params.toDate)
       );
@@ -103,7 +103,7 @@ export class PaymentBusiness {
     const creators = await this.userRepository.getManyAsync(userIds);
 
     const searchResult = payments.map((p) => {
-      const group = params.groups.find((g) => g.id == p.groupId)!;
+      const group = params.groups.find((g) => g.groupId == p.groupId)!;
       const creator = creators.find((u) => u.id == p.creatorId)!;
       const totalAmount = p.aSide.reduce((total, current) => {
         return total + +current.amount;
@@ -123,5 +123,20 @@ export class PaymentBusiness {
     });
 
     return searchResult;
+  }
+
+  async getUpsertPayment(paymentId: string) {
+    const payment = await this.paymentRepository.getAsync(paymentId);
+    if (!payment) {
+      return null;
+    }
+
+    return {
+      groupId: payment.groupId,
+      paymentAt: payment.paymentAt.toDate(),
+      aSide: payment.aSide,
+      bSide: payment.bSide,
+      comment: '',
+    } as UpsertPaymentDto;
   }
 }

@@ -64,7 +64,8 @@ export class CommonUtil {
     return Timestamp.fromDate(new Date('9999-12-31T23:59:59.99Z'));
   }
 
-  static arrayDistinct(arr: any[], key: string) {
+  static arrayDistinct<T>(arr: T[], key: string) {
+    //@ts-ignore
     return [...new Map(arr.map((item) => [item[key], item])).values()];
   }
 }

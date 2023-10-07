@@ -16,7 +16,6 @@ nz-list-item.active {
 }
 
 nz-list {
-  height: 59vh;
   overflow-y: auto;
   padding-right: 8px;
 }

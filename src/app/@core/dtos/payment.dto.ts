@@ -1,5 +1,5 @@
 import { PAYMENT_STATUS } from '../constants/common.constant';
-import { GroupMasterDto } from './group.dto';
+import { GroupInUserDto } from './group.dto';
 
 export type PaymentPdfDto = {
   groupName: string;
@@ -26,11 +26,11 @@ export type UpsertPaymentDto = {
   bSide: {
     userId: string;
   }[];
-  comment: string | null;
+  comment: string;
 };
 
 export type SearchPaymentParamsDto = {
-  groups: GroupMasterDto[];
+  groups: GroupInUserDto[];
   fromDate: Date;
   toDate: Date;
   fromToType: FromToTypeDto;

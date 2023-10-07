@@ -1,47 +1,35 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { GROUP_USER_STATUS } from 'src/app/@core/constants/common.constant';
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
-import { GroupDetailDto } from 'src/app/@core/dtos/group.dto';
+import { GroupInUserDto, UserInGroupDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-group-detail-member',
   templateUrl: './group-detail-member.component.html',
   styleUrls: ['./group-detail-member.component.css'],
 })
-export class GroupDetailMemberComponent
-  implements OnInit, OnDestroy, OnChanges
-{
-  @Input() groupId: string | null = null;
-  group: GroupDetailDto | null = null;
-  isLoading = false;
+export class GroupDetailMemberComponent implements OnChanges {
+  @Input() cardMaxHeight = 0;
+  @Input() group: GroupInUserDto | null = null;
+  users: UserInGroupDto[] = [];
+  isLoadingCard = false;
   isVisibleInvite = false;
 
   constructor(private groupBuiness: GroupBusiness) {}
 
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {}
-
   ngOnChanges(changes: SimpleChanges) {
-    const groupId: string | null = changes['groupId'].currentValue;
-    if (groupId != null) {
-      this.isLoading = true;
-      this.groupBuiness.getGroupDetail(groupId).then((g) => {
-        this.group = g;
-        if (!!this.group) {
-          this.group.users = this.group.users.filter((u) => {
-            return u.joinedStatus == GROUP_USER_STATUS.JOINED;
-          });
-        }
-        this.isLoading = false;
+    if (!!changes['group'] && !!changes['group'].currentValue) {
+      this.isLoadingCard = true;
+      const group = changes['group'].currentValue as GroupInUserDto;
+      this.groupBuiness.getListUserInGroup(group.groupId).then((users) => {
+        this.users = users.filter((u) => {
+          return (
+            u.groupUserStatus == GROUP_USER_STATUS.JOINED ||
+            u.groupUserStatus == GROUP_USER_STATUS.ACTIVATED
+          );
+        });
+        this.isLoadingCard = false;
       });
     }
   }

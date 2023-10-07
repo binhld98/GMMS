@@ -7,14 +7,11 @@ import {
   Output,
 } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 
 import { GroupBusiness } from 'src/app/@core/businesses/group.business';
+import { GroupInUserDto } from 'src/app/@core/dtos/group.dto';
 
 @Component({
   selector: 'gmm-upsert-group-modal',
@@ -24,21 +21,19 @@ import { GroupBusiness } from 'src/app/@core/businesses/group.business';
 export class UpsertGroupComponent implements OnInit, OnDestroy {
   @Input() isVisible = false;
   @Output() isVisibleChange = new EventEmitter<boolean>();
-
-  @Output() groupSaved = new EventEmitter<boolean>();
-
-  validateForm!: UntypedFormGroup;
+  @Output() groupSaved = new EventEmitter<GroupInUserDto>();
+  form!: FormGroup;
   isSaving = false;
 
   constructor(
     private auth: Auth,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private groupBusiness: GroupBusiness,
     private messageService: NzMessageService
   ) {}
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
+    this.form = this.fb.group({
       groupName: [null, [Validators.required]],
       groupDescription: [],
     });
@@ -47,8 +42,8 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   handleOk() {
-    if (!this.validateForm.valid) {
-      Object.values(this.validateForm.controls).forEach((control) => {
+    if (!this.form.valid) {
+      Object.values(this.form.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
@@ -56,18 +51,14 @@ export class UpsertGroupComponent implements OnInit, OnDestroy {
       });
     } else {
       this.isSaving = true;
-      const formValue = this.validateForm.value;
+      const formValue = this.form.value;
       const userId = this.auth.currentUser!.uid;
       this.groupBusiness
         .createNewGroup(formValue.groupName, formValue.groupDescription, userId)
-        .then((groupId) => {
-          if (!!groupId) {
-            this.messageService.create('success', 'Tạo nhóm mới thành công');
-            this.groupSaved.emit(true);
-            this.validateForm.reset();
-          } else {
-            this.messageService.create('error', 'Không thể tạo được nhóm mới');
-          }
+        .then((group) => {
+          this.messageService.create('success', 'Tạo nhóm mới thành công');
+          this.groupSaved.emit(group);
+          this.form.reset();
           this.handleCancel();
           this.isSaving = false;
         });

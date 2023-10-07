@@ -1,16 +1,13 @@
 export enum GROUP_USER_STATUS {
-  JOINED = 1,
-  WAIT_CONFIRM = 2,
+  INVITED = 1,
+  JOINED = 2,
   DEACTIVATED = 3,
+  ACTIVATED = 4,
 }
 
 export enum GROUP_USER_ROLE {
   ADMIN = 1,
   MEMBER = 2,
-}
-
-export enum GROUP_STATUS {
-  CREATED = 1,
 }
 
 export enum PAYMENT_STATUS {

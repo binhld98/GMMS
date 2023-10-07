@@ -15,19 +15,24 @@ export class GroupStatusPipe implements PipeTransform {
     } as Tag;
 
     switch (value) {
+      case GROUP_USER_STATUS.INVITED:
+        tag.text = 'Đã mời';
+        tag.color = TAG_COLOR.YELLOW;
+        break;
+
       case GROUP_USER_STATUS.JOINED:
         tag.text = 'Đã tham gia';
         tag.color = TAG_COLOR.GREEN;
         break;
 
-      case GROUP_USER_STATUS.WAIT_CONFIRM:
-        tag.text = 'Chờ xác nhận';
-        tag.color = TAG_COLOR.YELLOW;
-        break;
-
       case GROUP_USER_STATUS.DEACTIVATED:
         tag.text = 'Đã vô hiệu hóa';
         tag.color = TAG_COLOR.RED;
+        break;
+
+      case GROUP_USER_STATUS.ACTIVATED:
+        tag.text = 'Đã tham gia';
+        tag.color = TAG_COLOR.GREEN;
         break;
 
       default:

@@ -9,7 +9,7 @@
   <ng-template #modalTitle>Mời thêm thành viên</ng-template>
 
   <ng-template #modalContent>
-    <form nz-form [formGroup]="validateForm">
+    <form nz-form [formGroup]="form">
       <nz-form-item>
         <nz-form-label [nzSpan]="6" nzLabelAlign="left">
           Thành viên mới
@@ -23,12 +23,12 @@
             nzServerSearch
             (nzOnSearch)="onSearch($event)"
             nz-input
-            formControlName="members"
+            formControlName="userIds"
             [nzOptionHeightPx]="54"
           >
             <nz-option
-              *ngFor="let u of optUsrs"
-              [nzValue]="u.id"
+              *ngFor="let u of optionUsers"
+              [nzValue]="u.userId"
               [nzLabel]="u.userName"
               nzCustomContent
               [nzDisabled]="!canSelect(u)"
@@ -38,7 +38,7 @@
                   <nz-avatar
                     nzSize="large"
                     nzShape="circle"
-                    nzSrc="{{ u.avatarUrl }}"
+                    nzSrc="/assets/logo.svg"
                   ></nz-avatar>
                 </div>
                 <div nz-col nzSpan="20">
