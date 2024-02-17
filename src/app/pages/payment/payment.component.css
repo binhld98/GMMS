@@ -1,0 +1,36 @@
+:host ::ng-deep div.ant-table {
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+:host ::ng-deep .ant-card-head {
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: none;
+}
+
+:host ::ng-deep .ant-card-head-wrapper {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:host ::ng-deep .ant-card-body {
+  padding: 16px;
+  padding-right: 8px;
+}
+
+:host ::ng-deep .ant-spin-nested-loading > div > .ant-spin {
+  max-height: 100%;
+}
+
+nz-select {
+  min-width: 150px;
+}
+
+:host ::ng-deep nz-pagination {
+  padding-right: 8px;
+}
+
+.operation > * {
+  margin-left: 8px;
+  margin-right: 8px;
+}

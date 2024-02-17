@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../@core/auth/auth.service';
 import { Router } from '@angular/router';
+import { Auth, signOut } from '@angular/fire/auth';
+
+import { CommonUtil } from '../@core/utils/common.util';
+
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-page',
@@ -14,27 +16,22 @@ export class PagesComponent implements OnInit {
   userName: string | null | undefined = '';
 
   constructor(
-    private authService: AuthService,
     private messageService: NzMessageService,
     private router: Router,
     private auth: Auth
   ) {}
 
   ngOnInit(): void {
-    const email = this.auth.currentUser?.email ?? '';
-    if (email.length > 7) {
-      this.userName = email.substring(0, 7) + '...';
-    } else {
-      this.userName = email;
-    }
+    this.userName = this.auth.currentUser?.email ?? '';
   }
 
   onLogout() {
-    this.authService
-      .logout()
-      .then(() => this.router.navigate(['/auth/login']))
+    signOut(this.auth)
+      .then(() => {
+        this.router.navigate(['/auth/login']);
+      })
       .catch((error) => {
-        this.messageService.create('error', error.message);
+        this.messageService.create('error', CommonUtil.COMMON_ERROR_MESSAGE);
       });
   }
 }

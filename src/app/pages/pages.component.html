@@ -1,9 +1,8 @@
-<nz-layout class="app-layout">
+<nz-layout>
   <nz-sider
     class="menu-sidebar"
     nzCollapsible
-    nzWidth="256px"
-    nzBreakpoint="md"
+    nzBreakpoint="lg"
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null"
   >
@@ -17,43 +16,36 @@
       nzMode="inline"
       [nzInlineCollapsed]="isCollapsed"
     >
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
-          </li>
-          <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
-          </li>
-        </ul>
+      <li nz-menu-item nzMatchRouter routerLink="/welcome">
+        <span nz-icon nzType="home"></span>
+        <span>Home</span>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
+      <li nz-menu-item nzMatchRouter routerLink="/payment">
+        <span nz-icon nzType="form"></span>
+        <span>Phiếu chi</span>
+      </li>
+      <li nz-menu-item nzMatchRouter routerLink="/group">
+        <span nz-icon nzType="usergroup-add"></span>
+        <span>Nhóm</span>
       </li>
     </ul>
   </nz-sider>
   <nz-layout>
     <nz-header>
       <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+        <span class="left-header">
           <span
             class="trigger"
             nz-icon
             [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            (click)="isCollapsed = !isCollapsed"
           ></span>
         </span>
 
         <span class="right-header">
           <a nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click">
             <nz-avatar nzIcon="user"></nz-avatar>
-            {{ userName }}
+            {{ userName | nzEllipsis : 7 : "..." }}
           </a>
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu nzSelectable>
@@ -64,9 +56,12 @@
       </div>
     </nz-header>
     <nz-content>
-      <div class="inner-content">
+      <div class="app-content">
         <router-outlet></router-outlet>
       </div>
     </nz-content>
+    <nz-footer>
+      <span>Group Money Management System ©2023 Develop By BinhLD</span>
+    </nz-footer>
   </nz-layout>
 </nz-layout>

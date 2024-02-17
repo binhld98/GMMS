@@ -1,0 +1,44 @@
+nz-list-item {
+  border: 1px solid #f0f0f0;
+  margin-bottom: 8px;
+  padding: 6px;
+  border-radius: 6px;
+}
+
+nz-list-item:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+nz-list-item.active {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+nz-list {
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+:host ::ng-deep .ant-card-head {
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: none;
+}
+
+:host ::ng-deep .ant-card-head-wrapper {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+:host ::ng-deep .ant-card-body {
+  padding: 16px;
+  padding-right: 8px;
+}
+
+:host ::ng-deep .ant-spin-nested-loading > div > .ant-spin {
+  max-height: 100%;
+}
+
+:host ::ng-deep .ant-list-split .ant-list-item:last-child {
+  border-bottom: 1px solid #f0f0f0;
+}

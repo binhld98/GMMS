@@ -1,0 +1,231 @@
+<div nz-row>
+  <div nz-col nzSpan="24">
+    <nz-card
+      nzTitle="Phiếu chi"
+      [nzExtra]="extraTemplate"
+      [nzLoading]="isLoadingCard"
+    >
+      <form nz-form [formGroup]="form">
+        <nz-space nzSize="large" nz-row>
+          <nz-form-item *nzSpaceItem>
+            <nz-form-label>Từ ngày</nz-form-label>
+            <nz-form-control nzErrorTip="Hãy chọn từ ngày!">
+              <nz-date-picker
+                nzPlaceHolder="Chọn từ ngày"
+                formControlName="fromDate"
+              ></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *nzSpaceItem>
+            <nz-form-label>Đến ngày</nz-form-label>
+            <nz-form-control nzErrorTip="Hãy chọn đến ngày!">
+              <nz-date-picker
+                nzPlaceHolder="Chọn đến ngày"
+                formControlName="toDate"
+              ></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *nzSpaceItem>
+            <nz-form-label>Tiêu chí</nz-form-label>
+            <nz-form-control nzErrorTip="Hãy chọn tiêu chí!">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Chọn tiêu chí"
+                formControlName="fromToType"
+              >
+                <nz-option nzValue="created_at" nzLabel="Ngày tạo"></nz-option>
+                <nz-option nzValue="payment_at" nzLabel="Ngày chi"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *nzSpaceItem>
+            <nz-form-control nzErrorTip="Hãy chọn đến ngày!">
+              <button
+                nz-button
+                nzType="primary"
+                (click)="onSearchPayments()"
+                [nzLoading]="isLoadingTable"
+              >
+                <span nz-icon nzType="search"></span>
+                Tìm kiếm
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-space>
+      </form>
+      <nz-table
+        #table
+        nzBordered
+        nzShowSizeChanger
+        nzSize="small"
+        [nzData]="rows"
+        [nzLoading]="isLoadingTable"
+        [nzScroll]="tableScroll"
+      >
+        <thead>
+          <tr>
+            <th nzAlign="center" nzWidth="50px">STT</th>
+            <th
+              nzAlign="center"
+              nzWidth="200px"
+              [nzShowFilter]="columnsConfig['groupName'].showFilter"
+              [nzFilterMultiple]="columnsConfig['groupName'].filterMultiple"
+              [nzFilters]="columnsConfig['groupName'].filterOptions"
+              [nzFilterFn]="columnsConfig['groupName'].filterFunction"
+              [nzShowSort]="columnsConfig['groupName'].showSort"
+              [nzSortPriority]="columnsConfig['groupName'].sortPriority"
+              [nzSortOrder]="columnsConfig['groupName'].sortOrder"
+              [nzSortFn]="columnsConfig['groupName'].sortFunction"
+              [nzSortDirections]="columnsConfig['groupName'].sortDirections"
+            >
+              Tên nhóm
+            </th>
+            <th
+              nzAlign="center"
+              nzWidth="200px"
+              [nzShowFilter]="columnsConfig['creatorName'].showFilter"
+              [nzFilterMultiple]="columnsConfig['creatorName'].filterMultiple"
+              [nzFilters]="columnsConfig['creatorName'].filterOptions"
+              [nzFilterFn]="columnsConfig['creatorName'].filterFunction"
+              [nzShowSort]="columnsConfig['creatorName'].showSort"
+              [nzSortPriority]="columnsConfig['creatorName'].sortPriority"
+              [nzSortOrder]="columnsConfig['creatorName'].sortOrder"
+              [nzSortFn]="columnsConfig['creatorName'].sortFunction"
+              [nzSortDirections]="columnsConfig['creatorName'].sortDirections"
+            >
+              Người tạo
+            </th>
+            <th
+              nzAlign="center"
+              nzWidth="200px"
+              [nzShowFilter]="columnsConfig['createdAt'].showFilter"
+              [nzFilterMultiple]="columnsConfig['createdAt'].filterMultiple"
+              [nzFilters]="columnsConfig['createdAt'].filterOptions"
+              [nzFilterFn]="columnsConfig['createdAt'].filterFunction"
+              [nzShowSort]="columnsConfig['createdAt'].showSort"
+              [nzSortPriority]="columnsConfig['createdAt'].sortPriority"
+              [nzSortOrder]="columnsConfig['createdAt'].sortOrder"
+              [nzSortFn]="columnsConfig['createdAt'].sortFunction"
+              [nzSortDirections]="columnsConfig['createdAt'].sortDirections"
+            >
+              Ngày tạo
+            </th>
+            <th
+              nzAlign="center"
+              nzWidth="200px"
+              [nzShowFilter]="columnsConfig['paymentAt'].showFilter"
+              [nzFilterMultiple]="columnsConfig['paymentAt'].filterMultiple"
+              [nzFilters]="columnsConfig['paymentAt'].filterOptions"
+              [nzFilterFn]="columnsConfig['paymentAt'].filterFunction"
+              [nzShowSort]="columnsConfig['paymentAt'].showSort"
+              [nzSortPriority]="columnsConfig['paymentAt'].sortPriority"
+              [nzSortOrder]="columnsConfig['paymentAt'].sortOrder"
+              [nzSortFn]="columnsConfig['paymentAt'].sortFunction"
+              [nzSortDirections]="columnsConfig['paymentAt'].sortDirections"
+            >
+              Ngày chi
+            </th>
+            <th
+              nzAlign="center"
+              nzWidth="150px"
+              [nzShowFilter]="columnsConfig['totalAmount'].showFilter"
+              [nzFilterMultiple]="columnsConfig['totalAmount'].filterMultiple"
+              [nzFilters]="columnsConfig['totalAmount'].filterOptions"
+              [nzFilterFn]="columnsConfig['totalAmount'].filterFunction"
+              [nzShowSort]="columnsConfig['totalAmount'].showSort"
+              [nzSortPriority]="columnsConfig['totalAmount'].sortPriority"
+              [nzSortOrder]="columnsConfig['totalAmount'].sortOrder"
+              [nzSortFn]="columnsConfig['totalAmount'].sortFunction"
+              [nzSortDirections]="columnsConfig['totalAmount'].sortDirections"
+            >
+              Tổng tiền
+            </th>
+            <th
+              nzAlign="center"
+              nzWidth="150px"
+              [nzShowFilter]="columnsConfig['status'].showFilter"
+              [nzFilterMultiple]="columnsConfig['status'].filterMultiple"
+              [nzFilters]="columnsConfig['status'].filterOptions"
+              [nzFilterFn]="columnsConfig['status'].filterFunction"
+              [nzShowSort]="columnsConfig['status'].showSort"
+              [nzSortPriority]="columnsConfig['status'].sortPriority"
+              [nzSortOrder]="columnsConfig['status'].sortOrder"
+              [nzSortFn]="columnsConfig['status'].sortFunction"
+              [nzSortDirections]="columnsConfig['status'].sortDirections"
+            >
+              Trạng thái
+            </th>
+            <th nzAlign="center" nzWidth="150px" nzRight>Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let data of table.data; let i = index">
+            <td nzAlign="center">
+              {{ (table.nzPageIndex - 1) * table.nzPageSize + i + 1 }}
+            </td>
+            <td nzAlign="center">{{ data.groupName }}</td>
+            <td nzAlign="center">{{ data.creatorName }}</td>
+            <td nzAlign="center">
+              {{ data.createdAt | date : "dd/MM/yyyy hh:mm" }}
+            </td>
+            <td nzAlign="center">
+              {{ data.paymentAt | date : "dd/MM/yyyy hh:mm" }}
+            </td>
+            <td nzAlign="center">{{ data.totalAmount }} (kVNĐ)</td>
+            <td nzAlign="center">
+              <ng-container
+                *ngIf="data.status | gmm_payment_status as paymentTag"
+              >
+                <nz-tag [nzColor]="paymentTag.color">{{
+                  paymentTag.text
+                }}</nz-tag>
+              </ng-container>
+            </td>
+            <td nzAlign="center" nzRight class="operation">
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+              >
+                <span nz-icon nzType="eye" nzTheme="outline"></span>
+              </button>
+              <button
+                nz-button
+                nzType="primary"
+                nzShape="circle"
+                nzSize="small"
+                *ngIf="canEditPayment(data)"
+                (click)="onEditPayment(data)"
+              >
+                <span nz-icon nzType="edit" nzTheme="outline"></span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+    <ng-template #extraTemplate>
+      <button
+        nz-button
+        nzType="primary"
+        nzShape="circle"
+        nzSize="small"
+        (click)="onAddPayment()"
+      >
+        <span nz-icon nzType="plus"></span>
+      </button>
+    </ng-template>
+    <gmm-create-payment-modal
+      [(isVisible)]="isVisibleCreate"
+      (paymentSaved)="onSearchPayments()"
+    ></gmm-create-payment-modal>
+    <gmm-edit-payment-modal
+      [(isVisible)]="isVisibleEdit"
+      [paymentId]="paymentIdForEdit"
+      (paymentSaved)="onSearchPayments()"
+    ></gmm-edit-payment-modal>
+  </div>
+</div>

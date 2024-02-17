@@ -1,0 +1,22 @@
+<nz-drawer
+  [(nzVisible)]="visible"
+  nzPlacement="top"
+  [nzTitle]="title"
+  nzHeight="100vh"
+  (nzOnClose)="onClose()"
+  [nzZIndex]="isUnderModal ? 1000 : 1100"
+  [nzFooter]="nzDrawerFooter"
+>
+  <ng-container *nzDrawerContent>
+    <iframe
+      *ngIf="!!dataObjUrl"
+      [src]="dataObjUrl | gmm_safe : 'resourceUrl'"
+    ></iframe>
+  </ng-container>
+
+  <ng-template #nzDrawerFooter>
+    <div class="footer">
+      <ng-content></ng-content>
+    </div>
+  </ng-template>
+</nz-drawer>

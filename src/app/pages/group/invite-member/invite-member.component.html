@@ -1,0 +1,75 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()"
+  nzMaskClosable="false"
+>
+  <ng-template #modalTitle>Mời thêm thành viên</ng-template>
+
+  <ng-template #modalContent>
+    <form nz-form [formGroup]="form">
+      <nz-form-item>
+        <nz-form-label [nzSpan]="6" nzLabelAlign="left">
+          Thành viên mới
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzErrorTip="Vui lòng chọn thành viên!">
+          <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Chọn thành viên"
+            nzAllowClear
+            nzShowSearch
+            nzServerSearch
+            (nzOnSearch)="onSearch($event)"
+            nz-input
+            formControlName="userIds"
+            [nzOptionHeightPx]="54"
+          >
+            <nz-option
+              *ngFor="let u of optionUsers"
+              [nzValue]="u.userId"
+              [nzLabel]="u.userName"
+              nzCustomContent
+              [nzDisabled]="!canSelect(u)"
+            >
+              <div nz-row>
+                <div nz-col nzSpan="4">
+                  <nz-avatar
+                    nzSize="large"
+                    nzShape="circle"
+                    nzSrc="/assets/logo.svg"
+                  ></nz-avatar>
+                </div>
+                <div nz-col nzSpan="20">
+                  <p style="margin-bottom: 0px">{{ u.userName }}</p>
+                  <i>{{ u.email }}</i>
+                </div>
+              </div>
+            </nz-option>
+            <nz-option *ngIf="isLoading" nzDisabled nzCustomContent>
+              <span
+                nz-icon
+                nzType="loading"
+                class="loading-icon"
+                style="margin-top: 14px"
+              ></span>
+              Loading...
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="handleOk()"
+      [nzLoading]="isInviting"
+    >
+      Mời
+    </button>
+  </ng-template>
+</nz-modal>

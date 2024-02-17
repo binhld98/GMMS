@@ -22,7 +22,6 @@ export class PagesGuardService implements CanActivate {
     | UrlTree
     | Promise<boolean | UrlTree>
     | Observable<boolean | UrlTree> {
-    // @ts-expect-error
     return authState(this.auth).pipe(
       take(1),
       map((user) => {

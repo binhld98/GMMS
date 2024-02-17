@@ -1,0 +1,333 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzWidth]="992"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()"
+  nzPlacement="top"
+  nzTitle="Chỉnh sửa phiếu chi"
+  nzMaskClosable="false"
+  nzCentered
+>
+  <ng-template #modalContent>
+    <nz-card
+      [nzLoading]="isLoadingCard"
+      [nzBordered]="false"
+      [nzBodyStyle]="{ padding: '0px' }"
+    >
+      <form nz-form [formGroup]="form">
+        <div nz-row class="inline">
+          <nz-form-item>
+            <nz-form-label>Nhóm</nz-form-label>
+            <nz-form-control nzErrorTip="Hãy chọn nhóm!">
+              <nz-select
+                nzShowSearch
+                nzAllowClear
+                nzPlaceHolder="Chọn nhóm"
+                formControlName="groupId"
+                (nzOpenChange)="onOpenSelectGroup($event)"
+                (ngModelChange)="onChangeSelectGroup($event)"
+                nzDisabled
+              >
+                <ng-container *ngFor="let g of groups">
+                  <nz-option
+                    *ngIf="!isLoadingGroups"
+                    [nzValue]="g.groupId"
+                    [nzLabel]="g.groupName"
+                  ></nz-option>
+                </ng-container>
+                <nz-option *ngIf="isLoadingGroups" nzDisabled nzCustomContent>
+                  <span nz-icon nzType="loading" class="loading-icon"></span>
+                  Loading...
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Ngày chi</nz-form-label>
+            <nz-form-control nzErrorTip="Hãy chọn ngày!">
+              <nz-date-picker
+                nzPlaceHolder="Chọn ngày"
+                formControlName="date"
+              ></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Giờ chi</nz-form-label>
+            <nz-form-control>
+              <nz-time-picker
+                nzFormat="HH:mm"
+                [nzMinuteStep]="15"
+                nzPlaceHolder="Chọn giờ"
+                formControlName="time"
+              ></nz-time-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Ý kiến</nz-form-label>
+            <nz-form-control>
+              <input nz-input placeholder="Ý kiến" formControlName="comment" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-row nzGutter="xs" [nzGutter]="[16, 16]">
+          <div nz-col [nzSpan]="16">
+            <nz-card
+              nzTitle="Bên A"
+              [nzExtra]="aSide_extraTemplate"
+              [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
+            >
+              <nz-spin [nzSpinning]="isAutoLoadASide">
+                <ng-container formArrayName="aSide">
+                  <div
+                    nz-row
+                    *ngIf="aSideFA.value.length == 0 && aSideFA.touched"
+                  >
+                    <div class="ant-form-item-explain-error">
+                      Hãy thêm bên A!
+                    </div>
+                  </div>
+                  <div
+                    nz-row
+                    class="inline"
+                    *ngFor="let control of aSideFA.controls; let i = index"
+                  >
+                    <ng-container [formGroupName]="i">
+                      <nz-form-item class="inline-group">
+                        <nz-form-label>{{ i + 1 }}</nz-form-label>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-control nzErrorTip="Hãy chọn thành viên!">
+                          <nz-select
+                            nzShowSearch
+                            nzAllowClear
+                            nzPlaceHolder="Thành viên"
+                            formControlName="userId"
+                          >
+                            <ng-container *ngFor="let m of members">
+                              <nz-option
+                                *ngIf="!isLoadingMembers"
+                                [nzValue]="m.userId"
+                                [nzLabel]="m.userName"
+                              ></nz-option>
+                            </ng-container>
+                            <nz-option
+                              *ngIf="isLoadingMembers"
+                              nzDisabled
+                              nzCustomContent
+                            >
+                              <span
+                                nz-icon
+                                nzType="loading"
+                                class="loading-icon"
+                              ></span>
+                              Loading...
+                            </nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-control [nzErrorTip]="amountErrorTpl">
+                          <input
+                            nz-input
+                            placeholder="Số tiền (k VNĐ)"
+                            formControlName="amount"
+                          />
+                          <ng-template #amountErrorTpl let-control>
+                            <ng-container
+                              *ngIf="control.hasError('malformedMoney')"
+                            >
+                              Từ 1 đến 99999!
+                            </ng-container>
+                          </ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-control nzErrorTip="Hãy điền lý do!">
+                          <textarea
+                            rows="3"
+                            nz-input
+                            placeholder="Lý do"
+                            formControlName="description"
+                          ></textarea>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <button
+                          nz-button
+                          nzType="primary"
+                          nzShape="circle"
+                          nzSize="small"
+                          nzDanger
+                          (click)="removeFromASide(i)"
+                        >
+                          <span nz-icon nzType="minus" nzTheme="outline"></span>
+                        </button>
+                      </nz-form-item>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </nz-spin>
+            </nz-card>
+            <ng-template #aSide_extraTemplate>
+              <div class="inline-group">
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzShape="circle"
+                  nzSize="small"
+                  (click)="autoLoadASide()"
+                >
+                  <span nz-icon nzType="retweet"></span>
+                </button>
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzShape="circle"
+                  nzSize="small"
+                  (click)="onAddToASide()"
+                >
+                  <span nz-icon nzType="plus"></span>
+                </button>
+              </div>
+            </ng-template>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-card
+              nzTitle="Bên B"
+              [nzExtra]="bSide_extraTemplate"
+              [nzBodyStyle]="{ height: '49vh', 'overflow-y': 'auto' }"
+            >
+              <nz-spin [nzSpinning]="isAutoLoadBSide">
+                <ng-container formArrayName="bSide">
+                  <div
+                    nz-row
+                    *ngIf="bSideFA.value.length == 0 && bSideFA.touched"
+                  >
+                    <div class="ant-form-item-explain-error">
+                      Hãy thêm bên B!
+                    </div>
+                  </div>
+                  <div
+                    nz-row
+                    class="inline"
+                    *ngFor="let control of bSideFA.controls; let i = index"
+                  >
+                    <ng-container [formGroupName]="i">
+                      <nz-form-item class="inline-group">
+                        <nz-form-label>{{ i + 1 }}</nz-form-label>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <nz-form-control nzErrorTip="Hãy chọn thành viên!">
+                          <nz-select
+                            nzShowSearch
+                            nzAllowClear
+                            nzPlaceHolder="Thành viên"
+                            formControlName="userId"
+                          >
+                            <ng-container *ngFor="let m of members">
+                              <nz-option
+                                *ngIf="!isLoadingMembers"
+                                [nzValue]="m.userId"
+                                [nzLabel]="m.userName"
+                              ></nz-option>
+                            </ng-container>
+                            <nz-option
+                              *ngIf="isLoadingMembers"
+                              nzDisabled
+                              nzCustomContent
+                            >
+                              <span
+                                nz-icon
+                                nzType="loading"
+                                class="loading-icon"
+                              ></span>
+                              Loading...
+                            </nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                      </nz-form-item>
+                      <nz-form-item>
+                        <button
+                          nz-button
+                          nzType="primary"
+                          nzShape="circle"
+                          nzSize="small"
+                          nzDanger
+                          (click)="removeFromBSide(i)"
+                        >
+                          <span nz-icon nzType="minus" nzTheme="outline"></span>
+                        </button>
+                      </nz-form-item>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </nz-spin>
+            </nz-card>
+            <ng-template #bSide_extraTemplate>
+              <div class="inline-group">
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzShape="circle"
+                  nzSize="small"
+                  (click)="autoLoadBSide()"
+                >
+                  <span nz-icon nzType="retweet"></span>
+                </button>
+                <button
+                  nz-button
+                  nzType="primary"
+                  nzShape="circle"
+                  nzSize="small"
+                  (click)="onAddToBSide()"
+                >
+                  <span nz-icon nzType="plus"></span>
+                </button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </form>
+    </nz-card>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <button
+      nz-button
+      nzType="primary"
+      nzDanger
+      (click)="onResetForm()"
+      [disabled]="isLoadingCard"
+    >
+      Xóa trắng
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="onGeneratePayment()"
+      [nzLoading]="isLoadingPdf"
+      [disabled]="isLoadingCard"
+    >
+      Tạo phiếu
+    </button>
+  </ng-template>
+</nz-modal>
+
+<gmm-pdf-viewer
+  [(visible)]="isVisiblePdf"
+  [dataObjUrl]="pdfObjUrl"
+  [isUnderModal]="false"
+  title="Payment Slip"
+>
+  <ng-container buttons>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="onSavePayment()"
+      [nzLoading]="isSavingPayment"
+    >
+      Đồng ý
+    </button>
+  </ng-container>
+</gmm-pdf-viewer>
